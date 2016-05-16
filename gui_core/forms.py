@@ -2,11 +2,19 @@
 
 import xml
 import os
+import sys
 from PyQt4 import QtGui, uic
 from PyQt4.QtXml import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QAction, QIcon, QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox
 
+sys.path.append('../../../etc/python')
+sys.path.append('../../../bin')
+from grass.script import task as gtask
+
+gtask.command_info('r.buffer')
+
+'''
 exemel=os.path.join(
     os.path.normpath(os.path.dirname(__file__)).rsplit(os.path.sep,1)[0],
     'buffer.xml')
@@ -64,9 +72,8 @@ class XmlHandler(QXmlDefaultHandler):
     def errorString(self):
         return self._error
 
-class Window(QtGui.QTreeWidget):
+class Window(QtGui.QWidget):
     def __init__(self):
-        QtGui.QTreeWidget.__init__(self)
         QtGui.QWidget.__init__(self)
         self.header().setResizeMode(QtGui.QHeaderView.Stretch)
         self.setHeaderLabels(['Title', 'Type'])
@@ -126,3 +133,5 @@ if __name__ == '__main__':
     window.resize(400, 300)
     window.show()
     sys.exit(app.exec_())
+
+    '''
