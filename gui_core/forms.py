@@ -3,135 +3,38 @@
 import xml
 import os
 import sys
+import re
 from PyQt4 import QtGui, uic
 from PyQt4.QtXml import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QAction, QIcon, QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox
-
-sys.path.append('../../../etc/python')
-sys.path.append('../../../bin')
 from grass.script import task as gtask
 
-gtask.command_info('r.buffer')
+#print gtask.command_info('r.buffer')
+#print [p[0] for p in gtask.command_info('r.buffer')['keywords']]
 
-'''
-exemel=os.path.join(
-    os.path.normpath(os.path.dirname(__file__)).rsplit(os.path.sep,1)[0],
-    'buffer.xml')
+class NewQuery(QtGui.QWidget):
+    def __init__(self, function, parent=None):
+        super(NewQuery, self).__init__(parent)
+        self.setWindowTitle(self.get_title(function))
+        grid = QtGui.QGridLayout()
+        label = QtGui.QLabel('Here should be some widgets')
+        grid.addWidget(label)
+        grid.addWidget(QtGui.QLineEdit('hi Vaclav'))
+        self.setLayout(grid)
+        #self.resize(300,200)
 
-#FORM_CLASS, _ = uic.loadUiType(os.path.join(
- #   os.path.normpath(os.path.dirname(__file__)).rsplit(os.path.sep,1)[0],
-  #  'buffer.xml'))
+    def get_title(self,function):
+        self.title=[p for p in gtask.command_info(function)['keywords']]
+        self.title=re.sub("'","",str(self.title))
+        return self.title
 
-class XmlHandler(QXmlDefaultHandler):
-    def __init__(self, root):
-        QXmlDefaultHandler.__init__(self)
-        self._root = root
-        self._item = None
-        self._text = ''
-        self._error = ''
+command='v.buffer'
+tasked=gtask.command_info('r.buffer')
 
-    def startElement(self, namespace, name, qname, attributes):
-        if qname == 'folder' or qname == 'item':
-            if self._item is not None:
-                self._item = QtGui.QTreeWidgetItem(self._item)
-            else:
-                self._item = QtGui.QTreeWidgetItem(self._root)
-            self._item.setData(0, Qt.UserRole, qname)
-            self._item.setText(0, 'Unknown Title')
-            if qname == 'folder':
-                self._item.setExpanded(True)
-            elif qname == 'item':
-                self._item.setText(1, attributes.value('type'))
-        self._text = ''
-        return True
-
-    def endElement(self, namespace, name, qname):
-        if qname == 'title':
-            if self._item is not None:
-                self._item.setText(0, self._text)
-        elif qname == 'folder' or qname == 'item':
-            self._item = self._item.parent()
-        elif qname == 'foldra':
-            self._item = self._item.parent()
-            print self._item
-        return True
-
-    def characters(self, text):
-        self._text += text
-        return True
-
-    def fatalError(self, exception):
-        print('Parse Error: line %d, column %d:\n  %s' % (
-              exception.lineNumber(),
-              exception.columnNumber(),
-              exception.message(),
-              ))
-        return False
-
-    def errorString(self):
-        return self._error
-
-class Window(QtGui.QWidget):
-    def __init__(self):
-        QtGui.QWidget.__init__(self)
-        self.header().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.setHeaderLabels(['Title', 'Type'])
-        source = QXmlInputSource()
-        source.setData(xml)
-        handler = XmlHandler(self)
-        reader = QXmlSimpleReader()
-        reader.setContentHandler(handler)
-        reader.setErrorHandler(handler)
-        reader.parse(source)
-
-xml = """\
-<root>
-    <folder>
-        <title>Folder One</title>
-        <item type="1">
-            <title>Item One</title>
-        </item>
-        <item type="1">
-            <title>Item Two</title>
-        </item>
-        <item type="2">
-            <title>Item Three</title>
-        </item>
-        <folder>
-            <item type="3">
-                <title>Item Four</title>
-            </item>
-            <item type="0">
-                <title>Item Five</title>
-            </item>
-            <item type="1">
-                <title>Item Six</title>
-            </item>
-        </folder>
-    </folder>
-    <folder>
-        <title>Folder Three</title>
-        <item type="0">
-            <title>Item Six</title>
-        </item>
-        <item type="2">
-            <title>Item Seven</title>
-        </item>
-        <item type="2">
-            <title>Item Eight</title>
-        </item>
-    </folder>
-</root>
-"""
-
-if __name__ == '__main__':
-
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    window = Window()
-    window.resize(400, 300)
-    window.show()
-    sys.exit(app.exec_())
-
-    '''
+app = QtGui.QApplication([])
+mainform = NewQuery(command)
+mainform.show()
+#newchildform = NewQuery(command)
+#newchildform.show()
+app.exec_()
