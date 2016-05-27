@@ -2,7 +2,7 @@
 
 import xml
 import os
-import sys
+import sys,getopt
 import re
 from PyQt4 import QtGui, uic
 from PyQt4.QtXml import *
@@ -138,8 +138,7 @@ class NewGUI(QtGui.QMainWindow):
 
         return buttons
 
-
-command='r.buffer'
-mainform = NewGUI(command)
+opt, arg=getopt.getopt(sys.argv,'second parameter')
+mainform = NewGUI(arg[1])
 
 # usage, need to update tabs
