@@ -57,51 +57,62 @@ class NewGUI(QtGui.QMainWindow):
         pageOptional=QtGui.QWidget()
         boxOptional=QtGui.QVBoxLayout()
         pages={}
+
         pageSection={}
+        boxsSection={}
 
         # tabs for params
         for task in gtask.command_info(function)['params']:
 
+            widget=newWidget(task).newWidget()
             if task['required']==True:
                 try:
-                    widget=newWidget(task).newWidget()
                     pages.update({'Required':pageRequired})
                     boxs.update({'Required':boxRequired})
-                    boxs['Required'].addWidget(widget)
                 except:pass
+                boxs['Required'].addWidget(widget)
+
             elif task['guisection']:
                 try:
                     pages[task['guisection']]
                 except:
                     page=QtGui.QWidget()
+                    box=QtGui.QVBoxLayout()
                     pageSection.update({task['guisection']:page})
-                    #print pageSection
-                    #print task
-                    pages.update({task['guisection']:page})
+                    boxsSection.update({task['guisection']:box})
+                    pages.update({task['guisection']:pageSection[task['guisection']]})
+                    boxs.update({task['guisection']:boxsSection[task['guisection']]})
+                boxs[task['guisection']].addWidget(widget)
+
             else:
-                #boxOptional.addWidget(newWidget(task,''))
-                #pageOptional.setLayout(boxOptional)
                 try:
-                    widget=newWidget(task).newWidget()
                     pages.update({'Optional':pageOptional})
                     boxs.update({'Optional':boxOptional})
-                    boxs['Optional'].addWidget(widget)
                 except:pass
+                boxs['Optional'].addWidget(widget)
 
         #tabs for flags
         for task in gtask.command_info(function)['flags']:
 
+            widget=newWidget(task).newWidget()
             if task['guisection']:
                 try:
                     pages[task['guisection']]
-                    print 'gui2',task
                 except:
                     page=QtGui.QWidget()
-                    pages.update({task['guisection']:page})
+                    box=QtGui.QVBoxLayout()
+                    pageSection.update({task['guisection']:page})
+                    boxsSection.update({task['guisection']:box})
+                    pages.update({task['guisection']:pageSection[task['guisection']]})
+                    boxs.update({task['guisection']:boxsSection[task['guisection']]})
+                boxs[task['guisection']].addWidget(widget)
+
             else:
                 try:
                     pages.update({'Optional':pageOptional})
+                    boxs.update({'Optional':boxOptional})
                 except:pass
+                boxs['Optional'].addWidget(widget)
 
         for i in pages:
             layout=boxs[i]
@@ -157,10 +168,10 @@ class NewGUI(QtGui.QMainWindow):
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 #print gtask.command_info(arg[1])
 #print sys.path
-mama = module.Module(arg[1])
+#mama = module.Module(arg[1])
 #print mama.flags
 #for i in mama.flags:
  #   print i
 
 mainform = NewGUI(arg[1])
-# usage, need to update tabs
+# usage, update widget into cool layout, hide 'help' checkbox

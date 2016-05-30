@@ -8,10 +8,13 @@ class Parameters(QtGui.QWidget):
     def __init__(self, gtask, parent=None):
 
         super(Parameters, self).__init__(parent)
-        if gtask['type'] in ('float', 'range', 'sql_query'):
-            self.widget=self.float(gtask)
-        else:
-            self.widget=QtGui.QLabel('TODO')
+        try:
+            if gtask['type'] in ('float', 'range', 'sql_query'):
+                self.widget=self.float(gtask)
+            else:
+                self.widget=QtGui.QLabel('TODO')
+        except:
+            self.widget=QtGui.QCheckBox(gtask['description'])
 
     def newWidget(self):
         """
