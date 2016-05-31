@@ -20,10 +20,16 @@ class NewGUI(QtGui.QMainWindow):
 
         self.setWindowTitle(self.get_title(function))
         self.create_gui(function)
+        #print self.size()
 
-        #self.resize(300,200)
+
+
 
         self.show()
+        #print self.size()
+        #print self.size()
+        #self.resize(self.minimumSizeHint())
+        #print self.size()
         sys.exit(app.exec_())
 
     def create_gui(self,function):
@@ -39,8 +45,11 @@ class NewGUI(QtGui.QMainWindow):
         box.setSpacing(10)
         completeGui=QtGui.QWidget()
         completeGui.setLayout(box)
+        #print completeGui.size()
+        #self.resize(self.minimumSize())
 
         self.setCentralWidget(completeGui)
+        #print completeGui.size()
 
     def get_tabs(self,function):
         """
@@ -114,9 +123,14 @@ class NewGUI(QtGui.QMainWindow):
                 except:pass
                 boxs['Optional'].addWidget(widget)
 
+        #boxOptional.setContentsMargins(0,0,0,0)
         for i in pages:
+            #print boxs[i].spacing() #*****************************
+            #boxs[i].resize(boxs[i].minimumSizeHint())
             layout=boxs[i]
+            layout.setSpacing(0)
             pages[i].setLayout(layout)
+            #pages[i].resize(pages[i].minimumSizeHint())
             tabs.addTab(pages[i],i)
 
         return tabs
