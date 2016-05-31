@@ -20,6 +20,7 @@ class Parameters(QtGui.QWidget):
         except:
             self.widget=QtGui.QCheckBox(gtask['description'])
             boxComplete.addWidget(self.widget)
+            boxComplete.addStretch()
             boxComplete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
 
 
@@ -48,17 +49,20 @@ class Parameters(QtGui.QWidget):
                 boxHeader.addWidget(QtGui.QLabel('[multiple]'))
             description=QtGui.QLabel(gtask['description'])
             boxHeader.addWidget(description)
+            boxHeader.addStretch()
             boxHeader.addWidget(QtGui.QLabel('(%s=%s)' % (gtask['name'],gtask['type'])))
-            description.setWordWrap(True)
+            #description.setWordWrap(True) #--------------------- DO I REALLY WANT TO WRAP IT? ---------------
 
             header=QtGui.QWidget()
             header.setLayout(boxHeader)
 
             layoutComplete=QtGui.QVBoxLayout()
             layoutComplete.addWidget(header)
-            layoutComplete.setSpacing(0)
-            layoutComplete.setMargin(0)
+
         except:layoutComplete=QtGui.QHBoxLayout() # flag
+
+        layoutComplete.setSpacing(0)
+        layoutComplete.setMargin(0)
 
         return layoutComplete
 
@@ -73,11 +77,11 @@ class para_float(QtGui.QLineEdit):
 
         :return:QLineEdit
         """
-# get multiple
+
         box=QtGui.QLineEdit()
         return box
 
-
+# get multiple
 
 
 
