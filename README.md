@@ -1,6 +1,6 @@
 # GRASS-Qt-based-GUI
 
-Dependencies: GRASS 7.1
+Dependencies: GRASS 7.1, Python2, PyQt4
 
 I recommend to clone this folder into grass/grass-7.1.svn/gui/ (created folder pyqt)
 
