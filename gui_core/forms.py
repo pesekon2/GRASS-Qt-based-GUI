@@ -127,6 +127,7 @@ class NewGUI(QtGui.QMainWindow):
         for i in pages:
             #print boxs[i].spacing() #*****************************
             #boxs[i].resize(boxs[i].minimumSizeHint())
+            boxs[i].addStretch()
             layout=boxs[i]
             layout.setSpacing(0)
             pages[i].setLayout(layout)
