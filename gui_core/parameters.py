@@ -13,6 +13,8 @@ class Parameters(QtGui.QWidget):
         try:
             if gtask['type'] in ('float', 'range', 'sql_query'):
                 self.widget = para_float(gtask).get()
+            elif gtask['type'] in ('string', 'name'):
+                self.widget = para_string(gtask).get()
             else:
                 self.widget=QtGui.QLabel('TODO')
             boxComplete.addWidget(self.widget)
@@ -47,7 +49,10 @@ class Parameters(QtGui.QWidget):
 
             if gtask['multiple']==True:
                 boxHeader.addWidget(QtGui.QLabel('[multiple]'))
-            description=QtGui.QLabel(gtask['description'])
+            if gtask['label']:
+                description=QtGui.QLabel(gtask['label'])
+            else:
+                description=QtGui.QLabel(gtask['description'])
             boxHeader.addWidget(description)
             boxHeader.addStretch()
             boxHeader.addWidget(QtGui.QLabel('(%s=%s)' % (gtask['name'],gtask['type'])))
@@ -79,6 +84,21 @@ class para_float(QtGui.QLineEdit):
         """
 
         box=QtGui.QLineEdit()
+        return box
+
+class para_string(QtGui.QComboBox):
+    def __init__(self,gtask):
+        """
+        :param gtask: task for this widget
+        """
+
+    def get(self):
+        """
+
+        :return:QLineEdit
+        """
+
+        box=QtGui.QComboBox()
         return box
 
 # get multiple
