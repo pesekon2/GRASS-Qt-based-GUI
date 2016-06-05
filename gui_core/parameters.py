@@ -11,7 +11,7 @@ class Parameters(QtGui.QWidget):
         boxComplete=self.getLayout(gtask)
 
         try:
-            if gtask['type'] in ('float', 'range', 'sql_query'):
+            if gtask['type'] in ('float'):
                 self.widget = para_float(gtask).get()
             elif gtask['type'] in ('string', 'name'):
                 self.widget = para_string(gtask).get()
@@ -79,13 +79,19 @@ class para_float(QtGui.QLineEdit):
         :param gtask: task for this widget
         """
 
+        self.gtask = gtask
+
     def get(self):
         """
 
         :return:QLineEdit
         """
 
-        box=QtGui.QLineEdit()
+        if self.gtask['multiple']==True:
+            box=QtGui.QLineEdit()
+        else:
+            box=QtGui.QDoubleSpinBox()
+
         return box
 
 class para_string(QtGui.QComboBox):
