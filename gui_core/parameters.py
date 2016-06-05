@@ -100,13 +100,19 @@ class para_string(QtGui.QComboBox):
         :param gtask: task for this widget
         """
 
+        self.gtask = gtask
+
     def get(self):
         """
 
         :return:QLineEdit
         """
 
-        box=QtGui.QComboBox()
+        if self.gtask['key_desc']==['sql_query']:
+            box=QtGui.QLineEdit()
+        else:
+            box=QtGui.QComboBox()
+        print self.gtask
         return box
 
 class para_integer(QtGui.QSpinBox):
