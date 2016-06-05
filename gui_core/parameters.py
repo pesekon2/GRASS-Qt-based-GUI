@@ -15,6 +15,8 @@ class Parameters(QtGui.QWidget):
                 self.widget = para_float(gtask).get()
             elif gtask['type'] in ('string', 'name'):
                 self.widget = para_string(gtask).get()
+            elif gtask['type'] in ('integer'):
+                self.widget = para_integer(gtask).get()
             else:
                 self.widget=QtGui.QLabel('TODO')
             boxComplete.addWidget(self.widget)
@@ -99,6 +101,21 @@ class para_string(QtGui.QComboBox):
         """
 
         box=QtGui.QComboBox()
+        return box
+
+class para_integer(QtGui.QSpinBox):
+    def __init__(self,gtask):
+        """
+        :param gtask: task for this widget
+        """
+
+    def get(self):
+        """
+
+        :return:QLineEdit
+        """
+
+        box=QtGui.QSpinBox()
         return box
 
 # get multiple
