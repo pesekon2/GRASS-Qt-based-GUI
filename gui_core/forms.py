@@ -38,10 +38,14 @@ class NewGUI(QtGui.QMainWindow):
         :return: completed gui
         """
 
+        code = QtGui.QLabel(function)
+
         box=QtGui.QVBoxLayout()
         box.addWidget(self.get_description(function))
         box.addWidget(self.get_tabs(function))
         box.addWidget(self.basic_buttons())
+        box.addWidget(self.horizontal_line())
+        box.addWidget(code)
         box.setSpacing(10)
         completeGui=QtGui.QWidget()
         completeGui.setLayout(box)
@@ -179,6 +183,12 @@ class NewGUI(QtGui.QMainWindow):
         buttons.setLayout(layout)
 
         return buttons
+
+    def horizontal_line(self):
+        line = QtGui.QFrame()
+        line.setFrameShape(QtGui.QFrame.HLine)
+        line.setFrameShadow(QtGui.QFrame.Sunken)
+        return line
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 #print gtask.command_info(arg[1])
