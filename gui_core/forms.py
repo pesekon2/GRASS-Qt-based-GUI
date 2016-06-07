@@ -38,11 +38,11 @@ class NewGUI(QtGui.QMainWindow):
         :return: completed gui
         """
 
-        code = QtGui.QLabel(function)
+        tabs,code=self.get_tabs(function)
 
         box=QtGui.QVBoxLayout()
         box.addWidget(self.get_description(function))
-        box.addWidget(self.get_tabs(function))
+        box.addWidget(tabs)
         box.addWidget(self.basic_buttons())
         box.addWidget(self.horizontal_line())
         box.addWidget(code)
@@ -74,10 +74,17 @@ class NewGUI(QtGui.QMainWindow):
         pageSection={}
         boxsSection={}
 
+        codeLayout=QtGui.QHBoxLayout()
+        name = QtGui.QLabel(function)
+        codeLayout.addWidget(name)
+        codeWidget=QtGui.QWidget()
+
         # tabs for params
         for task in gtask.command_info(function)['params']:
 
-            widget=newWidget(task).newWidget()
+            code=QtGui.QLabel()
+            codeLayout.addWidget(code)
+            widget=newWidget(task,code).newWidget()
             if task['required']==True:
                 try:
                     pages.update({'Required':pageRequired})
@@ -107,7 +114,9 @@ class NewGUI(QtGui.QMainWindow):
         #tabs for flags
         for task in gtask.command_info(function)['flags']:
 
-            widget=newWidget(task).newWidget()
+            code=QtGui.QLabel()
+            codeLayout.addWidget(code)
+            widget=newWidget(task,code).newWidget()
             if task['guisection']:
                 try:
                     pages[task['guisection']]
@@ -138,7 +147,9 @@ class NewGUI(QtGui.QMainWindow):
             #pages[i].resize(pages[i].minimumSizeHint())
             tabs.addTab(pages[i],i)
 
-        return tabs
+        codeWidget.setLayout(codeLayout)
+
+        return tabs,codeWidget
 
     def get_title(self,function):
         """

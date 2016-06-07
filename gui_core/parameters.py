@@ -1,18 +1,20 @@
 
 
 from PyQt4 import QtGui
+#from PyQt4.QtCore import pyqtSlot
 
 
 # firstly, I define the widgets
 class Parameters(QtGui.QWidget):
-    def __init__(self, gtask, parent=None):
+    def __init__(self, gtask, code, parent=None):
         super(Parameters, self).__init__(parent)
 
         boxComplete=self.getLayout(gtask)
 
         try:
             if gtask['type'] in ('float'):
-                self.widget = para_float(gtask).get()
+                self.widget = para_float(gtask,code).get()
+                #self.widget.textChanged.connect(lambda: self.change_code(gtask,code))
             elif gtask['type'] in ('string', 'name'):
                 self.widget = para_string(gtask).get()
             elif gtask['type'] in ('integer'):
@@ -26,7 +28,6 @@ class Parameters(QtGui.QWidget):
             boxComplete.addWidget(self.widget)
             boxComplete.addStretch()
             boxComplete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
-
 
         self.completeWidget=QtGui.QWidget()
         self.completeWidget.setLayout(boxComplete)
@@ -74,12 +75,13 @@ class Parameters(QtGui.QWidget):
         return layoutComplete
 
 class para_float(QtGui.QLineEdit):
-    def __init__(self,gtask):
+    def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
         """
 
         self.gtask = gtask
+        self.code = code
 
     def get(self):
         """
@@ -89,9 +91,12 @@ class para_float(QtGui.QLineEdit):
 
         if self.gtask['multiple']==True:
             box=QtGui.QLineEdit()
+            box.textChanged.connect(lambda: change_code(self.gtask,self.code,box))
         else:
             box=QtGui.QDoubleSpinBox()
 
+        #self.widget.textChanged.connect(lambda: self.change_code(gtask,code))
+        #self.widget.textChanged.connect(lambda: Parameters.change_code(Parameters(),self.gtask,self.code))
         return box
 
 class para_string(QtGui.QComboBox):
@@ -112,7 +117,7 @@ class para_string(QtGui.QComboBox):
             box=QtGui.QLineEdit()
         else:
             box=QtGui.QComboBox()
-        print self.gtask
+
         return box
 
 class para_integer(QtGui.QSpinBox):
@@ -130,7 +135,20 @@ class para_integer(QtGui.QSpinBox):
         box=QtGui.QSpinBox()
         return box
 
-# get multiple
+class change_code():
+        """
+        creates slots and signals into the code on below
+        :param gtask:task for this widget
+        :param code:code in string that user see on below
+        :param widget:widget which should be edited
+        """
 
+        def __init__(self,gtask,code,widget):
 
+            if type(widget)==QtGui.QLineEdit:
+                self.line_edit(gtask,code,widget)
+
+        def line_edit(self,gtask,code,widget):
+            newCode=gtask['name']+'='+widget.text()
+            code.setText(newCode)
 
