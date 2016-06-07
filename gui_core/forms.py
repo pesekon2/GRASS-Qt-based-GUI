@@ -9,6 +9,7 @@ from PyQt4 import QtGui, uic
 from PyQt4.QtXml import *
 from PyQt4.QtCore import *
 from grass.script import task as gtask
+from grass.script import start_command
 from grass.pygrass.modules.interface import module
 #from python\grass\pygrass\modules\interface
 
@@ -74,16 +75,16 @@ class NewGUI(QtGui.QMainWindow):
         pageSection={}
         boxsSection={}
 
-        codeLayout=QtGui.QHBoxLayout()
+        self.codeLayout=QtGui.QHBoxLayout()
         name = QtGui.QLabel(function)
-        codeLayout.addWidget(name)
+        self.codeLayout.addWidget(name)
         codeWidget=QtGui.QWidget()
 
         # tabs for params
         for task in gtask.command_info(function)['params']:
 
             code=QtGui.QLabel()
-            codeLayout.addWidget(code)
+            self.codeLayout.addWidget(code)
             widget=newWidget(task,code).newWidget()
             if task['required']==True:
                 try:
@@ -115,7 +116,7 @@ class NewGUI(QtGui.QMainWindow):
         for task in gtask.command_info(function)['flags']:
 
             code=QtGui.QLabel()
-            codeLayout.addWidget(code)
+            self.codeLayout.addWidget(code)
             widget=newWidget(task,code).newWidget()
             if task['guisection']:
                 try:
@@ -147,7 +148,7 @@ class NewGUI(QtGui.QMainWindow):
             #pages[i].resize(pages[i].minimumSizeHint())
             tabs.addTab(pages[i],i)
 
-        codeWidget.setLayout(codeLayout)
+        codeWidget.setLayout(self.codeLayout)
 
         return tabs,codeWidget
 
@@ -193,13 +194,38 @@ class NewGUI(QtGui.QMainWindow):
         buttons=QtGui.QWidget()
         buttons.setLayout(layout)
 
+        runButton.clicked.connect(lambda: self.run_command())
+
         return buttons
 
     def horizontal_line(self):
+        """
+        creates a horizontal line
+        :return: horizontal line
+        """
+
         line = QtGui.QFrame()
         line.setFrameShape(QtGui.QFrame.HLine)
         line.setFrameShadow(QtGui.QFrame.Sunken)
         return line
+
+    def get_command_one_string(self):
+        """
+        transfroms wisgets at the bottom of GUI into one executable string
+        :return: command in one string
+        """
+
+        text = ''
+        for i in range(self.codeLayout.count()-1):
+            label = self.codeLayout.itemAt(i).widget().text() # getting again qlabel and the text
+            text = text + ' ' + label
+
+        return text
+
+    def run_command(self):
+
+        print self.get_command_one_string()
+        #start_command(self.get_command_one_string())
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 #print gtask.command_info(arg[1])
@@ -210,4 +236,4 @@ opt,arg=getopt.getopt(sys.argv,'second parameter')
  #   print i
 
 mainform = NewGUI(arg[1])
-# usage, update widget into cool layout, hide 'help' checkbox
+# hide 'help' checkbox, some cheats with 'string' widgets, help and output tabs, run_command change comment (after reading strings)
