@@ -94,9 +94,8 @@ class para_float(QtGui.QLineEdit):
             box.textChanged.connect(lambda: change_code(self.gtask,self.code,box))
         else:
             box=QtGui.QDoubleSpinBox()
+            box.valueChanged.connect(lambda: change_code(self.gtask,self.code,box))
 
-        #self.widget.textChanged.connect(lambda: self.change_code(gtask,code))
-        #self.widget.textChanged.connect(lambda: Parameters.change_code(Parameters(),self.gtask,self.code))
         return box
 
 class para_string(QtGui.QComboBox):
@@ -147,8 +146,19 @@ class change_code():
 
             if type(widget)==QtGui.QLineEdit:
                 self.line_edit(gtask,code,widget)
+            elif type(widget)==QtGui.QDoubleSpinBox:
+                self.double_spin_box(gtask,code,widget)
 
         def line_edit(self,gtask,code,widget):
-            newCode=gtask['name']+'='+widget.text()
-            code.setText(newCode)
+            if widget.text():
+                newCode=gtask['name']+'='+widget.text()
+                code.setText(newCode)
+            else:
+                code.setText('')
 
+        def double_spin_box(self,gtask,code,widget):
+            if widget.text(): # should it write also 0,00?
+                newCode=gtask['name']+'='+widget.text()
+                code.setText(newCode)
+            else:
+                code.setText('')
