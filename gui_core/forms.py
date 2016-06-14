@@ -9,6 +9,7 @@ from PyQt4 import QtGui, uic
 from PyQt4.QtXml import *
 from PyQt4.QtCore import *
 from grass.script import task as gtask
+#import grass.script
 from grass.script import start_command
 from grass.pygrass.modules.interface import module
 #from python\grass\pygrass\modules\interface
@@ -224,16 +225,10 @@ class NewGUI(QtGui.QMainWindow):
 
     def run_command(self):
 
-        print self.get_command_one_string()
-        #start_command(self.get_command_one_string())
+        #print self.get_command_one_string()       # uncomment this to see the command
+        start_command(self.get_command_one_string())
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
-#print gtask.command_info(arg[1])
-#print sys.path
-#mama = module.Module(arg[1])
-#print mama.flags
-#for i in mama.flags:
- #   print i
 
 mainform = NewGUI(arg[1])
 # hide 'help' checkbox, some cheats with 'string' widgets, help and output tabs, run_command change comment (after reading strings)
