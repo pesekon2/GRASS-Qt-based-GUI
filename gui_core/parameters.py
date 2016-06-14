@@ -4,6 +4,17 @@ from PyQt4 import QtGui
 #from PyQt4.QtCore import pyqtSlot
 
 
+
+class Factory():
+    @staticmethod
+    def newWidget(gtask,code):
+        classes = [para_string,para_float,para_integer]
+        for oneClass in classes:
+            if oneClass.__contains__(gtask['type']):
+                return oneClass(gtask,code).get()
+        else:return QtGui.QLabel('TODO')
+
+
 # firstly, I define the widgets
 class Parameters(QtGui.QWidget):
     def __init__(self, gtask, code, parent=None):
@@ -12,6 +23,8 @@ class Parameters(QtGui.QWidget):
         boxComplete=self.getLayout(gtask)
 
         try:
+            self.widget = Factory().newWidget(gtask,code)
+            """
             if gtask['type'] in ('float'):
                 self.widget = para_float(gtask,code).get()
                 #self.widget.textChanged.connect(lambda: self.change_code(gtask,code))
@@ -21,6 +34,7 @@ class Parameters(QtGui.QWidget):
                 self.widget = para_integer(gtask).get()
             else:
                 self.widget=QtGui.QLabel('TODO')
+            """
             boxComplete.addWidget(self.widget)
 
         except:
@@ -83,6 +97,10 @@ class para_float(QtGui.QLineEdit):
         self.gtask = gtask
         self.code = code
 
+    @staticmethod
+    def __contains__(type):
+        return type in ['float']
+
     def get(self):
         """
 
@@ -99,12 +117,16 @@ class para_float(QtGui.QLineEdit):
         return box
 
 class para_string(QtGui.QComboBox):
-    def __init__(self,gtask):
+    def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
         """
 
         self.gtask = gtask
+
+    @staticmethod
+    def __contains__(type):
+        return type in ['string']
 
     def get(self):
         """
@@ -120,10 +142,14 @@ class para_string(QtGui.QComboBox):
         return box
 
 class para_integer(QtGui.QSpinBox):
-    def __init__(self,gtask):
+    def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
         """
+
+    @staticmethod
+    def __contains__(type):
+        return type in ['integer']
 
     def get(self):
         """
