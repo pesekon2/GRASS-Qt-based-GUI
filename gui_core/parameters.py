@@ -5,6 +5,9 @@ from types import TypeType
 #from PyQt4.QtCore import pyqtSlot
 
 class Widget(object):
+    """
+    Abstract class for concrete widget classes
+    """
     @staticmethod
     def __contains__(ingredient):
         return False
@@ -12,8 +15,17 @@ class Widget(object):
         return 0
 
 class Factory():
+    """
+    Factory to decide which widget class should be used
+    """
     @staticmethod
     def newWidget(gtask,code):
+        """
+        deciding which widget class should be used
+        :param gtask: task for this widget
+        :param code: runable and copyable code string
+        :return:
+        """
         classes = [j for (i,j) in globals().iteritems() if isinstance(j, TypeType) and issubclass(j, Widget)]
         for oneClass in classes:
             if oneClass.__contains__(gtask['type']):
@@ -54,7 +66,6 @@ class Parameters(QtGui.QWidget):
 
     def newWidget(self):
         """
-
         :return:The widget
         """
 
@@ -98,6 +109,7 @@ class ParaFloat(Widget):
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
+        :param code: runable and copyable code string
         """
 
         self.gtask = gtask
@@ -126,9 +138,11 @@ class ParaString(Widget):
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
+        :param code: runable and copyable code string
         """
 
         self.gtask = gtask
+        self.code = code
 
     @staticmethod
     def __contains__(type):
@@ -144,6 +158,8 @@ class ParaString(Widget):
             box=QtGui.QLineEdit()
         else:
             box=QtGui.QComboBox()
+            box.setEditable(True)
+            box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
 
         return box
 
@@ -151,7 +167,10 @@ class ParaInteger(Widget):
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
+        :param code: runable and copyable code string
         """
+
+        self.code = code
 
     @staticmethod
     def __contains__(type):
@@ -180,6 +199,8 @@ class ChangeCode():
                 self.line_edit(gtask,code,widget)
             elif type(widget)==QtGui.QDoubleSpinBox:
                 self.double_spin_box(gtask,code,widget)
+            elif type(widget)==QtGui.QComboBox:
+                self.combo_box(gtask,code,widget)
 
         def line_edit(self,gtask,code,widget):
             if widget.text():
@@ -192,5 +213,13 @@ class ChangeCode():
             if widget.text(): # should it write also 0,00?
                 newCode=gtask['name']+'='+widget.text()
                 code.setText(newCode)
+            else:
+                code.setText('')
+
+        def combo_box(self,gtask,code,widget):
+            if widget.currentText(): # should it write also 0,00?
+                newCode=gtask['name']+'='+widget.currentText()
+                code.setText(newCode)
+                #QtGui.QComboBox.currentText()
             else:
                 code.setText('')
