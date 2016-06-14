@@ -156,6 +156,7 @@ class ParaString(Widget):
 
         if self.gtask['key_desc']==['sql_query']:
             box=QtGui.QLineEdit()
+            box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
         else:
             box=QtGui.QComboBox()
             box.setEditable(True)
