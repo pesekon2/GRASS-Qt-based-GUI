@@ -1,14 +1,20 @@
 
 
 from PyQt4 import QtGui
+from types import TypeType
 #from PyQt4.QtCore import pyqtSlot
 
-
+class Widget(object):
+    @staticmethod
+    def __contains__(ingredient):
+        return False
+    def get(self):
+        return 0
 
 class Factory():
     @staticmethod
     def newWidget(gtask,code):
-        classes = [para_string,para_float,para_integer]
+        classes = [j for (i,j) in globals().iteritems() if isinstance(j, TypeType) and issubclass(j, Widget)]
         for oneClass in classes:
             if oneClass.__contains__(gtask['type']):
                 return oneClass(gtask,code).get()
@@ -27,7 +33,7 @@ class Parameters(QtGui.QWidget):
             """
             if gtask['type'] in ('float'):
                 self.widget = para_float(gtask,code).get()
-                #self.widget.textChanged.connect(lambda: self.change_code(gtask,code))
+                #self.widget.textChanged.connect(lambda: self.ChangeCode(gtask,code))
             elif gtask['type'] in ('string', 'name'):
                 self.widget = para_string(gtask).get()
             elif gtask['type'] in ('integer'):
@@ -88,7 +94,7 @@ class Parameters(QtGui.QWidget):
 
         return layoutComplete
 
-class para_float(QtGui.QLineEdit):
+class ParaFloat(Widget):
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
@@ -109,14 +115,14 @@ class para_float(QtGui.QLineEdit):
 
         if self.gtask['multiple']==True:
             box=QtGui.QLineEdit()
-            box.textChanged.connect(lambda: change_code(self.gtask,self.code,box))
+            box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
         else:
             box=QtGui.QDoubleSpinBox()
-            box.valueChanged.connect(lambda: change_code(self.gtask,self.code,box))
+            box.valueChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
 
         return box
 
-class para_string(QtGui.QComboBox):
+class ParaString(Widget):
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
@@ -141,7 +147,7 @@ class para_string(QtGui.QComboBox):
 
         return box
 
-class para_integer(QtGui.QSpinBox):
+class ParaInteger(Widget):
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
@@ -160,7 +166,7 @@ class para_integer(QtGui.QSpinBox):
         box=QtGui.QSpinBox()
         return box
 
-class change_code():
+class ChangeCode():
         """
         creates slots and signals into the code on below
         :param gtask:task for this widget
