@@ -4,16 +4,6 @@ from PyQt4 import QtGui
 from types import TypeType
 #from PyQt4.QtCore import pyqtSlot
 
-class Widget(object):
-    """
-    Abstract class for concrete widget classes
-    """
-    @staticmethod
-    def canHandle(type):
-        return False
-    def get(self):
-        return 0
-
 class Factory():
     """
     Factory to decide which widget class should be used
@@ -26,7 +16,7 @@ class Factory():
         :param code: runable and copyable code string
         :return:
         """
-        classes = [j for (i,j) in globals().iteritems() if isinstance(j, TypeType) and issubclass(j, Widget)]
+        classes = [j for (i,j) in globals().iteritems() if hasattr(j, 'canHandle')] #isinstance(j, TypeType)
         for oneClass in classes:
             if oneClass.canHandle(gtask['type']):
                 return oneClass(gtask,code).get()
@@ -94,7 +84,7 @@ class Parameters():
 
         return layoutComplete
 
-class ParaFloat(Widget):
+class ParaFloat():
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
@@ -129,7 +119,7 @@ class ParaFloat(Widget):
 
         return box
 
-class ParaString(Widget):
+class ParaString():
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
@@ -158,10 +148,9 @@ class ParaString(Widget):
             if self.gtask['values']:
                 box.addItems(self.gtask['values'])
             box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
-            print self.gtask
         return box
 
-class ParaInteger(Widget):
+class ParaInteger():
     def __init__(self,gtask,code):
         """
         :param gtask: task for this widget
