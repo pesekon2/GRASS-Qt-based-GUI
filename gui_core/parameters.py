@@ -9,7 +9,7 @@ class Widget(object):
     Abstract class for concrete widget classes
     """
     @staticmethod
-    def __contains__(ingredient):
+    def canHandle(type):
         return False
     def get(self):
         return 0
@@ -28,31 +28,20 @@ class Factory():
         """
         classes = [j for (i,j) in globals().iteritems() if isinstance(j, TypeType) and issubclass(j, Widget)]
         for oneClass in classes:
-            if oneClass.__contains__(gtask['type']):
+            if oneClass.canHandle(gtask['type']):
                 return oneClass(gtask,code).get()
         else:return QtGui.QLabel('TODO')
 
 
 # firstly, I define the widgets
-class Parameters(QtGui.QWidget):
-    def __init__(self, gtask, code, parent=None):
-        super(Parameters, self).__init__(parent)
+class Parameters():
+    def __init__(self, gtask, code):#, parent=None):
+        #super(Parameters).__init__(parent)
 
         boxComplete=self.getLayout(gtask)
 
         try:
             self.widget = Factory().newWidget(gtask,code)
-            """
-            if gtask['type'] in ('float'):
-                self.widget = para_float(gtask,code).get()
-                #self.widget.textChanged.connect(lambda: self.ChangeCode(gtask,code))
-            elif gtask['type'] in ('string', 'name'):
-                self.widget = para_string(gtask).get()
-            elif gtask['type'] in ('integer'):
-                self.widget = para_integer(gtask).get()
-            else:
-                self.widget=QtGui.QLabel('TODO')
-            """
             boxComplete.addWidget(self.widget)
 
         except:
@@ -116,8 +105,8 @@ class ParaFloat(Widget):
         self.code = code
 
     @staticmethod
-    def __contains__(type):
-        return type in ['float']
+    def canHandle(type):
+        return type == 'float'
 
     def get(self):
         """
@@ -145,8 +134,8 @@ class ParaString(Widget):
         self.code = code
 
     @staticmethod
-    def __contains__(type):
-        return type in ['string']
+    def canHandle(type):
+        return type == 'string'
 
     def get(self):
         """
@@ -174,8 +163,8 @@ class ParaInteger(Widget):
         self.code = code
 
     @staticmethod
-    def __contains__(type):
-        return type in ['integer']
+    def canHandle(type):
+        return type == 'integer'
 
     def get(self):
         """

@@ -212,21 +212,22 @@ class NewGUI(QtGui.QMainWindow):
 
     def get_command_one_string(self):
         """
-        transfroms wisgets at the bottom of GUI into one executable string
+        transforms widgets at the bottom of GUI into one executable string
         :return: command in one string
         """
 
         text = ''
         for i in range(self.codeLayout.count()-1):
             label = self.codeLayout.itemAt(i).widget().text() # getting again qlabel and the text
-            text = text + ' ' + label
+            if label:
+                text = text + ' ' + label
 
         return text
 
     def run_command(self):
 
-        #print self.get_command_one_string()       # uncomment this to see the command
-        start_command(self.get_command_one_string())
+        print self.get_command_one_string()       # uncomment this to see the command
+        #start_command(self.get_command_one_string())
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 
