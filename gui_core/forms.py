@@ -9,10 +9,8 @@ from PyQt4 import QtGui, uic
 from PyQt4.QtXml import *
 from PyQt4.QtCore import *
 from grass.script import task as gtask
-#import grass.script
-from grass.script import start_command
+from grass.script import run_command
 from grass.pygrass.modules.interface import module
-#from python\grass\pygrass\modules\interface
 
 
 class NewGUI(QtGui.QMainWindow):
@@ -22,16 +20,8 @@ class NewGUI(QtGui.QMainWindow):
 
         self.setWindowTitle(self.get_title(function))
         self.create_gui(function)
-        #print self.size()
-
-
-
 
         self.show()
-        #print self.size()
-        #print self.size()
-        #self.resize(self.minimumSizeHint())
-        #print self.size()
         sys.exit(app.exec_())
 
     def create_gui(self,function):
@@ -210,24 +200,26 @@ class NewGUI(QtGui.QMainWindow):
         line.setFrameShadow(QtGui.QFrame.Sunken)
         return line
 
-    def get_command_one_string(self):
+    def get_command_parameters(self):
         """
-        transforms widgets at the bottom of GUI into one executable string
+        transforms widgets at the bottom of GUI into one dictionary
         :return: command in one string
         """
 
-        text = ''
-        for i in range(self.codeLayout.count()-1):
+        command={}
+        for i in range(1,self.codeLayout.count()-1):
             label = self.codeLayout.itemAt(i).widget().text() # getting again qlabel and the text
             if label:
-                text = text + ' ' + label
-
-        return text
+                label = label.split('=')
+                command.update({str(label[0]):str(label[1])})
+        return command
 
     def run_command(self):
+        """
+        runs the command
+        """
 
-        print self.get_command_one_string()       # uncomment this to see the command
-        #start_command(self.get_command_one_string())
+        run_command(str(self.codeLayout.itemAt(0).widget().text()), **self.get_command_parameters())
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 
