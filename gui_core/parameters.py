@@ -131,6 +131,32 @@ class Values(QtGui.QComboBox):
 
         return self
 
+class OtherStrings(QtGui.QComboBox):
+    def __init__(self, gtask, code):
+        """
+        :param gtask: task for this widget
+        :param code: runable and copyable code string
+        """
+
+        super(OtherStrings,self).__init__()
+        self.setEditable(True)
+        palette=QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
+        self.setPalette(palette)
+        self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
+
+    @staticmethod
+    def canHandle(type,gtask):
+        return gtask['type']=='string' and not gtask['values']
+
+    def get(self):
+        """
+
+        :return:QComboBox
+        """
+
+        return self
+
 class ParaFloat():
     def __init__(self,gtask,code):
         """
@@ -164,37 +190,6 @@ class ParaFloat():
             else:
                 box=QtGui.QLabel('TODO')
 
-        return box
-
-class ParaString():
-    def __init__(self,gtask,code):
-        """
-        :param gtask: task for this widget
-        :param code: runable and copyable code string
-        """
-
-        self.gtask = gtask
-        self.code = code
-
-    @staticmethod
-    def canHandle(type,gtask):
-        return type == 'string'
-
-    def get(self):
-        """
-
-        :return:QLineEdit
-        """
-
-        #if self.gtask['key_desc']==['sql_query']:
-        #    box=QtGui.QLineEdit()
-        #    box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
-        #else:
-        box=QtGui.QComboBox()
-        box.setEditable(True)
-        #if self.gtask['values']:
-        #    box.addItems(self.gtask['values'])
-        box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
         return box
 
 class ParaInteger():
@@ -233,7 +228,7 @@ class CodeChanger():
                 self.line_edit(gtask,code,widget)
             elif type(widget)==QtGui.QDoubleSpinBox:
                 self.double_spin_box(gtask,code,widget)
-            elif type(widget) in [QtGui.QComboBox,Values]:
+            elif type(widget) in [Values,OtherStrings]:
                 self.combo_box(gtask,code,widget)
 
         def line_edit(self,gtask,code,widget):
