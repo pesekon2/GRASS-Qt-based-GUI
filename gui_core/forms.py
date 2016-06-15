@@ -224,4 +224,4 @@ class NewGUI(QtGui.QMainWindow):
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 
 mainform = NewGUI(arg[1])
-# hide 'help' checkbox, some cheats with 'string' widgets, help and output tabs, run_command change comment (after reading strings)
+# hide 'help' checkbox, some cheats with 'string' widgets, help and output tabs, run_command flags

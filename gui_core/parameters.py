@@ -106,14 +106,14 @@ class ParaFloat():
 
         if self.gtask['multiple']==True:
             box=QtGui.QLineEdit()
-            box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+            box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
         else:
             if self.gtask['prompt']==None:
                 box=QtGui.QDoubleSpinBox()
-                box.valueChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+                box.valueChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
             elif self.gtask['prompt']=='coords':
                 box=QtGui.QLineEdit()
-                box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+                box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
             else:
                 box=QtGui.QLabel('TODO')
 
@@ -141,13 +141,13 @@ class ParaString():
 
         if self.gtask['key_desc']==['sql_query']:
             box=QtGui.QLineEdit()
-            box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+            box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
         else:
             box=QtGui.QComboBox()
             box.setEditable(True)
             if self.gtask['values']:
                 box.addItems(self.gtask['values'])
-            box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+            box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
         return box
 
 class ParaInteger():
@@ -172,7 +172,7 @@ class ParaInteger():
         box=QtGui.QSpinBox()
         return box
 
-class ChangeCode():
+class CodeChanger():
         """
         creates slots and signals into the code on below
         :param gtask:task for this widget
