@@ -2,6 +2,7 @@
 
 from PyQt4 import QtGui
 from types import TypeType
+from PyQt4.QtCore import QObject
 #from PyQt4.QtCore import pyqtSlot
 
 class Factory():
@@ -18,7 +19,7 @@ class Factory():
         """
         classes = [j for (i,j) in globals().iteritems() if hasattr(j, 'canHandle')] #isinstance(j, TypeType)
         for oneClass in classes:
-            if oneClass.canHandle(gtask['type']):
+            if oneClass.canHandle(gtask['type'],gtask):
                 return oneClass(gtask,code).get()
         else:return QtGui.QLabel('TODO')
 
@@ -84,6 +85,28 @@ class Parameters():
 
         return layoutComplete
 
+class SqlQuery(QtGui.QLineEdit):
+    def __init__(self, gtask, code):#,parent=QtGui.QLineEdit):
+        """
+        :param gtask: task for this widget
+        :param code: runable and copyable code string
+        """
+
+        super(SqlQuery,self).__init__()
+        self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
+
+    @staticmethod
+    def canHandle(type,gtask):
+        return gtask['key_desc']==['sql_query']
+
+    def get(self):
+        """
+
+        :return:QLineEdit
+        """
+
+        return self
+
 class ParaFloat():
     def __init__(self,gtask,code):
         """
@@ -95,8 +118,8 @@ class ParaFloat():
         self.code = code
 
     @staticmethod
-    def canHandle(type):
-        return type == 'float'
+    def canHandle(type,gtask):
+        return type=='float'
 
     def get(self):
         """
@@ -130,7 +153,7 @@ class ParaString():
         self.code = code
 
     @staticmethod
-    def canHandle(type):
+    def canHandle(type,gtask):
         return type == 'string'
 
     def get(self):
@@ -139,15 +162,15 @@ class ParaString():
         :return:QLineEdit
         """
 
-        if self.gtask['key_desc']==['sql_query']:
-            box=QtGui.QLineEdit()
-            box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
-        else:
-            box=QtGui.QComboBox()
-            box.setEditable(True)
-            if self.gtask['values']:
-                box.addItems(self.gtask['values'])
-            box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
+        #if self.gtask['key_desc']==['sql_query']:
+        #    box=QtGui.QLineEdit()
+        #    box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
+        #else:
+        box=QtGui.QComboBox()
+        box.setEditable(True)
+        if self.gtask['values']:
+            box.addItems(self.gtask['values'])
+        box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
         return box
 
 class ParaInteger():
@@ -160,7 +183,7 @@ class ParaInteger():
         self.code = code
 
     @staticmethod
-    def canHandle(type):
+    def canHandle(type,gtask):
         return type == 'integer'
 
     def get(self):
@@ -182,7 +205,7 @@ class CodeChanger():
 
         def __init__(self,gtask,code,widget):
 
-            if type(widget)==QtGui.QLineEdit:
+            if type(widget) in [QtGui.QLineEdit,SqlQuery]:
                 self.line_edit(gtask,code,widget)
             elif type(widget)==QtGui.QDoubleSpinBox:
                 self.double_spin_box(gtask,code,widget)
@@ -210,3 +233,10 @@ class CodeChanger():
                 #QtGui.QComboBox.currentText()
             else:
                 code.setText('')
+
+
+
+# poslat gtask
+
+
+
