@@ -107,6 +107,30 @@ class SqlQuery(QtGui.QLineEdit):
 
         return self
 
+class Values(QtGui.QComboBox):
+    def __init__(self, gtask, code):
+        """
+        :param gtask: task for this widget
+        :param code: runable and copyable code string
+        """
+
+        super(Values,self).__init__()
+        self.setEditable(True)
+        self.addItems(gtask['values'])
+        self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
+
+    @staticmethod
+    def canHandle(type,gtask):
+        return gtask['type']=='string' and gtask['values']
+
+    def get(self):
+        """
+
+        :return:QComboBox with values
+        """
+
+        return self
+
 class ParaFloat():
     def __init__(self,gtask,code):
         """
@@ -168,8 +192,8 @@ class ParaString():
         #else:
         box=QtGui.QComboBox()
         box.setEditable(True)
-        if self.gtask['values']:
-            box.addItems(self.gtask['values'])
+        #if self.gtask['values']:
+        #    box.addItems(self.gtask['values'])
         box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
         return box
 
@@ -209,7 +233,7 @@ class CodeChanger():
                 self.line_edit(gtask,code,widget)
             elif type(widget)==QtGui.QDoubleSpinBox:
                 self.double_spin_box(gtask,code,widget)
-            elif type(widget)==QtGui.QComboBox:
+            elif type(widget) in [QtGui.QComboBox,Values]:
                 self.combo_box(gtask,code,widget)
 
         def line_edit(self,gtask,code,widget):
@@ -227,10 +251,9 @@ class CodeChanger():
                 code.setText('')
 
         def combo_box(self,gtask,code,widget):
-            if widget.currentText(): # should it write also 0,00?
+            if widget.currentText():
                 newCode=gtask['name']+'='+widget.currentText()
                 code.setText(newCode)
-                #QtGui.QComboBox.currentText()
             else:
                 code.setText('')
 
