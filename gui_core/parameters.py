@@ -118,8 +118,14 @@ class ParaFloat(Widget):
             box=QtGui.QLineEdit()
             box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
         else:
-            box=QtGui.QDoubleSpinBox()
-            box.valueChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+            if self.gtask['prompt']==None:
+                box=QtGui.QDoubleSpinBox()
+                box.valueChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+            elif self.gtask['prompt']=='coords':
+                box=QtGui.QLineEdit()
+                box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
+            else:
+                box=QtGui.QLabel('TODO')
 
         return box
 
