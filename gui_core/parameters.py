@@ -155,8 +155,10 @@ class ParaString(Widget):
         else:
             box=QtGui.QComboBox()
             box.setEditable(True)
+            if self.gtask['values']:
+                box.addItems(self.gtask['values'])
             box.textChanged.connect(lambda: ChangeCode(self.gtask,self.code,box))
-
+            print self.gtask
         return box
 
 class ParaInteger(Widget):
