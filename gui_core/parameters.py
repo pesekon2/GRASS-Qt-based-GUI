@@ -19,7 +19,7 @@ class Factory():
         """
         classes = [j for (i,j) in globals().iteritems() if hasattr(j, 'canHandle')] #isinstance(j, TypeType)
         for oneClass in classes:
-            if oneClass.canHandle(gtask['type'],gtask):
+            if oneClass.canHandle(gtask['type'],gtask['multiple'],gtask['key_desc'],gtask['prompt'],gtask['values']):
                 return oneClass(gtask,code).get()
         else:return QtGui.QLabel('TODO')
 
@@ -99,37 +99,13 @@ class SqlQuery(QtGui.QLineEdit):
         self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
-    def canHandle(type,gtask):
-        return gtask['key_desc']==['sql_query']
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return key_desc==['sql_query']
 
     def get(self):
         """
 
         :return:QLineEdit
-        """
-
-        return self
-
-class Values(QtGui.QComboBox):
-    def __init__(self, gtask, code):
-        """
-        :param gtask: task for this widget
-        :param code: runable and copyable code string
-        """
-
-        super(Values,self).__init__()
-        self.setEditable(True)
-        self.addItems(gtask['values'])
-        self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
-
-    @staticmethod
-    def canHandle(type,gtask):
-        return gtask['type']=='string' and gtask['values']
-
-    def get(self):
-        """
-
-        :return:QComboBox with values
         """
 
         return self
@@ -143,14 +119,17 @@ class OtherStrings(QtGui.QComboBox):
 
         super(OtherStrings,self).__init__()
         self.setEditable(True)
-        palette=QtGui.QPalette()
-        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
-        self.setPalette(palette)
+        if gtask['values']:
+            self.addItems(gtask['values'])
+        else:
+            palette=QtGui.QPalette()
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
+            self.setPalette(palette)
         self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
-    def canHandle(type,gtask):
-        return gtask['type']=='string' and not gtask['values']
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return (type=='string') and key_desc!=['sql_query']
 
     def get(self):
         """
@@ -177,8 +156,8 @@ class MultipleFloat(QtGui.QLineEdit):
         self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
-    def canHandle(type,gtask):
-        return gtask['type']=='float' and (gtask['multiple']==True or gtask['prompt']=='coords')
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return type=='float' and (multiple==True or prompt=='coords')
 
     def get(self):
         """
@@ -199,8 +178,8 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         self.valueChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
-    def canHandle(type,gtask):
-        return gtask['type']=='float' and gtask['multiple']==False
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return type=='float' and multiple==False
 
     def get(self):
         """
@@ -209,6 +188,7 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         """
 
         return self
+
 
 
 
@@ -225,8 +205,8 @@ class MultipleInteger(QtGui.QLineEdit):
         self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
-    def canHandle(type,gtask):
-        return gtask['type']=='integer' and gtask['multiple']==True
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return type=='integer' and multiple==True
 
     def get(self):
         """
@@ -247,8 +227,8 @@ class SimpleInteger(QtGui.QSpinBox):
         self.valueChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
-    def canHandle(type,gtask):
-        return gtask['type']=='integer' and gtask['multiple']==False
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return type=='integer' and multiple==False
 
     def get(self):
         """
@@ -257,6 +237,7 @@ class SimpleInteger(QtGui.QSpinBox):
         """
 
         return self
+
 
 
 
@@ -274,7 +255,7 @@ class CodeChanger():
                 self.line_edit(gtask,code,widget)
             elif type(widget) in [QtGui.QDoubleSpinBox,SimpleFloat]:
                 self.double_spin_box(gtask,code,widget)
-            elif type(widget) in [Values,OtherStrings]:
+            elif type(widget) in [OtherStrings]:
                 self.combo_box(gtask,code,widget)
             elif type(widget) in [SimpleInteger]:
                 self.spin_box(gtask,code,widget)
