@@ -211,27 +211,54 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         return self
 
 
-class ParaInteger():
-    def __init__(self,gtask,code):
+
+
+# now integer types
+class MultipleInteger(QtGui.QLineEdit):
+    def __init__(self, gtask, code):
         """
         :param gtask: task for this widget
         :param code: runable and copyable code string
         """
 
-        self.code = code
+        super(MultipleInteger,self).__init__()
+        self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
     def canHandle(type,gtask):
-        return type == 'integer'
+        return gtask['type']=='integer' and gtask['multiple']==True
 
     def get(self):
         """
 
-        :return:QLineEdit
+        :return:QComboBox
         """
 
-        box=QtGui.QSpinBox()
-        return box
+        return self
+
+class SimpleInteger(QtGui.QSpinBox):
+    def __init__(self, gtask, code):
+        """
+        :param gtask: task for this widget
+        :param code: runable and copyable code string
+        """
+
+        super(SimpleInteger,self).__init__()
+        self.valueChanged.connect(lambda: CodeChanger(gtask,code,self))
+
+    @staticmethod
+    def canHandle(type,gtask):
+        return gtask['type']=='integer' and gtask['multiple']==False
+
+    def get(self):
+        """
+
+        :return:QComboBox
+        """
+
+        return self
+
+
 
 class CodeChanger():
         """
@@ -243,12 +270,14 @@ class CodeChanger():
 
         def __init__(self,gtask,code,widget):
 
-            if type(widget) in [QtGui.QLineEdit,SqlQuery,MultipleFloat]:
+            if type(widget) in [QtGui.QLineEdit,SqlQuery,MultipleFloat,MultipleInteger]:
                 self.line_edit(gtask,code,widget)
             elif type(widget) in [QtGui.QDoubleSpinBox,SimpleFloat]:
                 self.double_spin_box(gtask,code,widget)
             elif type(widget) in [Values,OtherStrings]:
                 self.combo_box(gtask,code,widget)
+            elif type(widget) in [SimpleInteger]:
+                self.spin_box(gtask,code,widget)
 
         def line_edit(self,gtask,code,widget):
             if widget.text():
@@ -258,6 +287,13 @@ class CodeChanger():
                 code.setText('')
 
         def double_spin_box(self,gtask,code,widget):
+            if widget.text(): # should it write also 0,00?
+                newCode=gtask['name']+'='+widget.text()
+                code.setText(newCode)
+            else:
+                code.setText('')
+
+        def spin_box(self,gtask,code,widget):
             if widget.text(): # should it write also 0,00?
                 newCode=gtask['name']+'='+widget.text()
                 code.setText(newCode)
