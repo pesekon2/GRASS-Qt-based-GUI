@@ -24,7 +24,7 @@ class Factory():
         else:return QtGui.QLabel('TODO')
 
 
-# firstly, I define the widgets
+# firstly, I define the widgets layout, then the widgets
 class Parameters():
     def __init__(self, gtask, code):#, parent=None):
         #super(Parameters).__init__(parent)
@@ -85,6 +85,9 @@ class Parameters():
 
         return layoutComplete
 
+
+
+# now string types
 class SqlQuery(QtGui.QLineEdit):
     def __init__(self, gtask, code):#,parent=QtGui.QLineEdit):
         """
@@ -157,40 +160,56 @@ class OtherStrings(QtGui.QComboBox):
 
         return self
 
-class ParaFloat():
-    def __init__(self,gtask,code):
+
+
+
+
+# now float types
+class MultipleFloat(QtGui.QLineEdit):
+    def __init__(self, gtask, code):
+        """
+        for float: multiple, coords
+        :param gtask: task for this widget
+        :param code: runable and copyable code string
+        """
+
+        super(MultipleFloat,self).__init__()
+        self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
+
+    @staticmethod
+    def canHandle(type,gtask):
+        return gtask['type']=='float' and (gtask['multiple']==True or gtask['prompt']=='coords')
+
+    def get(self):
+        """
+
+        :return:QComboBox
+        """
+
+        return self
+
+class SimpleFloat(QtGui.QDoubleSpinBox):
+    def __init__(self, gtask, code):
         """
         :param gtask: task for this widget
         :param code: runable and copyable code string
         """
 
-        self.gtask = gtask
-        self.code = code
+        super(SimpleFloat,self).__init__()
+        self.valueChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
     def canHandle(type,gtask):
-        return type=='float'
+        return gtask['type']=='float' and gtask['multiple']==False
 
     def get(self):
         """
 
-        :return:QLineEdit
+        :return:QComboBox
         """
 
-        if self.gtask['multiple']==True:
-            box=QtGui.QLineEdit()
-            box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
-        else:
-            if self.gtask['prompt']==None:
-                box=QtGui.QDoubleSpinBox()
-                box.valueChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
-            elif self.gtask['prompt']=='coords':
-                box=QtGui.QLineEdit()
-                box.textChanged.connect(lambda: CodeChanger(self.gtask,self.code,box))
-            else:
-                box=QtGui.QLabel('TODO')
+        return self
 
-        return box
 
 class ParaInteger():
     def __init__(self,gtask,code):
@@ -224,9 +243,9 @@ class CodeChanger():
 
         def __init__(self,gtask,code,widget):
 
-            if type(widget) in [QtGui.QLineEdit,SqlQuery]:
+            if type(widget) in [QtGui.QLineEdit,SqlQuery,MultipleFloat]:
                 self.line_edit(gtask,code,widget)
-            elif type(widget)==QtGui.QDoubleSpinBox:
+            elif type(widget) in [QtGui.QDoubleSpinBox,SimpleFloat]:
                 self.double_spin_box(gtask,code,widget)
             elif type(widget) in [Values,OtherStrings]:
                 self.combo_box(gtask,code,widget)
