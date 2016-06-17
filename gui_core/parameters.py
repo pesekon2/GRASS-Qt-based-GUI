@@ -20,7 +20,7 @@ class Factory():
         classes = [j for (i,j) in globals().iteritems() if hasattr(j, 'canHandle')] #isinstance(j, TypeType)
         for oneClass in classes:
             if oneClass.canHandle(gtask['type'],gtask['multiple'],gtask['key_desc'],gtask['prompt'],gtask['values']):
-                return oneClass(gtask,code).get()
+                return oneClass(gtask,code)
         else:return QtGui.QLabel('TODO')
 
 
@@ -102,14 +102,6 @@ class SqlQuery(QtGui.QLineEdit):
     def canHandle(type,multiple,key_desc,prompt,values):
         return key_desc==['sql_query']
 
-    def get(self):
-        """
-
-        :return:QLineEdit
-        """
-
-        return self
-
 class OtherStrings(QtGui.QComboBox):
     def __init__(self, gtask, code):
         """
@@ -129,15 +121,7 @@ class OtherStrings(QtGui.QComboBox):
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
-        return (type=='string') and key_desc!=['sql_query']
-
-    def get(self):
-        """
-
-        :return:QComboBox
-        """
-
-        return self
+        return (type=='string') and key_desc!=['sql_query'] # I think it should be done better in some next version
 
 
 
@@ -159,14 +143,6 @@ class MultipleFloat(QtGui.QLineEdit):
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='float' and (multiple==True or prompt=='coords')
 
-    def get(self):
-        """
-
-        :return:QComboBox
-        """
-
-        return self
-
 class SimpleFloat(QtGui.QDoubleSpinBox):
     def __init__(self, gtask, code):
         """
@@ -180,14 +156,6 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='float' and multiple==False
-
-    def get(self):
-        """
-
-        :return:QComboBox
-        """
-
-        return self
 
 
 
@@ -208,14 +176,6 @@ class MultipleInteger(QtGui.QLineEdit):
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='integer' and multiple==True
 
-    def get(self):
-        """
-
-        :return:QComboBox
-        """
-
-        return self
-
 class SimpleInteger(QtGui.QSpinBox):
     def __init__(self, gtask, code):
         """
@@ -229,14 +189,6 @@ class SimpleInteger(QtGui.QSpinBox):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='integer' and multiple==False
-
-    def get(self):
-        """
-
-        :return:QComboBox
-        """
-
-        return self
 
 
 
@@ -290,7 +242,7 @@ class CodeChanger():
 
 
 
-# poslat gtask
+# to next versions: recreate CodeChanger (maybe dynamical reading by inheriting)
 
 
 
