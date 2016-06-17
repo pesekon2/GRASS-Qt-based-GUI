@@ -125,7 +125,7 @@ class Values(QtGui.QComboBox):
     def canHandle(type,multiple,key_desc,prompt,values):
         return (type=='string') and values and key_desc!=['sql_query'] # I think it should be done better in some next version
 
-class TreeComboBox(QtGui.QComboBox,QObject):
+class TreeComboBox(QtGui.QComboBox):
     def __init__(self, gtask, code, parent=None):#, *args):
         super(TreeComboBox,self).__init__(parent)#*args)
 
@@ -144,6 +144,7 @@ class TreeComboBox(QtGui.QComboBox,QObject):
         self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
 
         #self.view().viewport().installEventFilter(self)
+        #self.setAttribute(Qt.WA_DeleteOnClose)
 
     def showPopup(self):
         self.setRootModelIndex(QModelIndex())
@@ -170,8 +171,12 @@ class TreeComboBox(QtGui.QComboBox,QObject):
     def getModel(self):
         mapsets = script.mapsets(search_path = True)
         model = QtGui.QStandardItemModel()
+        #model.__init__(parent=None)
+        model.setParent(self)
         for mapset in mapsets:
             model.appendRow(QtGui.QStandardItem('Mapset: '+mapset))
+
+
         #parent_item = QStandardItem('Item 1')
         #parent_item.appendRow([QStandardItem('Child'), QStandardItem('Yesterday')])
         #model.appendRow([parent_item, QStandardItem('Today')])
@@ -181,7 +186,7 @@ class TreeComboBox(QtGui.QComboBox,QObject):
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
-        return type=='string' and key_desc!=['sql_query'] and prompt=='raster'
+        return type=='string' and key_desc!=['sql_query'] and (prompt=='raster' or prompt=='vector')
 
 
 
