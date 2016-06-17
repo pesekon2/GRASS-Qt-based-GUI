@@ -21,7 +21,13 @@ class Factory():
         for oneClass in classes:
             if oneClass.canHandle(gtask['type'],gtask['multiple'],gtask['key_desc'],gtask['prompt'],gtask['values']):
                 return oneClass(gtask,code)
-        else:return QtGui.QLabel('TODO')
+        else:
+            widget=QtGui.QLineEdit('TODO - Nobody expects the Spanish Inquisition')
+            palette=QtGui.QPalette()
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
+            widget.setPalette(palette)
+            widget.textChanged.connect(lambda: CodeChanger(gtask,code,widget))
+            return widget
 
 
 # firstly, I define the widgets layout, then the widgets
@@ -102,26 +108,21 @@ class SqlQuery(QtGui.QLineEdit):
     def canHandle(type,multiple,key_desc,prompt,values):
         return key_desc==['sql_query']
 
-class OtherStrings(QtGui.QComboBox):
+class Values(QtGui.QComboBox):
     def __init__(self, gtask, code):
         """
         :param gtask: task for this widget
         :param code: runable and copyable code string
         """
 
-        super(OtherStrings,self).__init__()
+        super(Values,self).__init__()
         self.setEditable(True)
-        if gtask['values']:
-            self.addItems(gtask['values'])
-        else:
-            palette=QtGui.QPalette()
-            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
-            self.setPalette(palette)
+        self.addItems(gtask['values'])
         self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
-        return (type=='string') and key_desc!=['sql_query'] # I think it should be done better in some next version
+        return (type=='string') and values and key_desc!=['sql_query'] # I think it should be done better in some next version
 
 
 
@@ -205,9 +206,9 @@ class CodeChanger():
 
             if type(widget) in [QtGui.QLineEdit,SqlQuery,MultipleFloat,MultipleInteger]:
                 self.line_edit(gtask,code,widget)
-            elif type(widget) in [QtGui.QDoubleSpinBox,SimpleFloat]:
+            elif type(widget) in [SimpleFloat]:
                 self.double_spin_box(gtask,code,widget)
-            elif type(widget) in [OtherStrings]:
+            elif type(widget) in [Values]:
                 self.combo_box(gtask,code,widget)
             elif type(widget) in [SimpleInteger]:
                 self.spin_box(gtask,code,widget)
