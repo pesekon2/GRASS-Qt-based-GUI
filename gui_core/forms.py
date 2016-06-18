@@ -30,14 +30,14 @@ class NewGUI(QtGui.QMainWindow):
         :return: completed gui
         """
 
-        tabs,code=self.get_tabs(function)
+        tabs,codeString=self.get_tabs(function)
 
         box=QtGui.QVBoxLayout()
         box.addWidget(self.get_description(function))
         box.addWidget(tabs)
-        box.addWidget(self.basic_buttons())
+        box.addWidget(self.basic_buttons(function))
         box.addWidget(self.horizontal_line())
-        box.addWidget(code)
+        box.addWidget(codeString)
         box.setSpacing(10)
         completeGui=QtGui.QWidget()
         completeGui.setLayout(box)
@@ -66,17 +66,13 @@ class NewGUI(QtGui.QMainWindow):
         pageSection={}
         boxsSection={}
 
-        self.codeLayout=QtGui.QHBoxLayout()
-        name = QtGui.QLabel(function)
-        self.codeLayout.addWidget(name)
-        codeWidget=QtGui.QWidget()
+        self.codeDict={}
+        codeString=QtGui.QLabel(function)
 
         # tabs for params
         for task in gtask.command_info(function)['params']:
 
-            code=QtGui.QLabel()
-            self.codeLayout.addWidget(code)
-            widget=newWidget(task,code).newWidget()
+            widget=newWidget(task,function,self.codeDict,codeString).newWidget()
             if task['required']==True:
                 try:
                     pages.update({'Required':pageRequired})
@@ -106,9 +102,7 @@ class NewGUI(QtGui.QMainWindow):
         #tabs for flags
         for task in gtask.command_info(function)['flags']:
 
-            code=QtGui.QLabel()
-            self.codeLayout.addWidget(code)
-            widget=newWidget(task,code).newWidget()
+            widget=newWidget(task,function,self.codeDict,codeString).newWidget()
             if task['guisection']:
                 try:
                     pages[task['guisection']]
@@ -139,9 +133,7 @@ class NewGUI(QtGui.QMainWindow):
             #pages[i].resize(pages[i].minimumSizeHint())
             tabs.addTab(pages[i],i)
 
-        codeWidget.setLayout(self.codeLayout)
-
-        return tabs,codeWidget
+        return tabs,codeString
 
     def get_title(self,function):
         """
@@ -165,7 +157,7 @@ class NewGUI(QtGui.QMainWindow):
         description.setWordWrap(True)
         return description
 
-    def basic_buttons(self):
+    def basic_buttons(self,function):
         """
         :parameter: no
         :return: 4 basic buttons at the bottom of GUI
@@ -185,7 +177,7 @@ class NewGUI(QtGui.QMainWindow):
         buttons=QtGui.QWidget()
         buttons.setLayout(layout)
 
-        runButton.clicked.connect(lambda: self.run_command())
+        runButton.clicked.connect(lambda: self.run_command(function))
 
         return buttons
 
@@ -200,26 +192,12 @@ class NewGUI(QtGui.QMainWindow):
         line.setFrameShadow(QtGui.QFrame.Sunken)
         return line
 
-    def get_command_parameters(self):
-        """
-        transforms widgets at the bottom of GUI into one dictionary
-        :return: command in one string
-        """
-
-        command={}
-        for i in range(1,self.codeLayout.count()-1):
-            label = self.codeLayout.itemAt(i).widget().text() # getting again qlabel and the text
-            if label:
-                label = label.split('=')
-                command.update({str(label[0]):str(label[1])})
-        return command
-
-    def run_command(self):
+    def run_command(self,function):
         """
         runs the command
         """
 
-        run_command(str(self.codeLayout.itemAt(0).widget().text()), **self.get_command_parameters())
+        run_command(function, **self.codeDict)
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 

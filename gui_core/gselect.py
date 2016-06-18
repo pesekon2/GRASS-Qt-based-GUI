@@ -8,24 +8,24 @@ import parameters
 
 
 class TreeComboBox(QtGui.QComboBox):
-    def __init__(self, gtask, code, parent=None):#, *args):
+    def __init__(self, gtask, function, codeDict, codeString, parent=None):#, *args):
         super(TreeComboBox,self).__init__(parent)#*args)
 
         self.__skip_next_hide = False
 
         tree_view = QtGui.QTreeView(self)
-        #tree_view.setFrameShape(QFrame.NoFrame)
-        #tree_view.setEditTriggers(tree_view.NoEditTriggers)
-        #tree_view.setAlternatingRowColors(True)
+        tree_view.setFrameShape(QtGui.QFrame.NoFrame)
+        tree_view.setEditTriggers(tree_view.NoEditTriggers)
+        tree_view.setAlternatingRowColors(True)
         tree_view.setSelectionBehavior(tree_view.SelectRows)
         #tree_view.setWordWrap(True)
         tree_view.setAllColumnsShowFocus(True)
         self.setView(tree_view)
         self.setEditable(True)
         self.setModel(self.getModel())
-        self.textChanged.connect(lambda: parameters.CodeChanger(gtask,code,self))
+        self.textChanged.connect(lambda: parameters.CodeChanger(gtask, function, codeDict, codeString,self))
 
-        #self.view().viewport().installEventFilter(self)
+        self.view().viewport().installEventFilter(self)
 
     def showPopup(self):
         self.setRootModelIndex(QModelIndex())
@@ -33,7 +33,7 @@ class TreeComboBox(QtGui.QComboBox):
 
     def hidePopup(self):
         self.setRootModelIndex(self.view().currentIndex().parent())
-        self.setCurrentIndex(self.view().currentIndex().row())
+        #self.setCurrentIndex(self.view().currentIndex().row())
         if self.__skip_next_hide:
             self.__skip_next_hide = False
         else:
@@ -56,10 +56,10 @@ class TreeComboBox(QtGui.QComboBox):
         model.setParent(self)
         for mapset in mapsets:
             model.appendRow(QtGui.QStandardItem('Mapset: '+mapset))
-        #parent_item = QStandardItem('Item 1')
-        #parent_item.appendRow([QStandardItem('Child'), QStandardItem('Yesterday')])
-        #model.appendRow([parent_item, QStandardItem('Today')])
-        #model.appendRow([QStandardItem('Item 2'), QStandardItem('Today')])
+        #parent_item = QtGui.QStandardItem('Item 1')
+        #parent_item.appendRow([QtGui.QStandardItem('Child'), QtGui.QStandardItem('Yesterday')])
+        #model.appendRow([parent_item, QtGui.QStandardItem('Today')])
+        #model.appendRow([QtGui.QStandardItem('Item 2'), QtGui.QStandardItem('Today')])
 
         return model
 
