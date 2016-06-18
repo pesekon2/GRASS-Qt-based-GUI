@@ -67,7 +67,10 @@ class NewGUI(QtGui.QMainWindow):
         boxsSection={}
 
         self.codeDict={}
-        codeString=QtGui.QLabel(function)
+        codeString=QtGui.QTextEdit(function)
+        codeString.setLineWrapMode(QtGui.QTextEdit.NoWrap)
+        codeString.setReadOnly(True)
+        codeString.setFixedHeight(QtGui.QLineEdit().sizeHint().height()*2)
 
         # tabs for params
         for task in gtask.command_info(function)['params']:
