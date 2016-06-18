@@ -5,6 +5,7 @@ from types import TypeType
 from PyQt4.QtCore import QModelIndex,QEvent,Qt,QObject
 #from PyQt4.QtCore import pyqtSlot
 from grass import script
+import gselect
 
 class Factory():
     """
@@ -123,67 +124,9 @@ class Values(QtGui.QComboBox):
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
-        return (type=='string') and values and key_desc!=['sql_query'] # I think it should be done better in some next version
+        return (type=='string') and values # I think it should be done better in some next version
 
-class TreeComboBox(QtGui.QComboBox):
-    def __init__(self, gtask, code, parent=None):#, *args):
-        super(TreeComboBox,self).__init__(parent)#*args)
-
-        self.__skip_next_hide = False
-
-        tree_view = QtGui.QTreeView(self)
-        #tree_view.setFrameShape(QFrame.NoFrame)
-        #tree_view.setEditTriggers(tree_view.NoEditTriggers)
-        #tree_view.setAlternatingRowColors(True)
-        tree_view.setSelectionBehavior(tree_view.SelectRows)
-        #tree_view.setWordWrap(True)
-        tree_view.setAllColumnsShowFocus(True)
-        self.setView(tree_view)
-        self.setEditable(True)
-        self.setModel(self.getModel())
-        self.textChanged.connect(lambda: CodeChanger(gtask,code,self))
-
-        #self.view().viewport().installEventFilter(self)
-        #self.setAttribute(Qt.WA_DeleteOnClose)
-
-    def showPopup(self):
-        self.setRootModelIndex(QModelIndex())
-        super(TreeComboBox,self).showPopup()
-
-    def hidePopup(self):
-        self.setRootModelIndex(self.view().currentIndex().parent())
-        self.setCurrentIndex(self.view().currentIndex().row())
-        if self.__skip_next_hide:
-            self.__skip_next_hide = False
-        else:
-            super(TreeComboBox,self).hidePopup()
-
-    def selectIndex(self, index):
-        self.setRootModelIndex(index.parent())
-        self.setCurrentIndex(index.row())
-
-    def eventFilter(self, object, event):
-        if event.type() == QEvent.MouseButtonPress and object is self.view().viewport():
-            index = self.view().indexAt(event.pos())
-            self.__skip_next_hide = not self.view().visualRect(index).contains(event.pos())
-        return False
-
-    def getModel(self):
-        mapsets = script.mapsets(search_path = True)
-        model = QtGui.QStandardItemModel()
-        #model.__init__(parent=None)
-        model.setParent(self)
-        for mapset in mapsets:
-            model.appendRow(QtGui.QStandardItem('Mapset: '+mapset))
-
-
-        #parent_item = QStandardItem('Item 1')
-        #parent_item.appendRow([QStandardItem('Child'), QStandardItem('Yesterday')])
-        #model.appendRow([parent_item, QStandardItem('Today')])
-        #model.appendRow([QStandardItem('Item 2'), QStandardItem('Today')])
-
-        return model
-
+class TreeComboBox(gselect.TreeComboBox):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='string' and key_desc!=['sql_query'] and (prompt=='raster' or prompt=='vector')
