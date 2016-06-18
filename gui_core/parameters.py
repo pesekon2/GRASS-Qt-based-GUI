@@ -25,7 +25,7 @@ class Factory():
                 return oneClass(gtask,function,codeDict,codeString)
         else:
             widget=QtGui.QLineEdit()
-            widget.setText('TODO - Nobody expects the Spanish Inquisition')
+            widget.setText('TODO - Nobody expects the Spanish Inquisition') # just highlighting what should be done better
             palette=QtGui.QPalette()
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
             widget.setPalette(palette)

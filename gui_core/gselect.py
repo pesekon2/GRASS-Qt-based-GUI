@@ -22,7 +22,7 @@ class TreeComboBox(QtGui.QComboBox):
         tree_view.setAllColumnsShowFocus(True)
         self.setView(tree_view)
         self.setEditable(True)
-        self.setModel(self.getModel())
+        self.setModel(self.getModel(gtask))
         self.textChanged.connect(lambda: parameters.CodeChanger(gtask, function, codeDict, codeString,self))
 
         self.view().viewport().installEventFilter(self)
@@ -49,17 +49,18 @@ class TreeComboBox(QtGui.QComboBox):
             self.__skip_next_hide = not self.view().visualRect(index).contains(event.pos())
         return False
 
-    def getModel(self):
+    def getModel(self,gtask):
         mapsets = script.mapsets(search_path = True)
         model = QtGui.QStandardItemModel()
         #model.__init__(parent=None)
         model.setParent(self)
         for mapset in mapsets:
-            model.appendRow(QtGui.QStandardItem('Mapset: '+mapset))
-        #parent_item = QtGui.QStandardItem('Item 1')
-        #parent_item.appendRow([QtGui.QStandardItem('Child'), QtGui.QStandardItem('Yesterday')])
-        #model.appendRow([parent_item, QtGui.QStandardItem('Today')])
-        #model.appendRow([QtGui.QStandardItem('Item 2'), QtGui.QStandardItem('Today')])
+            parent_item = QtGui.QStandardItem('Mapset: '+mapset)
+            list = script.core.list_pairs(gtask['prompt'])
+            for map in list:
+                if mapset in map:
+                    parent_item.appendRow(QtGui.QStandardItem('%s@%s' %(map[0],map[1])))
+            model.appendRow(parent_item)
 
         return model
 
