@@ -8,7 +8,7 @@ import parameters
 
 
 class TreeComboBox(QtGui.QComboBox):
-    def __init__(self, gtask, function, codeDict, codeString, parent=None):#, *args):
+    def __init__(self, gtask, function, codeDict, flagList, codeString, parent=None):#, *args):
         super(TreeComboBox,self).__init__(parent)#*args)
 
         self.__skip_next_hide = False
@@ -23,7 +23,7 @@ class TreeComboBox(QtGui.QComboBox):
         self.setView(tree_view)
         self.setEditable(True)
         self.setModel(self.getModel(gtask))
-        self.textChanged.connect(lambda: parameters.CodeChanger(gtask, function, codeDict, codeString,self))
+        self.textChanged.connect(lambda: parameters.CodeChanger(gtask, function, codeDict, flagList, codeString,self))
 
         self.view().viewport().installEventFilter(self)
 
@@ -65,7 +65,7 @@ class TreeComboBox(QtGui.QComboBox):
         return model
 
 class BrowseFile(QtGui.QWidget):
-    def __init__(self, gtask, function, codeDict, codeString, parent=None):
+    def __init__(self, gtask, function, codeDict, flagList, codeString, parent=None):
         super(BrowseFile,self).__init__(parent)
 
         layout=QtGui.QHBoxLayout()
@@ -77,7 +77,7 @@ class BrowseFile(QtGui.QWidget):
         layout.addWidget(button)
         self.setLayout(layout)
 
-        self.line.textChanged.connect(lambda: parameters.CodeChanger(gtask, function, codeDict, codeString,self.line))
+        self.line.textChanged.connect(lambda: parameters.CodeChanger(gtask, function, codeDict, flagList, codeString, self.line))
 
     def selectFile(self):
 

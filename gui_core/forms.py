@@ -67,7 +67,7 @@ class NewGUI(QtGui.QMainWindow):
         boxsSection={}
 
         self.codeDict={}
-        self.flags=[]
+        self.flagList=[]
         codeString=QtGui.QTextEdit(function)
         codeString.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         codeString.setReadOnly(True)
@@ -76,7 +76,7 @@ class NewGUI(QtGui.QMainWindow):
         # tabs for params
         for task in gtask.command_info(function)['params']:
 
-            widget=newWidget(task,function,self.codeDict,codeString).newWidget()
+            widget=newWidget(task,function,self.codeDict,self.flagList,codeString).newWidget()
             if task['required']==True:
                 try:
                     pages.update({'Required':pageRequired})
@@ -106,7 +106,7 @@ class NewGUI(QtGui.QMainWindow):
         #tabs for flags
         for task in gtask.command_info(function)['flags']:
 
-            widget=newWidget(task,function,self.codeDict,codeString).newWidget()
+            widget=newWidget(task,function,self.codeDict,self.flagList,codeString).newWidget()
             if task['guisection']:
                 try:
                     pages[task['guisection']]
@@ -201,7 +201,19 @@ class NewGUI(QtGui.QMainWindow):
         runs the command
         """
 
-        run_command(function, **self.codeDict)
+        flags=''
+        longFlags={}
+        for i in self.flagList:
+            if len(i)==1: flags = flags + i
+            else: longFlags.update({i:True})
+
+        if longFlags:
+            paramsLongFlags={}
+            paramsLongFlags.update(longFlags)
+            paramsLongFlags.update(self.codeDict)
+            run_command(function, *flags, **paramsLongFlags)
+        else:
+            run_command(function, *flags, **self.codeDict)
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 
