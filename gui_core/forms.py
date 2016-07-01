@@ -124,7 +124,8 @@ class NewGUI(QtGui.QMainWindow):
                     pages.update({'Optional':pageOptional})
                     boxs.update({'Optional':boxOptional})
                 except:pass
-                boxs['Optional'].addWidget(widget)
+                if not task['name'] == 'help': # we don't have to see help everywhere
+                    boxs['Optional'].addWidget(widget)
 
         #boxOptional.setContentsMargins(0,0,0,0)
         for i in pages:
