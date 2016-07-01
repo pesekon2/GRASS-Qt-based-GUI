@@ -67,6 +67,7 @@ class NewGUI(QtGui.QMainWindow):
         boxsSection={}
 
         self.codeDict={}
+        self.flags=[]
         codeString=QtGui.QTextEdit(function)
         codeString.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         codeString.setReadOnly(True)
@@ -207,4 +208,3 @@ opt,arg=getopt.getopt(sys.argv,'second parameter')
 mainform = NewGUI(arg[1])
 
 # hide 'help' checkbox, some cheats with 'string' widgets, help and output tabs, run_command flags
-# just one string and not widgets (after one changed new reading of everything)

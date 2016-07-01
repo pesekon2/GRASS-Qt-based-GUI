@@ -133,6 +133,11 @@ class TreeComboBox(gselect.TreeComboBox):
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='string' and key_desc!=['sql_query'] and (prompt=='raster' or prompt=='vector')
 
+class BrowseFile(gselect.BrowseFile):
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return type=='string' and key_desc!=['sql_query'] and (prompt=='file')
+
 
 
 
@@ -279,7 +284,7 @@ class CodeChanger():
 
 
 
-# to next versions: recreate CodeChanger (maybe dynamical reading by inheriting), when there is no text in widget
+# to next versions: recreate CodeChanger (maybe dynamical reading by inheriting)
 
 
 

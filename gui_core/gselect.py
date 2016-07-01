@@ -1,6 +1,6 @@
 
 
-from PyQt4.QtCore import QObject,QModelIndex,QEvent
+from PyQt4.QtCore import QModelIndex,QEvent
 from PyQt4 import QtGui
 from grass import script
 import parameters
@@ -63,4 +63,37 @@ class TreeComboBox(QtGui.QComboBox):
             model.appendRow(parent_item)
 
         return model
+
+class BrowseFile(QtGui.QWidget):
+    def __init__(self, gtask, function, codeDict, codeString, parent=None):
+        super(BrowseFile,self).__init__(parent)
+
+        layout=QtGui.QHBoxLayout()
+        self.line=QtGui.QLineEdit()
+        button = QtGui.QPushButton('Browse')
+        button.clicked.connect(self.selectFile)
+
+        layout.addWidget(self.line)
+        layout.addWidget(button)
+        self.setLayout(layout)
+
+        self.line.textChanged.connect(lambda: parameters.CodeChanger(gtask, function, codeDict, codeString,self.line))
+
+    def selectFile(self):
+
+        filePath = QtGui.QFileDialog.getOpenFileName(self, 'Select file')
+        if filePath:
+            self.line.setText(filePath)
+        else:
+            return
+
+
+
+
+
+
+
+
+
+
 
