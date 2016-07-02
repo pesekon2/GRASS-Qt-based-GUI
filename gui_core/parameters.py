@@ -3,7 +3,6 @@
 from PyQt4 import QtGui
 from types import TypeType
 from PyQt4.QtCore import QModelIndex,QEvent,Qt,QObject
-#from PyQt4.QtCore import pyqtSlot
 from grass import script
 import gselect
 
@@ -42,7 +41,7 @@ class Parameters():
 
         try:
             self.widget = Factory().newWidget(gtask, function, codeDict, flagList, codeString)
-            if gtask['label'] and gtask['description']:
+            if gtask['label'] and gtask['description']: # title is in label so we can use description as help/tooltip
                 self.widget.setToolTip(gtask['description'])
 
             boxComplete.addWidget(self.widget)
@@ -115,6 +114,20 @@ class SqlQuery(QtGui.QLineEdit):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return key_desc==['sql_query']
+
+class Cats(QtGui.QLineEdit): # maybe in future implement special widget when called from gui
+    def __init__(self, gtask, function, codeDict, flagList, codeString):#,parent=QtGui.QLineEdit):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
+
+        super(Cats,self).__init__()
+        self.textChanged.connect(lambda: CodeChanger(gtask,function,codeDict,flagList,codeString,self))
+
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return prompt=='cats'
 
 class Values(QtGui.QComboBox):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
@@ -225,7 +238,7 @@ class CodeChanger():
 
         def __init__(self,gtask, function, codeDict, flagList, codeString,widget):
 
-            if type(widget) in [QtGui.QLineEdit,SqlQuery,MultipleFloat,MultipleInteger]:
+            if type(widget) in [QtGui.QLineEdit,SqlQuery,MultipleFloat,MultipleInteger,Cats]:
                 self.line_edit(gtask, function, codeDict, flagList, codeString,widget)
             elif type(widget) in [SimpleFloat]:
                 self.double_spin_box(gtask, function, codeDict, flagList, codeString,widget)
