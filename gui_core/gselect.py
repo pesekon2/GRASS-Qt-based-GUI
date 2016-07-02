@@ -88,6 +88,28 @@ class BrowseFile(QtGui.QWidget):
         else:
             return
 
+class MultipleValues(QtGui.QGroupBox):
+    def __init__(self, gtask, function, codeDict, flagList, codeString):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
+
+        super(MultipleValues,self).__init__()
+        layout=QtGui.QHBoxLayout()
+        for item in gtask['values']:
+            box=QtGui.QCheckBox(item)
+            layout.addWidget(box)
+            box.stateChanged.connect(lambda: parameters.CodeChanger(gtask,function,codeDict,flagList,codeString,layout))
+        layout.addStretch()
+        self.setLayout(layout)
+        #self.setEditable(True)
+        #self.addItems(gtask['values'])
+        #self.textChanged.connect(lambda: CodeChanger(gtask,function,codeDict,flagList,codeString,self))
+
+
+
+
 
 
 

@@ -29,6 +29,7 @@ class Factory():
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
             widget.setPalette(palette)
             widget.textChanged.connect(lambda: CodeChanger(gtask,function,codeDict,flagList,codeString,widget))
+            print gtask
             return widget
 
 
@@ -129,21 +130,21 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
     def canHandle(type,multiple,key_desc,prompt,values):
         return prompt=='cats'
 
-class Values(QtGui.QComboBox):
+class SimpleValues(QtGui.QComboBox):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
         """
 
-        super(Values,self).__init__()
+        super(SimpleValues,self).__init__()
         self.setEditable(True)
         self.addItems(gtask['values'])
         self.textChanged.connect(lambda: CodeChanger(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
-        return (type=='string') and values # I think it should be done better in some next version
+        return (type=='string') and multiple==False and values
 
 class TreeComboBox(gselect.TreeComboBox):
     @staticmethod
@@ -154,6 +155,11 @@ class BrowseFile(gselect.BrowseFile):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='string' and key_desc!=['sql_query'] and (prompt=='file')
+
+class MultipleValues(gselect.MultipleValues):
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return (type=='string') and multiple==True and values
 
 
 
@@ -242,10 +248,12 @@ class CodeChanger():
                 self.line_edit(gtask, function, codeDict, flagList, codeString,widget)
             elif type(widget) in [SimpleFloat]:
                 self.double_spin_box(gtask, function, codeDict, flagList, codeString,widget)
-            elif type(widget) in [Values,TreeComboBox]:
+            elif type(widget) in [SimpleValues,TreeComboBox]:
                 self.combo_box(gtask, function, codeDict, flagList, codeString,widget)
             elif type(widget) in [SimpleInteger]:
                 self.spin_box(gtask, function, codeDict, flagList, codeString,widget)
+            elif type(widget) == QtGui.QHBoxLayout:
+                self.layout_checkboxes(gtask, function, codeDict, flagList, codeString,widget)
             elif type(widget) == QtGui.QCheckBox:
                 self.check_box(gtask, function, codeDict, flagList, codeString,widget)
 
@@ -379,6 +387,30 @@ class CodeChanger():
                     if len(i)==1: flags = flags + ' -' + i
                     else: flags = flags + ' --' + i
                 codeString.setText(function+flags+' '
+                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+
+        def layout_checkboxes(self,gtask, function, codeDict, flagList, codeString,widget):
+            value=''
+            flags=''
+            items = (widget.itemAt(i).widget() for i in range(widget.count()-1))
+
+            for item in items:
+                if item.isChecked():
+                    if value:
+                        value=','.join((value,str(item.text())))
+                    else:
+                        value=str(item.text())
+
+            if value:
+                try: codeDict[gtask['name']]=value
+                except:codeDict.update({gtask['name']:value})
+            else:
+                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                except:pass
+            for i in flagList:
+                if len(i)==1: flags = flags + ' -' + i
+                else: flags = flags + ' --' + i
+            codeString.setText(function+flags+' '
                                    +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
 
 
