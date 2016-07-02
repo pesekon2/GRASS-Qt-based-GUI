@@ -56,6 +56,7 @@ class TreeComboBox(QtGui.QComboBox):
         model.setParent(self)
         for mapset in mapsets:
             parent_item = QtGui.QStandardItem('Mapset: '+mapset)
+            parent_item.setSelectable(False)
             list = script.core.list_pairs(gtask['prompt'])
             for map in list:
                 if mapset in map:
