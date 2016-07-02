@@ -42,6 +42,9 @@ class Parameters():
 
         try:
             self.widget = Factory().newWidget(gtask, function, codeDict, flagList, codeString)
+            if gtask['label'] and gtask['description']:
+                self.widget.setToolTip(gtask['description'])
+
             boxComplete.addWidget(self.widget)
 
         except:
@@ -368,6 +371,7 @@ class CodeChanger():
 
 
 # to next versions: recreate CodeChanger (maybe dynamical reading by inheriting)
+# multiple combobox (see v.buffer)
 
 
 
