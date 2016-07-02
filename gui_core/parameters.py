@@ -252,7 +252,8 @@ class CodeChanger():
                     codeString.setText(function+flags+' '
                                        +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
-                if codeDict[gtask['name']]:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                except:pass
                 for i in flagList:
                     if len(i)==1: flags = flags + ' -' + i
                     else: flags = flags + ' --' + i
@@ -278,7 +279,8 @@ class CodeChanger():
                     codeString.setText(function+flags+' '
                                        +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
-                if codeDict[gtask['name']]:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                except:pass
                 for i in flagList:
                     if len(i)==1: flags = flags + ' -' + i
                     else: flags = flags + ' --' + i
@@ -304,7 +306,8 @@ class CodeChanger():
                     codeString.setText(function+flags+' '
                                        +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
-                if codeDict[gtask['name']]:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                except:pass
                 for i in flagList:
                     if len(i)==1: flags = flags + ' -' + i
                     else: flags = flags + ' --' + i
@@ -330,7 +333,8 @@ class CodeChanger():
                     codeString.setText(function+flags+' '
                                        +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
-                if codeDict[gtask['name']]:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+                except:pass
                 for i in flagList:
                     if len(i)==1: flags = flags + ' -' + i
                     else: flags = flags + ' --' + i
