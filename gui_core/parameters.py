@@ -262,19 +262,14 @@ class CodeChanger():
             if widget.text():
                 try:
                     codeDict[gtask['name']]=str(widget.text())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
                 except: # it means that there is no item for this widget in dict
                     codeDict.update({gtask['name']:''})
                     codeDict[gtask['name']]=str(widget.text())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+                for i in flagList:
+                    if len(i)==1: flags = flags + ' -' + i
+                    else: flags = flags + ' --' + i
+                codeString.setText(function+flags+' '
+                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
                 try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
                 except:pass
@@ -289,105 +284,64 @@ class CodeChanger():
             if widget.text():
                 try:
                     codeDict[gtask['name']]=str(widget.text())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
                 except: # it means that there is no item for this widget in dict
                     codeDict.update({gtask['name']:''})
                     codeDict[gtask['name']]=str(widget.text())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
                 try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
                 except:pass
-                for i in flagList:
-                    if len(i)==1: flags = flags + ' -' + i
-                    else: flags = flags + ' --' + i
-                codeString.setText(function+flags+' '
-                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+            for i in flagList:
+                if len(i)==1: flags = flags + ' -' + i
+                else: flags = flags + ' --' + i
+            codeString.setText(function+flags+' '
+                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
 
         def spin_box(self,gtask, function, codeDict, flagList, codeString,widget):
             flags=''
             if widget.text():
                 try:
                     codeDict[gtask['name']]=str(widget.text())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
                 except: # it means that there is no item for this widget in dict
                     codeDict.update({gtask['name']:''})
                     codeDict[gtask['name']]=str(widget.text())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
                 try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
                 except:pass
-                for i in flagList:
-                    if len(i)==1: flags = flags + ' -' + i
-                    else: flags = flags + ' --' + i
-                codeString.setText(function+flags+' '
-                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+            for i in flagList:
+                if len(i)==1: flags = flags + ' -' + i
+                else: flags = flags + ' --' + i
+            codeString.setText(function+flags+' '
+                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
 
         def combo_box(self,gtask, function, codeDict, flagList, codeString,widget):
             flags=''
             if widget.currentText():
                 try:
                     codeDict[gtask['name']]=str(widget.currentText())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
                 except: # it means that there is no item for this widget in dict
                     codeDict.update({gtask['name']:''})
                     codeDict[gtask['name']]=str(widget.currentText())
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
                 try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
                 except:pass
-                for i in flagList:
-                    if len(i)==1: flags = flags + ' -' + i
-                    else: flags = flags + ' --' + i
-                codeString.setText(function+flags+' '
-                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+            for i in flagList:
+                if len(i)==1: flags = flags + ' -' + i
+                else: flags = flags + ' --' + i
+            codeString.setText(function+flags+' '
+                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
 
         def check_box(self,gtask, function, codeDict, flagList, codeString,widget):
             flags=''
             if widget.isChecked():
-                if gtask['name'] in flagList:
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
-                else: # it means that there is no item for this widget in dict
+                if gtask['name'] not in flagList: # it means that there is no item for this widget in dict
                     flagList.append(gtask['name'])
-                    for i in flagList:
-                        if len(i)==1: flags = flags + ' -' + i
-                        else: flags = flags + ' --' + i
-                    codeString.setText(function+flags+' '
-                                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
             else:
                 flagList.remove(gtask['name']) # because we don't want to have not necessary items in dict
-                for i in flagList:
-                    if len(i)==1: flags = flags + ' -' + i
-                    else: flags = flags + ' --' + i
-                codeString.setText(function+flags+' '
-                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+            for i in flagList:
+                if len(i)==1: flags = flags + ' -' + i
+                else: flags = flags + ' --' + i
+            codeString.setText(function+flags+' '
+                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
 
         def layout_checkboxes(self,gtask, function, codeDict, flagList, codeString,widget):
             value=''
