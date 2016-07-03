@@ -66,7 +66,6 @@ class TreeComboBox(QtGui.QComboBox):
         return model
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-        flags=''
         if widget.currentText():
             try:
                 codeDict[gtask['name']]=str(widget.currentText())
@@ -76,11 +75,7 @@ class TreeComboBox(QtGui.QComboBox):
         else:
             try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
             except:pass
-        for i in flagList:
-            if len(i)==1: flags = flags + ' -' + i
-            else: flags = flags + ' --' + i
-        codeString.setText(function+flags+' '
-                           +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        parameters.CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 class BrowseFile(QtGui.QWidget):
     def __init__(self, gtask, function, codeDict, flagList, codeString, parent=None):
@@ -106,21 +101,17 @@ class BrowseFile(QtGui.QWidget):
             return
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.text():
-                try:
-                    codeDict[gtask['name']]=str(widget.text())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.text())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.text():
+            try:
+                codeDict[gtask['name']]=str(widget.text())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.text())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        parameters.CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
+
 
 class MultipleValues(QtGui.QGroupBox):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
@@ -142,28 +133,23 @@ class MultipleValues(QtGui.QGroupBox):
         #self.textChanged.connect(lambda: CodeChanger(gtask,function,codeDict,flagList,codeString,self))
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            value=''
-            flags=''
-            items = (widget.itemAt(i).widget() for i in range(widget.count()-1))
+        value=''
+        items = (widget.itemAt(i).widget() for i in range(widget.count()-1))
 
-            for item in items:
-                if item.isChecked():
-                    if value:
-                        value=','.join((value,str(item.text())))
-                    else:
-                        value=str(item.text())
+        for item in items:
+            if item.isChecked():
+                if value:
+                    value=','.join((value,str(item.text())))
+                else:
+                    value=str(item.text())
 
-            if value:
-                try: codeDict[gtask['name']]=value
-                except:codeDict.update({gtask['name']:value})
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if value:
+            try: codeDict[gtask['name']]=value
+            except:codeDict.update({gtask['name']:value})
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        parameters.CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 
 

@@ -31,7 +31,6 @@ class Factory():
             widget.textChanged.connect(lambda: getCommandLine(gtask,function,codeDict,flagList,codeString,widget))
 
             def getCommandLine(gtask, function, codeDict, flagList, codeString,widget):
-                flags=''
                 if widget.text():
                     try:
                         codeDict[gtask['name']]=str(widget.text())
@@ -41,11 +40,7 @@ class Factory():
                 else:
                     try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
                     except:pass
-                for i in flagList:
-                    if len(i)==1: flags = flags + ' -' + i
-                    else: flags = flags + ' --' + i
-                codeString.setText(function+flags+' '
-                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+                CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
             return widget
 
@@ -72,17 +67,12 @@ class Parameters():
             boxComplete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
 
             def getCommandLine(gtask, function, codeDict, flagList, codeString,widget):
-                flags=''
                 if widget.isChecked():
                     if gtask['name'] not in flagList: # it means that there is no item for this widget in dict
                         flagList.append(gtask['name'])
                 else:
                     flagList.remove(gtask['name']) # because we don't want to have not necessary items in dict
-                for i in flagList:
-                    if len(i)==1: flags = flags + ' -' + i
-                    else: flags = flags + ' --' + i
-                codeString.setText(function+flags+' '
-                                   +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+                CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
         self.completeWidget=QtGui.QWidget()
         self.completeWidget.setLayout(boxComplete)
@@ -147,21 +137,16 @@ class SqlQuery(QtGui.QLineEdit):
         return key_desc==['sql_query']
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.text():
-                try:
-                    codeDict[gtask['name']]=str(widget.text())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.text())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.text():
+            try:
+                codeDict[gtask['name']]=str(widget.text())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.text())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 class Cats(QtGui.QLineEdit): # maybe in future implement special widget when called from gui
     def __init__(self, gtask, function, codeDict, flagList, codeString):#,parent=QtGui.QLineEdit):
@@ -178,21 +163,16 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
         return prompt=='cats'
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.text():
-                try:
-                    codeDict[gtask['name']]=str(widget.text())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.text())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.text():
+            try:
+                codeDict[gtask['name']]=str(widget.text())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.text())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 class SimpleValues(QtGui.QComboBox):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
@@ -211,21 +191,16 @@ class SimpleValues(QtGui.QComboBox):
         return (type=='string') and multiple==False and values
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.currentText():
-                try:
-                    codeDict[gtask['name']]=str(widget.currentText())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.currentText())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.currentText():
+            try:
+                codeDict[gtask['name']]=str(widget.currentText())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.currentText())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 class TreeComboBox(gselect.TreeComboBox):
     @staticmethod
@@ -263,21 +238,16 @@ class MultipleFloat(QtGui.QLineEdit):
         return type=='float' and (multiple==True or prompt=='coords')
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.text():
-                try:
-                    codeDict[gtask['name']]=str(widget.text())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.text())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.text():
+            try:
+                codeDict[gtask['name']]=str(widget.text())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.text())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 class SimpleFloat(QtGui.QDoubleSpinBox):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
@@ -294,21 +264,16 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         return type=='float' and multiple==False
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.text():
-                try:
-                    codeDict[gtask['name']]=str(widget.text())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.text())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.text():
+            try:
+                codeDict[gtask['name']]=str(widget.text())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.text())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 
 
@@ -330,21 +295,16 @@ class MultipleInteger(QtGui.QLineEdit):
         return type=='integer' and multiple==True
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.text():
-                try:
-                    codeDict[gtask['name']]=str(widget.text())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.text())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.text():
+            try:
+                codeDict[gtask['name']]=str(widget.text())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.text())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 class SimpleInteger(QtGui.QSpinBox):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
@@ -361,21 +321,16 @@ class SimpleInteger(QtGui.QSpinBox):
         return type=='integer' and multiple==False
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-            flags=''
-            if widget.text():
-                try:
-                    codeDict[gtask['name']]=str(widget.text())
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:''})
-                    codeDict[gtask['name']]=str(widget.text())
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+        if widget.text():
+            try:
+                codeDict[gtask['name']]=str(widget.text())
+            except: # it means that there is no item for this widget in dict
+                codeDict.update({gtask['name']:''})
+                codeDict[gtask['name']]=str(widget.text())
+        else:
+            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+            except:pass
+        CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
 
 
 
@@ -393,18 +348,12 @@ class CodeChanger():
 
         def __init__(self,gtask, function, codeDict, flagList, codeString,widget):
 
-            if type(widget) in [QtGui.QLineEdit,SqlQuery,MultipleFloat,MultipleInteger,Cats]:
-                self.line_edit(gtask, function, codeDict, flagList, codeString,widget)
-            elif type(widget) in [SimpleFloat]:
-                self.double_spin_box(gtask, function, codeDict, flagList, codeString,widget)
-            elif type(widget) in [SimpleValues,TreeComboBox]:
-                self.combo_box(gtask, function, codeDict, flagList, codeString,widget)
-            elif type(widget) in [SimpleInteger]:
-                self.spin_box(gtask, function, codeDict, flagList, codeString,widget)
-            elif type(widget) == QtGui.QHBoxLayout:
-                self.layout_checkboxes(gtask, function, codeDict, flagList, codeString,widget)
-            elif type(widget) == QtGui.QCheckBox:
-                self.check_box(gtask, function, codeDict, flagList, codeString,widget)
+            flags=''
+            for i in flagList:
+                if len(i)==1: flags = flags + ' -' + i
+                else: flags = flags + ' --' + i
+            codeString.setText(function+flags+' '
+                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
 
 
 
