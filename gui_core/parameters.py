@@ -263,37 +263,26 @@ class SimpleInteger(QtGui.QSpinBox):
 
 
 
-#class codeDictChanger():
-        """
-        creates slots and signals into the qlabel on below
-        :param gtask:task for this widget
-        :param function: name of module
-        :param codeDict: Dictionary with values for every widget
-        :param codeString: the string that user see on below
-        :param widget:widget which should be edited
 
-        """
-
- #       def __init__(self,gtask, function, codeDict, flagList, codeString,text):
 def codeDictChanger(gtask, function, codeDict, flagList, codeString,text):
-            if text:
-                try:
-                    codeDict[gtask['name']]=text
-                except: # it means that there is no item for this widget in dict
-                    codeDict.update({gtask['name']:text})
-            else:
-                try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-                except:pass
-            codeStringChanger(function,codeDict,flagList,codeString)
+    if text:
+        try:
+            codeDict[gtask['name']]=text
+        except: # it means that there is no item for this widget in dict
+            codeDict.update({gtask['name']:text})
+    else:
+        try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
+        except:pass
+    codeStringChanger(function,codeDict,flagList,codeString)
 
 
 def codeStringChanger(function,codeDict,flagList,codeString):
-            flags=''
-            for i in flagList:
-                if len(i)==1: flags = flags + ' -' + i
-                else: flags = flags + ' --' + i
-            codeString.setText(function+flags+' '
-                               +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
+    flags=''
+    for i in flagList:
+        if len(i)==1: flags = flags + ' -' + i
+        else: flags = flags + ' --' + i
+    codeString.setText(function+flags+' '
+                       +' '.join('{}={}'.format(key, val) for key, val in codeDict.items()))
 
 
 
