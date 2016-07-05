@@ -23,7 +23,7 @@ class TreeComboBox(QtGui.QComboBox):
         self.setView(tree_view)
         self.setEditable(True)
         self.setModel(self.getModel(gtask))
-        self.textChanged.connect(lambda: self.getCommandLine(gtask, function, codeDict, flagList, codeString,self))
+        self.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList, codeString,self))
 
         self.view().viewport().installEventFilter(self)
 
@@ -65,7 +65,7 @@ class TreeComboBox(QtGui.QComboBox):
 
         return model
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.currentText()))
 
 class BrowseFile(QtGui.QWidget):
@@ -81,7 +81,7 @@ class BrowseFile(QtGui.QWidget):
         layout.addWidget(button)
         self.setLayout(layout)
 
-        self.line.textChanged.connect(lambda: self.getCommandLine(gtask, function, codeDict, flagList, codeString, self.line))
+        self.line.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList, codeString, self.line))
 
     def selectFile(self):
 
@@ -91,7 +91,7 @@ class BrowseFile(QtGui.QWidget):
         else:
             return
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 
@@ -107,14 +107,14 @@ class MultipleValues(QtGui.QGroupBox):
         for item in gtask['values']:
             box=QtGui.QCheckBox(item)
             layout.addWidget(box)
-            box.stateChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,layout))
+            box.stateChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,layout))
         layout.addStretch()
         self.setLayout(layout)
         #self.setEditable(True)
         #self.addItems(gtask['values'])
         #self.textChanged.connect(lambda: codeDictChanger(gtask,function,codeDict,flagList,codeString,self))
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         value=''
         items = (widget.itemAt(i).widget() for i in range(widget.count()-1))
 

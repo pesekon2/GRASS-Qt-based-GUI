@@ -28,9 +28,9 @@ class Factory():
             palette=QtGui.QPalette()
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
             widget.setPalette(palette)
-            widget.textChanged.connect(lambda: getCommandLine(gtask,function,codeDict,flagList,codeString,widget))
+            widget.textChanged.connect(lambda: setCommand(gtask,function,codeDict,flagList,codeString,widget))
 
-            def getCommandLine(gtask, function, codeDict, flagList, codeString,widget):
+            def setCommand(gtask, function, codeDict, flagList, codeString,widget):
                 codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
             return widget
@@ -52,12 +52,12 @@ class Parameters():
 
         except:
             self.widget=QtGui.QCheckBox(gtask['description'])
-            self.widget.stateChanged.connect(lambda: getCommandLine(gtask,function,codeDict,flagList,codeString,self.widget))
+            self.widget.stateChanged.connect(lambda: setCommand(gtask,function,codeDict,flagList,codeString,self.widget))
             boxComplete.addWidget(self.widget)
             boxComplete.addStretch()
             boxComplete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
 
-            def getCommandLine(gtask, function, codeDict, flagList, codeString,widget):
+            def setCommand(gtask, function, codeDict, flagList, codeString,widget):
                 if widget.isChecked():
                     if gtask['name'] not in flagList: # it means that there is no item for this widget in dict
                         flagList.append(gtask['name'])
@@ -121,13 +121,13 @@ class SqlQuery(QtGui.QLineEdit):
         """
 
         super(SqlQuery,self).__init__()
-        self.textChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,self))
+        self.textChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return key_desc==['sql_query']
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 class Cats(QtGui.QLineEdit): # maybe in future implement special widget when called from gui
@@ -138,13 +138,13 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
         """
 
         super(Cats,self).__init__()
-        self.textChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,self))
+        self.textChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return prompt=='cats'
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 class SimpleValues(QtGui.QComboBox):
@@ -157,13 +157,13 @@ class SimpleValues(QtGui.QComboBox):
         super(SimpleValues,self).__init__()
         self.setEditable(True)
         self.addItems(gtask['values'])
-        self.textChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,self))
+        self.textChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return (type=='string') and multiple==False and values
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.currentText()))
 
 class TreeComboBox(gselect.TreeComboBox):
@@ -195,13 +195,13 @@ class MultipleFloat(QtGui.QLineEdit):
         """
 
         super(MultipleFloat,self).__init__()
-        self.textChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,self))
+        self.textChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='float' and (multiple==True or prompt=='coords')
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 class SimpleFloat(QtGui.QDoubleSpinBox):
@@ -212,13 +212,13 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         """
 
         super(SimpleFloat,self).__init__()
-        self.valueChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,self))
+        self.valueChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='float' and multiple==False
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 
@@ -234,13 +234,13 @@ class MultipleInteger(QtGui.QLineEdit):
         """
 
         super(MultipleInteger,self).__init__()
-        self.textChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,self))
+        self.textChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='integer' and multiple==True
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 class SimpleInteger(QtGui.QSpinBox):
@@ -251,13 +251,13 @@ class SimpleInteger(QtGui.QSpinBox):
         """
 
         super(SimpleInteger,self).__init__()
-        self.valueChanged.connect(lambda: self.getCommandLine(gtask,function,codeDict,flagList,codeString,self))
+        self.valueChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
 
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='integer' and multiple==False
 
-    def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 
