@@ -66,16 +66,7 @@ class TreeComboBox(QtGui.QComboBox):
         return model
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-        if widget.currentText():
-            try:
-                codeDict[gtask['name']]=str(widget.currentText())
-            except: # it means that there is no item for this widget in dict
-                codeDict.update({gtask['name']:''})
-                codeDict[gtask['name']]=str(widget.currentText())
-        else:
-            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-            except:pass
-        parameters.CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
+        parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.currentText()))
 
 class BrowseFile(QtGui.QWidget):
     def __init__(self, gtask, function, codeDict, flagList, codeString, parent=None):
@@ -101,16 +92,7 @@ class BrowseFile(QtGui.QWidget):
             return
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
-        if widget.text():
-            try:
-                codeDict[gtask['name']]=str(widget.text())
-            except: # it means that there is no item for this widget in dict
-                codeDict.update({gtask['name']:''})
-                codeDict[gtask['name']]=str(widget.text())
-        else:
-            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-            except:pass
-        parameters.CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
+        parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 
 class MultipleValues(QtGui.QGroupBox):
@@ -130,7 +112,7 @@ class MultipleValues(QtGui.QGroupBox):
         self.setLayout(layout)
         #self.setEditable(True)
         #self.addItems(gtask['values'])
-        #self.textChanged.connect(lambda: CodeChanger(gtask,function,codeDict,flagList,codeString,self))
+        #self.textChanged.connect(lambda: codeDictChanger(gtask,function,codeDict,flagList,codeString,self))
 
     def getCommandLine(self,gtask, function, codeDict, flagList, codeString,widget):
         value=''
@@ -143,13 +125,7 @@ class MultipleValues(QtGui.QGroupBox):
                 else:
                     value=str(item.text())
 
-        if value:
-            try: codeDict[gtask['name']]=value
-            except:codeDict.update({gtask['name']:value})
-        else:
-            try:del codeDict[gtask['name']] # because we don't want to have not necessary items in dict
-            except:pass
-        parameters.CodeChanger(gtask,function,codeDict,flagList,codeString,widget)
+        parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(value))
 
 
 
