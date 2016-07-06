@@ -90,9 +90,6 @@ class BrowseFile(QtGui.QWidget):
         else:
             return
 
-    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
-        parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
-
 
 class MultipleValues(QtGui.QGroupBox):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
