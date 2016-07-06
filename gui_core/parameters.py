@@ -18,7 +18,7 @@ class Factory():
         :param : runable and copyable  string
         :return:
         """
-        classes = [j for (i,j) in globals().iteritems() if hasattr(j, 'canHandle')] #isinstance(j, TypeType)
+        classes = [j for (i,j) in globals().iteritems() if hasattr(j, 'canHandle')]
         for oneClass in classes:
             if oneClass.canHandle(gtask['type'],gtask['multiple'],gtask['key_desc'],gtask['prompt'],gtask['values']):
                 return oneClass(gtask,function,codeDict,flagList,codeString)
@@ -28,32 +28,23 @@ class Factory():
 
 # firstly, I define the widgets layout, then the widgets
 class Parameters():
-    def __init__(self, gtask, function, codeDict, flagList, codeString):#, parent=None):
+    def __init__(self, gtask, function, codeDict, flagList, codeString):
         #super(Parameters).__init__(parent)
 
         boxComplete=self.getLayout(gtask)
 
         try:
-            self.widget = Factory().newWidget(gtask, function, codeDict, flagList, codeString)
+            widget = Factory().newWidget(gtask, function, codeDict, flagList, codeString)
             if gtask['label'] and gtask['description']: # title is in label so we can use description as help/tooltip
-                self.widget.setToolTip(gtask['description'])
+                widget.setToolTip(gtask['description'])
 
-            boxComplete.addWidget(self.widget)
+            boxComplete.addWidget(widget)
 
         except:
-            self.widget=QtGui.QCheckBox(gtask['description'])
-            self.widget.stateChanged.connect(lambda: setCommand(gtask,function,codeDict,flagList,codeString,self.widget))
-            boxComplete.addWidget(self.widget)
+            widget=Flags(gtask,function,codeDict,flagList,codeString)
+            boxComplete.addWidget(widget)
             boxComplete.addStretch()
             boxComplete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
-
-            def setCommand(gtask, function, codeDict, flagList, codeString,widget):
-                if widget.isChecked():
-                    if gtask['name'] not in flagList: # it means that there is no item for this widget in dict
-                        flagList.append(gtask['name'])
-                else:
-                    flagList.remove(gtask['name']) # because we don't want to have not necessary items in dict
-                codeStringChanger(function,codeDict,flagList,codeString)
 
         self.completeWidget=QtGui.QWidget()
         self.completeWidget.setLayout(boxComplete)
@@ -84,7 +75,6 @@ class Parameters():
             boxHeader.addWidget(description)
             boxHeader.addStretch()
             boxHeader.addWidget(QtGui.QLabel('(%s=%s)' % (gtask['name'],gtask['type'])))
-            #description.setWordWrap(True) #--------------------- DO I REALLY WANT TO WRAP IT? ---------------
 
             header=QtGui.QWidget()
             header.setLayout(boxHeader)
@@ -252,7 +242,23 @@ class SimpleInteger(QtGui.QSpinBox):
 
 
 
+class Flags(QtGui.QCheckBox):
+    def __init__(self, gtask, function, codeDict, flagList, codeString):
 
+        super(Flags,self).__init__(gtask['description'])
+        self.stateChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
+
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
+        if widget.isChecked():
+            if gtask['name'] not in flagList: # it means that there is no item for this widget in dict
+                flagList.append(gtask['name'])
+        else:
+            flagList.remove(gtask['name']) # because we don't want to have not necessary items in dict
+        codeStringChanger(function,codeDict,flagList,codeString)
+
+
+
+# default widget
 class DefaultWidget(QtGui.QLineEdit):
     def __init__(self, gtask, function, codeDict, flagList, codeString):
 
@@ -270,6 +276,7 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
+# methods for updating command
 def codeDictChanger(gtask, function, codeDict, flagList, codeString,text):
     if text:
         try:
