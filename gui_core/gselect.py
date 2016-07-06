@@ -3,7 +3,6 @@
 from PyQt4.QtCore import QModelIndex,QEvent
 from PyQt4 import QtGui
 from grass import script
-import parameters
 
 
 
@@ -23,7 +22,8 @@ class TreeComboBox(QtGui.QComboBox):
         self.setView(tree_view)
         self.setEditable(True)
         self.setModel(self.getModel(gtask))
-        self.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList, codeString,self))
+        self.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList,
+                                                         codeString, self)) # see in parameters.py
 
         self.view().viewport().installEventFilter(self)
 
@@ -65,8 +65,6 @@ class TreeComboBox(QtGui.QComboBox):
 
         return model
 
-    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
-        parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.currentText()))
 
 class BrowseFile(QtGui.QWidget):
     def __init__(self, gtask, function, codeDict, flagList, codeString, parent=None):
@@ -81,7 +79,8 @@ class BrowseFile(QtGui.QWidget):
         layout.addWidget(button)
         self.setLayout(layout)
 
-        self.line.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList, codeString, self.line))
+        self.line.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList,
+                                                         codeString, self.line)) # see in parameters.py
 
     def selectFile(self):
 
@@ -107,25 +106,12 @@ class MultipleValues(QtGui.QGroupBox):
         for item in gtask['values']:
             box=QtGui.QCheckBox(item)
             layout.addWidget(box)
-            box.stateChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,layout))
+            box.stateChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,
+                                                         codeString, layout)) # see in parameters.py
         layout.addStretch()
         self.setLayout(layout)
-        #self.setEditable(True)
-        #self.addItems(gtask['values'])
-        #self.textChanged.connect(lambda: codeDictChanger(gtask,function,codeDict,flagList,codeString,self))
 
-    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
-        value=''
-        items = (widget.itemAt(i).widget() for i in range(widget.count()-1))
 
-        for item in items:
-            if item.isChecked():
-                if value:
-                    value=','.join((value,str(item.text())))
-                else:
-                    value=str(item.text())
-
-        parameters.codeDictChanger(gtask,function,codeDict,flagList,codeString,str(value))
 
 
 

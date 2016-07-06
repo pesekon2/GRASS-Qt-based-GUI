@@ -146,20 +146,40 @@ class SimpleValues(QtGui.QComboBox):
     def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.currentText()))
 
+#inherited from gselect.py
 class TreeComboBox(gselect.TreeComboBox):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='string' and key_desc!=['sql_query'] and (prompt=='raster' or prompt=='vector')
+
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
+        codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.currentText()))
 
 class BrowseFile(gselect.BrowseFile):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return type=='string' and key_desc!=['sql_query'] and (prompt=='file')
 
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
+        codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
+
 class MultipleValues(gselect.MultipleValues):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return (type=='string') and multiple==True and values
+
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
+        value=''
+        items = (widget.itemAt(i).widget() for i in range(widget.count()-1))
+
+        for item in items:
+            if item.isChecked():
+                if value:
+                    value=','.join((value,str(item.text())))
+                else:
+                    value=str(item.text())
+
+        codeDictChanger(gtask,function,codeDict,flagList,codeString,str(value))
 
 
 
