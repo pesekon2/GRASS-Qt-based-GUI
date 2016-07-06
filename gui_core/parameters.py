@@ -23,17 +23,7 @@ class Factory():
             if oneClass.canHandle(gtask['type'],gtask['multiple'],gtask['key_desc'],gtask['prompt'],gtask['values']):
                 return oneClass(gtask,function,codeDict,flagList,codeString)
         else:
-            widget=QtGui.QLineEdit()
-            widget.setText('TODO - Nobody expects the Spanish Inquisition') # just highlighting what should be done better
-            palette=QtGui.QPalette()
-            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
-            widget.setPalette(palette)
-            widget.textChanged.connect(lambda: setCommand(gtask,function,codeDict,flagList,codeString,widget))
-
-            def setCommand(gtask, function, codeDict, flagList, codeString,widget):
-                codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
-
-            return widget
+            return DefaultWidget(gtask,function,codeDict,flagList,codeString)
 
 
 # firstly, I define the widgets layout, then the widgets
@@ -260,6 +250,22 @@ class SimpleInteger(QtGui.QSpinBox):
     def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
         codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
+
+
+
+class DefaultWidget(QtGui.QLineEdit):
+    def __init__(self, gtask, function, codeDict, flagList, codeString):
+
+        super(DefaultWidget,self).__init__()
+        self.setText('TODO - Nobody expects the Spanish Inquisition') # just highlighting what should be done better
+        palette=QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
+        self.setPalette(palette)
+
+        self.textChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,codeString,self))
+
+    def setCommand(self,gtask, function, codeDict, flagList, codeString,widget):
+        codeDictChanger(gtask,function,codeDict,flagList,codeString,str(widget.text()))
 
 
 
