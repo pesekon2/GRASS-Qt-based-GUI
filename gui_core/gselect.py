@@ -22,7 +22,7 @@ class TreeComboBox(QtGui.QComboBox):
         self.setView(tree_view)
         self.setEditable(True)
         self.setModel(self.getModel(gtask))
-        self.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList,
+        self.textChanged.connect(lambda: self.changeCommand(gtask, function, codeDict, flagList,
                                                          codeString, self)) # see in parameters.py
 
         self.view().viewport().installEventFilter(self)
@@ -79,7 +79,7 @@ class BrowseFile(QtGui.QWidget):
         layout.addWidget(button)
         self.setLayout(layout)
 
-        self.line.textChanged.connect(lambda: self.setCommand(gtask, function, codeDict, flagList,
+        self.line.textChanged.connect(lambda: self.changeCommand(gtask, function, codeDict, flagList,
                                                          codeString, self.line)) # see in parameters.py
 
     def selectFile(self):
@@ -103,7 +103,7 @@ class MultipleValues(QtGui.QGroupBox):
         for item in gtask['values']:
             box=QtGui.QCheckBox(item)
             layout.addWidget(box)
-            box.stateChanged.connect(lambda: self.setCommand(gtask,function,codeDict,flagList,
+            box.stateChanged.connect(lambda: self.changeCommand(gtask,function,codeDict,flagList,
                                                          codeString, layout)) # see in parameters.py
         layout.addStretch()
         self.setLayout(layout)

@@ -220,4 +220,4 @@ opt,arg=getopt.getopt(sys.argv,'second parameter')
 
 mainform = NewGUI(arg[1])
 
-# hide 'help' checkbox, some cheats with 'string' widgets, help and output tabs, run_command flags
+# some cheats with 'string' widgets, help and output tabs
