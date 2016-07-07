@@ -7,7 +7,7 @@ from grass import script
 
 
 class TreeComboBox(QtGui.QComboBox):
-    def __init__(self, gtask, function, codeDict, flagList, codeString, parent=None):#, *args):
+    def __init__(self, gtask, codeDict, flagList, codeStringChanger, parent=None):#, *args):
         super(TreeComboBox,self).__init__(parent)#*args)
 
         self.__skip_next_hide = False
@@ -22,8 +22,8 @@ class TreeComboBox(QtGui.QComboBox):
         self.setView(tree_view)
         self.setEditable(True)
         self.setModel(self.getModel(gtask))
-        self.textChanged.connect(lambda: self.changeCommand(gtask, function, codeDict, flagList,
-                                                         codeString, self)) # see in parameters.py
+        self.textChanged.connect(lambda: self.changeCommand(gtask, codeDict, flagList,
+                                                         self, codeStringChanger)) # see in parameters.py
 
         self.view().viewport().installEventFilter(self)
 
@@ -67,7 +67,7 @@ class TreeComboBox(QtGui.QComboBox):
 
 
 class BrowseFile(QtGui.QWidget):
-    def __init__(self, gtask, function, codeDict, flagList, codeString, parent=None):
+    def __init__(self, gtask, codeDict, flagList, codeStringChanger, parent=None):
         super(BrowseFile,self).__init__(parent)
 
         layout=QtGui.QHBoxLayout()
@@ -79,8 +79,8 @@ class BrowseFile(QtGui.QWidget):
         layout.addWidget(button)
         self.setLayout(layout)
 
-        self.line.textChanged.connect(lambda: self.changeCommand(gtask, function, codeDict, flagList,
-                                                         codeString, self.line)) # see in parameters.py
+        self.line.textChanged.connect(lambda: self.changeCommand(gtask, codeDict, flagList,
+                                                         self.line, codeStringChanger)) # see in parameters.py
 
     def selectFile(self):
 
@@ -92,7 +92,7 @@ class BrowseFile(QtGui.QWidget):
 
 
 class MultipleValues(QtGui.QGroupBox):
-    def __init__(self, gtask, function, codeDict, flagList, codeString):
+    def __init__(self, gtask, codeDict, flagList, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -103,8 +103,8 @@ class MultipleValues(QtGui.QGroupBox):
         for item in gtask['values']:
             box=QtGui.QCheckBox(item)
             layout.addWidget(box)
-            box.stateChanged.connect(lambda: self.changeCommand(gtask,function,codeDict,flagList,
-                                                         codeString, layout)) # see in parameters.py
+            box.stateChanged.connect(lambda: self.changeCommand(gtask, codeDict, flagList,
+                                                         layout, codeStringChanger)) # see in parameters.py
         layout.addStretch()
         self.setLayout(layout)
 
