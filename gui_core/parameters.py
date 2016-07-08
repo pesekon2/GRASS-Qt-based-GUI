@@ -119,7 +119,7 @@ class SqlQuery(QtGui.QLineEdit):
         return key_desc==['sql_query']
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 class Cats(QtGui.QLineEdit): # maybe in future implement special widget when called from gui
     def __init__(self, gtask, codeDict, flagList, codeStringChanger):#,parent=QtGui.QLineEdit):
@@ -136,7 +136,7 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
         return prompt=='cats'
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 class SimpleValues(QtGui.QComboBox):
     def __init__(self, gtask, codeDict, flagList, codeStringChanger):
@@ -155,16 +155,16 @@ class SimpleValues(QtGui.QComboBox):
         return (type=='string') and multiple==False and values
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.currentText()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.currentText()), codeStringChanger)
 
 #inherited from gselect.py
 class TreeComboBox(gselect.TreeComboBox):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
-        return type=='string' and key_desc!=['sql_query'] and (prompt=='raster' or prompt=='vector')
+        return type=='string' and key_desc!=['sql_query'] and prompt in ['raster', 'vector', 'raster_3d']
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.currentText()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.currentText()), codeStringChanger)
 
 class BrowseFile(gselect.BrowseFile):
     @staticmethod
@@ -172,7 +172,7 @@ class BrowseFile(gselect.BrowseFile):
         return type=='string' and key_desc!=['sql_query'] and (prompt=='file')
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 class MultipleValues(gselect.MultipleValues):
     @staticmethod
@@ -190,7 +190,7 @@ class MultipleValues(gselect.MultipleValues):
                 else:
                     value=str(item.text())
 
-        codeDictChanger(gtask, codeDict, flagList, str(value), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(value), codeStringChanger)
 
 
 
@@ -213,7 +213,7 @@ class MultipleFloat(QtGui.QLineEdit):
         return type=='float' and (multiple==True or prompt=='coords')
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 class SimpleFloat(QtGui.QDoubleSpinBox):
     def __init__(self, gtask, codeDict, flagList, codeStringChanger):
@@ -230,7 +230,7 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         return type=='float' and multiple==False
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 
 
@@ -252,7 +252,7 @@ class MultipleInteger(QtGui.QLineEdit):
         return type=='integer' and multiple==True
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 class SimpleInteger(QtGui.QSpinBox):
     def __init__(self, gtask, codeDict, flagList, codeStringChanger):
@@ -269,7 +269,7 @@ class SimpleInteger(QtGui.QSpinBox):
         return type=='integer' and multiple==False
 
     def changeCommand(self, gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 
 
@@ -302,14 +302,15 @@ class DefaultWidget(QtGui.QLineEdit):
         self.textChanged.connect(lambda: self.changeCommand(gtask, codeDict, flagList, self, codeStringChanger))
 
     def changeCommand(self,gtask, codeDict, flagList, widget, codeStringChanger):
-        codeDictChanger(gtask, codeDict, flagList, str(widget.text()), codeStringChanger)
+        print gtask
+        codeDictChanger(gtask, codeDict, str(widget.text()), codeStringChanger)
 
 
 
 
 # methods for updating command
 
-def codeDictChanger(gtask, codeDict, flagList, text, codeStringChanger):
+def codeDictChanger(gtask, codeDict, text, codeStringChanger):
     if text:
         try:
             codeDict[gtask['name']]=text
