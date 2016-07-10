@@ -11,7 +11,7 @@ class Factory():
     Factory to decide which widget class should be used
     """
     @staticmethod
-    def newWidget(gtask, flagList, codeDictChanger, codeStringChanger):
+    def newWidget(gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         deciding which widget class should be used
         :param gtask: task for this widget
@@ -21,9 +21,9 @@ class Factory():
         classes = [j for (i,j) in globals().iteritems() if hasattr(j, 'canHandle')]
         for oneClass in classes:
             if oneClass.canHandle(gtask['type'],gtask['multiple'],gtask['key_desc'],gtask['prompt'],gtask['values']):
-                return oneClass(gtask, flagList, codeDictChanger, codeStringChanger)
+                return oneClass(gtask, codeDict, flagList, codeDictChanger, codeStringChanger)
         else:
-            return DefaultWidget(gtask, flagList, codeDictChanger,  codeStringChanger)
+            return DefaultWidget(gtask, codeDict, flagList, codeDictChanger,  codeStringChanger)
 
 
 # firstly, I define the widgets layout, then the widgets
@@ -39,14 +39,14 @@ class Parameters():
         self.gtask=gtask
 
         try:
-            widget = Factory().newWidget(gtask, flagList, self.codeDictChanger, self.codeStringChanger)
+            widget = Factory().newWidget(gtask, codeDict, flagList, self.codeDictChanger, self.codeStringChanger)
             if gtask['label'] and gtask['description']: # title is in label so we can use description as help/tooltip
                 widget.setToolTip(gtask['description'])
 
             boxComplete.addWidget(widget)
 
         except:
-            widget=Flags(gtask, flagList, self.codeDictChanger, self.codeStringChanger)
+            widget=Flags(gtask, codeDict, flagList, self.codeDictChanger, self.codeStringChanger)
             boxComplete.addWidget(widget)
             boxComplete.addStretch()
             boxComplete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
@@ -117,7 +117,7 @@ class Parameters():
 
 # now string types
 class SqlQuery(QtGui.QLineEdit):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):#,parent=QtGui.QLineEdit):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -134,7 +134,7 @@ class SqlQuery(QtGui.QLineEdit):
         codeDictChanger(str(widget.text()))
 
 class Cats(QtGui.QLineEdit): # maybe in future implement special widget when called from gui
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):#,parent=QtGui.QLineEdit):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -151,7 +151,7 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
         codeDictChanger(str(widget.text()))
 
 class SimpleValues(QtGui.QComboBox):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -204,13 +204,20 @@ class MultipleValues(gselect.MultipleValues):
 
         codeDictChanger(str(value))
 
+class Layers(gselect.Layers):
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return (type=='string') and prompt=='layer'
+
+    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
+        codeDictChanger(str(widget.currentText()))
 
 
 
 
 # now float types
 class MultipleFloat(QtGui.QLineEdit):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         for float: multiple, coords
         :param gtask: task for this widget
@@ -228,7 +235,7 @@ class MultipleFloat(QtGui.QLineEdit):
         codeDictChanger(str(widget.text()))
 
 class SimpleFloat(QtGui.QDoubleSpinBox):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -250,7 +257,7 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
 
 # now integer types
 class MultipleInteger(QtGui.QLineEdit):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -267,7 +274,7 @@ class MultipleInteger(QtGui.QLineEdit):
         codeDictChanger(str(widget.text()))
 
 class SimpleInteger(QtGui.QSpinBox):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -286,7 +293,7 @@ class SimpleInteger(QtGui.QSpinBox):
 
 
 class Flags(QtGui.QCheckBox):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
 
         super(Flags,self).__init__(gtask['description'])
         self.stateChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
@@ -303,7 +310,7 @@ class Flags(QtGui.QCheckBox):
 
 # default widget
 class DefaultWidget(QtGui.QLineEdit):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
 
         super(DefaultWidget,self).__init__()
         self.setText('TODO - Nobody expects the Spanish Inquisition') # just highlighting what should be done better
@@ -313,7 +320,7 @@ class DefaultWidget(QtGui.QLineEdit):
 
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
-    def changeCommand(self,gtask, flagList, widget, codeDictChanger, codeStringChanger):
+    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         print gtask
         codeDictChanger(str(widget.text()))
 

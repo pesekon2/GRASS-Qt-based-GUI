@@ -7,7 +7,7 @@ from grass import script
 
 
 class TreeComboBox(QtGui.QComboBox):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger, parent=None):#, *args):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger, parent=None):#, *args):
         super(TreeComboBox,self).__init__(parent)#*args)
 
         self.__skip_next_hide = False
@@ -67,7 +67,7 @@ class TreeComboBox(QtGui.QComboBox):
 
 
 class BrowseFile(QtGui.QWidget):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger, parent=None):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger, parent=None):
         super(BrowseFile,self).__init__(parent)
 
         layout=QtGui.QHBoxLayout()
@@ -92,7 +92,7 @@ class BrowseFile(QtGui.QWidget):
 
 
 class MultipleValues(QtGui.QGroupBox):
-    def __init__(self, gtask, flagList, codeDictChanger, codeStringChanger):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
         :param : runable and copyable  string
@@ -108,8 +108,42 @@ class MultipleValues(QtGui.QGroupBox):
         layout.addStretch()
         self.setLayout(layout)
 
+class Layers(QtGui.QComboBox):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
 
+        super(Layers,self).__init__()
+        self.setEditable(True)
 
+        self.gtask = gtask
+        self.codeDict=codeDict
+
+        self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
+
+    def getLayers(self):
+
+        self.clear()
+
+        if self.gtask['element']=='layer_all':
+            self.addItem('-1')
+
+        try:
+            layers = script.vector_db(map=self.codeDict['input'])
+            for layer in layers:
+                self.addItem(str(layer))
+        except:pass
+
+    def showPopup(self):
+        text=self.currentText()
+        self.getLayers()
+        super(Layers,self).showPopup()
+        if text in [self.itemText(i) for i in range(self.count())]:
+            self.setEditText(text)
+        else:
+            self.setEditText('')
 
 
 
