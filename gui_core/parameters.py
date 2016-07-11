@@ -257,7 +257,10 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         return type=='float' and multiple==False
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
-        codeDictChanger(str(widget.text()))
+        if widget.text()!='0,00':
+            codeDictChanger(str(widget.text()))
+        else:
+            codeDictChanger('')
 
 
 
@@ -296,7 +299,10 @@ class SimpleInteger(QtGui.QSpinBox):
         return type=='integer' and multiple==False
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
-        codeDictChanger(str(widget.text()))
+        if widget.text()!='0':
+            codeDictChanger(str(widget.text()))
+        else:
+            codeDictChanger('')
 
 
 
