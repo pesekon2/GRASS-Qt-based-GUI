@@ -212,6 +212,14 @@ class Layers(gselect.Layers):
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         codeDictChanger(str(widget.currentText()))
 
+class Columns(gselect.Columns):
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return (type=='string') and prompt=='dbcolumn'
+
+    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
+        codeDictChanger(str(widget.currentText()))
+
 
 
 

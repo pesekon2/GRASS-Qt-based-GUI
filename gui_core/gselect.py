@@ -3,7 +3,7 @@
 from PyQt4.QtCore import QModelIndex,QEvent
 from PyQt4 import QtGui
 from grass import script
-
+import time
 
 
 class TreeComboBox(QtGui.QComboBox):
@@ -145,8 +145,63 @@ class Layers(QtGui.QComboBox):
         else:
             self.setEditText('')
 
+class Columns(QtGui.QComboBox):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
 
+        super(Columns,self).__init__()
+        self.setEditable(True)
 
+        self.gtask = gtask
+        self.codeDict=codeDict
+
+        self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
+
+    def getLayer(self):
+
+        try:
+            layer = int(self.codeDict['layer'])
+            return layer
+        except:
+            return self.codeDict['layer']
+
+    def getColumns(self,layers,layer):
+
+        for item in script.db_describe(table = layers[layer]["table"],
+                                      driver = layers[layer]["driver"],
+                                      database = layers[layer]["database"])['cols']:
+            self.addItem(item[0])
+
+    def setValues(self):
+
+        self.clear()
+
+        try:
+            layers=script.vector_db(map=self.codeDict['input'])
+            layer=self.getLayer()
+
+            if layer==-1:
+                for layer in layers.keys():
+                    self.getColumns(layers,layer)
+            else:self.getColumns(layers,layer)
+        except:self.addItem('')
+
+    def showPopup(self):
+
+        t0=time.clock()
+        text=self.currentText()
+        self.setValues()
+        print time.clock()-t0,'1'
+        super(Columns,self).showPopup()
+        print time.clock()-t0, '2'
+        if text in [self.itemText(i) for i in range(self.count())]:
+            self.setEditText(text)
+        else:
+            self.setEditText('')
+        print time.clock()-t0, '3'
 
 
 
