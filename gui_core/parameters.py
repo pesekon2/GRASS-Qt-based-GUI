@@ -28,11 +28,11 @@ class Factory():
 
 # firstly, I define the widgets layout, then the widgets
 class Parameters():
-    def __init__(self, gtask, function, codeDict, flagList, codeString):
+    def __init__(self, gtask, module, codeDict, flagList, codeString):
         #super(Parameters).__init__(parent)
 
         boxComplete=self.getLayout(gtask)
-        self.function=function
+        self.module=module
         self.codeDict=codeDict
         self.flagList=flagList
         self.codeString=codeString
@@ -100,7 +100,7 @@ class Parameters():
         for i in self.flagList:
             if len(i)==1: flags = flags + ' -' + i
             else: flags = flags + ' --' + i
-        self.codeString.setText(self.function+flags+' '
+        self.codeString.setText(self.module+flags+' '
                            +' '.join('{}={}'.format(key, val) for key, val in self.codeDict.items()))
 
     def codeDictChanger(self, text):

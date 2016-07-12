@@ -10,32 +10,32 @@ from PyQt4.QtXml import *
 from PyQt4.QtCore import *
 from grass.script import task as gtask
 from grass.script import run_command
-from grass.pygrass.modules.interface import module
+#from grass.pygrass.modules.interface import module
 
 
 class NewGUI(QtGui.QMainWindow):
-    def __init__(self, function, parent=None):
+    def __init__(self, module, parent=None):
         app = QtGui.QApplication([])
         super(NewGUI, self).__init__(parent)
 
-        self.setWindowTitle(self.get_title(function))
-        self.create_gui(function)
+        self.setWindowTitle(self.get_title(module))
+        self.create_gui(module)
 
         self.show()
         sys.exit(app.exec_())
 
-    def create_gui(self,function):
+    def create_gui(self,module):
         """
-        :param function: called function
+        :param module: called module
         :return: completed gui
         """
 
-        tabs,codeString=self.get_tabs(function)
+        tabs,codeString=self.get_tabs(module)
 
         box=QtGui.QVBoxLayout()
-        box.addWidget(self.get_description(function))
+        box.addWidget(self.get_description(module))
         box.addWidget(tabs)
-        box.addWidget(self.basic_buttons(function))
+        box.addWidget(self.basic_buttons(module))
         box.addWidget(self.horizontal_line())
         box.addWidget(codeString)
         box.setSpacing(10)
@@ -47,9 +47,9 @@ class NewGUI(QtGui.QMainWindow):
         self.setCentralWidget(completeGui)
         #print completeGui.size()
 
-    def get_tabs(self,function):
+    def get_tabs(self,module):
         """
-        :param function: called function
+        :param module: called module
         :return: tabs
         """
 
@@ -68,15 +68,15 @@ class NewGUI(QtGui.QMainWindow):
 
         self.codeDict={}
         self.flagList=[]
-        codeString=QtGui.QTextEdit(function)
+        codeString=QtGui.QTextEdit(module)
         codeString.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         codeString.setReadOnly(True)
         codeString.setFixedHeight(QtGui.QLineEdit().sizeHint().height()*2)
 
         # tabs for params
-        for task in gtask.command_info(function)['params']:
+        for task in gtask.command_info(module)['params']:
 
-            widget=newWidget(task,function,self.codeDict,self.flagList,codeString).newWidget()
+            widget=newWidget(task,module,self.codeDict,self.flagList,codeString).newWidget()
             if task['required']==True:
                 try:
                     pages.update({'Required':pageRequired})
@@ -104,9 +104,9 @@ class NewGUI(QtGui.QMainWindow):
                 boxs['Optional'].addWidget(widget)
 
         #tabs for flags
-        for task in gtask.command_info(function)['flags']:
+        for task in gtask.command_info(module)['flags']:
 
-            widget=newWidget(task,function,self.codeDict,self.flagList,codeString).newWidget()
+            widget=newWidget(task,module,self.codeDict,self.flagList,codeString).newWidget()
             if task['guisection']:
                 try:
                     pages[task['guisection']]
@@ -140,29 +140,29 @@ class NewGUI(QtGui.QMainWindow):
 
         return tabs,codeString
 
-    def get_title(self,function):
+    def get_title(self,module):
         """
-        :param function: called function
+        :param module: called module
         :return: new title of the window with parameters
         """
 
-        self.title=[p for p in gtask.command_info(function)['keywords']]
-        self.title=re.sub("'","",function + " " + str(self.title))
+        self.title=[p for p in gtask.command_info(module)['keywords']]
+        self.title=re.sub("'","",module + " " + str(self.title))
         return self.title
 
 
-    def get_description(self,function):
+    def get_description(self,module):
         """
-        :param function: called function
-        :return: label with function description
+        :param module: called module
+        :return: label with module description
         """
 
-        text = gtask.command_info(function)['description']
+        text = gtask.command_info(module)['description']
         description = QtGui.QLabel(text)
         description.setWordWrap(True)
         return description
 
-    def basic_buttons(self,function):
+    def basic_buttons(self,module):
         """
         :parameter: no
         :return: 4 basic buttons at the bottom of GUI
@@ -183,8 +183,8 @@ class NewGUI(QtGui.QMainWindow):
         buttons.setLayout(layout)
 
         closeButton.clicked.connect(lambda: self.close())
-        helpButton.clicked.connect(lambda: run_command(function,'help'))
-        runButton.clicked.connect(lambda: self.run_command(function))
+        helpButton.clicked.connect(lambda: run_command(module,'help'))
+        runButton.clicked.connect(lambda: self.run_command(module))
 
         return buttons
 
@@ -199,7 +199,7 @@ class NewGUI(QtGui.QMainWindow):
         line.setFrameShadow(QtGui.QFrame.Sunken)
         return line
 
-    def run_command(self,function):
+    def run_command(self,module):
         """
         runs the command
         """
@@ -214,9 +214,9 @@ class NewGUI(QtGui.QMainWindow):
             paramsLongFlags={}
             paramsLongFlags.update(longFlags)
             paramsLongFlags.update(self.codeDict)
-            run_command(function, *flags, **paramsLongFlags)
+            run_command(module, *flags, **paramsLongFlags)
         else:
-            run_command(function, *flags, **self.codeDict)
+            run_command(module, *flags, **self.codeDict)
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 
