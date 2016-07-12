@@ -40,9 +40,6 @@ class Parameters():
 
         try:
             widget = Factory().newWidget(gtask, codeDict, flagList, self.codeDictChanger, self.codeStringChanger)
-            if gtask['label'] and gtask['description']: # title is in label so we can use description as help/tooltip
-                widget.setToolTip(gtask['description'])
-
             boxComplete.addWidget(widget)
 
         except:
@@ -50,6 +47,9 @@ class Parameters():
             boxComplete.addWidget(widget)
             boxComplete.addStretch()
             boxComplete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
+
+        if gtask['label'] and gtask['description']: # title is in label so we can use description as help/tooltip
+            widget.setToolTip(gtask['description'])
 
         self.completeWidget=QtGui.QWidget()
         self.completeWidget.setLayout(boxComplete)
@@ -309,8 +309,14 @@ class SimpleInteger(QtGui.QSpinBox):
 class Flags(QtGui.QCheckBox):
     def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
 
-        super(Flags,self).__init__(gtask['description'])
+        super(Flags,self).__init__(self.getLabel(gtask))
         self.stateChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
+
+    def getLabel(self, gtask):
+        if gtask['label']:
+            return gtask['label']
+        else:
+            return gtask['description']
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         if widget.isChecked():
@@ -341,7 +347,7 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
-# methods for updating command
+# run without overwrite
 
 
 

@@ -134,7 +134,7 @@ class Layers(QtGui.QComboBox):
             layers = script.vector_db(map=self.codeDict['input'])
             for layer in layers:
                 self.addItem(str(layer))
-        except:pass
+        except:self.addItem('')
 
     def showPopup(self):
         text=self.currentText()
@@ -191,17 +191,13 @@ class Columns(QtGui.QComboBox):
 
     def showPopup(self):
 
-        t0=time.clock()
         text=self.currentText()
         self.setValues()
-        print time.clock()-t0,'1'
         super(Columns,self).showPopup()
-        print time.clock()-t0, '2'
         if text in [self.itemText(i) for i in range(self.count())]:
             self.setEditText(text)
         else:
             self.setEditText('')
-        print time.clock()-t0, '3'
 
 
 
