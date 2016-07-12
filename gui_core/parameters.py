@@ -257,7 +257,7 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         return type=='float' and multiple==False
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
-        if widget.text()!='0,00':
+        if widget.text()not in ['0,00', '0.00']:
             codeDictChanger(str(widget.text()))
         else:
             codeDictChanger('')

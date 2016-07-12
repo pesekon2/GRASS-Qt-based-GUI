@@ -182,6 +182,7 @@ class NewGUI(QtGui.QMainWindow):
         buttons=QtGui.QWidget()
         buttons.setLayout(layout)
 
+        helpButton.clicked.connect(lambda: run_command(function,'help'))
         runButton.clicked.connect(lambda: self.run_command(function))
 
         return buttons
