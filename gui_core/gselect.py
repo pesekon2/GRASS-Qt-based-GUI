@@ -99,12 +99,28 @@ class MultipleValues(QtGui.QGroupBox):
         """
 
         super(MultipleValues,self).__init__()
-        layout=QtGui.QHBoxLayout()
-        for item in gtask['values']:
-            box=QtGui.QCheckBox(item)
-            layout.addWidget(box)
-            box.stateChanged.connect(lambda: self.changeCommand(gtask, flagList,
-                                                         layout, codeDictChanger, codeStringChanger)) # see in parameters.py
+
+        i=0
+        if not gtask['values_desc']:
+            layout=QtGui.QHBoxLayout()
+            for item in gtask['values']:
+                box=QtGui.QCheckBox(item)
+                box.setObjectName(gtask['values'][i])
+                layout.addWidget(box)
+                box.stateChanged.connect(lambda: self.changeCommand(gtask, flagList,
+                                                             layout, codeDictChanger, codeStringChanger)) # see in parameters.py
+                i=i+1
+        else:
+            layout=QtGui.QVBoxLayout()
+            layout.setSpacing(0)
+            for item in gtask['values_desc']:
+                box=QtGui.QCheckBox(item)
+                box.setObjectName(gtask['values'][i])
+                layout.addWidget(box)
+                box.stateChanged.connect(lambda: self.changeCommand(gtask, flagList,
+                                                             layout, codeDictChanger, codeStringChanger)) # see in parameters.py
+                i=i+1
+
         layout.addStretch()
         self.setLayout(layout)
 

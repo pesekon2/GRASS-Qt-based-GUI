@@ -198,9 +198,9 @@ class MultipleValues(gselect.MultipleValues):
         for item in items:
             if item.isChecked():
                 if value:
-                    value=','.join((value,str(item.text())))
+                    value=','.join((value,str(item.objectName())))
                 else:
-                    value=str(item.text())
+                    value=str(item.objectName())
 
         codeDictChanger(str(value))
 
