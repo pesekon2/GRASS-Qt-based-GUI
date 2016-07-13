@@ -186,6 +186,30 @@ class SimpleValues(QtGui.QComboBox):
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         codeDictChanger(str(widget.currentText()))
 
+class Separator(QtGui.QComboBox):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
+
+        super(Separator,self).__init__()
+        self.setEditable(True)
+        self.addItems(self.getItems(gtask))
+        self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
+
+    def getItems(self, gtask):
+        # in case that description is not same for all of them, type it manually here
+        itemsString = gtask['description'].split('Special characters: ')[1]
+        return itemsString.split(', ')
+
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return (type=='string') and prompt=='separator'
+
+    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
+        codeDictChanger(str(widget.currentText()))
+
 #inherited from gselect.py
 class TreeComboBox(gselect.TreeComboBox):
     @staticmethod
