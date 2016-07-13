@@ -150,6 +150,23 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         codeDictChanger(str(widget.text()))
 
+class DbTable(QtGui.QLineEdit): # maybe in future implement special widget when called from gui
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
+
+        super(DbTable,self).__init__()
+        self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
+
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return prompt=='dbtable'
+
+    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
+        codeDictChanger(str(widget.text()))
+
 class SimpleValues(QtGui.QComboBox):
     def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
@@ -306,6 +323,7 @@ class SimpleInteger(QtGui.QSpinBox):
 
 
 
+
 class Flags(QtGui.QCheckBox):
     def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
 
@@ -325,6 +343,7 @@ class Flags(QtGui.QCheckBox):
         else:
             flagList.remove(gtask['name']) # because we don't want to have not necessary items in dict
         codeStringChanger()
+
 
 
 
