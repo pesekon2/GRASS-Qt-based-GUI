@@ -214,7 +214,7 @@ class Separator(QtGui.QComboBox):
 class TreeComboBox(gselect.TreeComboBox):
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
-        return type=='string' and key_desc!=['sql_query'] and prompt in ['raster', 'vector', 'raster_3d']
+        return type=='string' and key_desc!=['sql_query'] and prompt in ['raster', 'vector', 'raster_3d', 'group']
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         codeDictChanger(str(widget.currentText()))
