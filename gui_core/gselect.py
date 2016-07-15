@@ -74,6 +74,9 @@ class BrowseFile(QtGui.QWidget):
         button = QtGui.QPushButton('Browse')
         button.clicked.connect(self.selectFile)
 
+        button.setMinimumSize(button.sizeHint())
+        self.line.setMinimumSize(self.line.sizeHint())
+
         layout.addWidget(self.line)
         layout.addWidget(button)
         self.setLayout(layout)
