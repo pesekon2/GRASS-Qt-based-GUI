@@ -261,6 +261,21 @@ class Columns(gselect.Columns):
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         codeDictChanger(str(widget.currentText()))
 
+class Colors(gselect.Colors):
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return (type=='string') and prompt=='color'
+
+    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
+        items = list((widget.itemAt(i).widget() for i in range(widget.count()-1)))
+
+        if len(items)>1:
+            if items[1].isChecked()==False:
+                codeDictChanger(str(items[0].text()))
+            else:codeDictChanger('')
+        else:
+            codeDictChanger(str(items[0].text()))
+
 
 
 
@@ -390,7 +405,7 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
-# run without overwrite
+# default values, column/layer also from map
 
 
 

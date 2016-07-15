@@ -3,7 +3,6 @@
 from PyQt4.QtCore import QModelIndex,QEvent
 from PyQt4 import QtGui
 from grass import script
-import time
 
 
 class TreeComboBox(QtGui.QComboBox):
@@ -215,9 +214,51 @@ class Columns(QtGui.QComboBox):
         else:
             self.setEditText('')
 
+class Colors(QtGui.QWidget):
 
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
+        super(Colors, self).__init__()
 
+        layout = QtGui.QHBoxLayout()
+        self.colorBtn = QtGui.QPushButton()
 
+        self.btnStyle = 'border-style: double; border-width: 3px; border-color: beige; min-width: 8em; padding: 6px'
+
+        if gtask['default']=='none':
+            self.colorBtn.setStyleSheet("QPushButton {background-color: grey; %s}" % self.btnStyle)
+            self.colorBtn.setText('Select color')
+            layout.addWidget(self.colorBtn)
+            transparent = QtGui.QCheckBox('Transparent')
+            transparent.stateChanged.connect(lambda: self.parseText(gtask, flagList, layout, codeDictChanger, codeStringChanger))
+            layout.addWidget(transparent)
+        else:
+            if QtGui.QColor(gtask['default']).red() + QtGui.QColor(gtask['default']).blue() + QtGui.QColor(gtask['default']).green() < 387:
+                textColor = 'white'
+            else:
+                textColor = 'black'
+            self.colorBtn.setStyleSheet("QPushButton {background-color: %s; color: %s; %s}" % (gtask['default'], textColor, self.btnStyle))
+            self.colorBtn.setText(gtask['default'])
+            layout.addWidget(self.colorBtn)
+
+        layout.addStretch()
+        self.setLayout(layout)
+        self.defaultText = self.colorBtn.text()
+
+        self.colorBtn.clicked.connect(lambda: self.color_picker())
+        self.colorBtn.clicked.connect(lambda: self.parseText(gtask, flagList, layout, codeDictChanger, codeStringChanger))
+
+    def color_picker(self):
+        color = QtGui.QColorDialog.getColor(initial=QtGui.QColor(self.colorBtn.palette().color(QtGui.QPalette.Background)))
+        if color.isValid():
+            if color.red() + color.green() + color.blue() < 387:
+                textColor = 'white'
+            else:textColor = 'black'
+            self.colorBtn.setStyleSheet("QPushButton { background-color: %s; color: %s; %s}" % (color.name(), textColor, self.btnStyle))
+            self.colorBtn.setText('%s:%s:%s' % (color.red(), color.green(), color.blue()))
+
+    def parseText(self, gtask, flagList, layout, codeDictChanger, codeStringChanger):
+        if self.colorBtn.text()!=self.defaultText:
+            self.changeCommand(gtask, flagList, layout, codeDictChanger, codeStringChanger)
 
 
 
