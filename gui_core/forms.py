@@ -214,9 +214,9 @@ class NewGUI(QtGui.QMainWindow):
             paramsLongFlags={}
             paramsLongFlags.update(longFlags)
             paramsLongFlags.update(self.codeDict)
-            run_command(module, *flags, **paramsLongFlags)
+            run_command(module, flags=flags, **paramsLongFlags)
         else:
-            run_command(module, *flags, **self.codeDict)
+            run_command(module, flags=flags, **self.codeDict)
 
 opt,arg=getopt.getopt(sys.argv,'second parameter')
 
