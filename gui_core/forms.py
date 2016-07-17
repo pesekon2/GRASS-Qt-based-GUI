@@ -222,4 +222,4 @@ opt,arg=getopt.getopt(sys.argv,'second parameter')
 
 mainform = NewGUI(arg[1])
 
-# some cheats with 'string' widgets, help and output tabs
+# help and output tabs

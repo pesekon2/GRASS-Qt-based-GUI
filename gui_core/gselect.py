@@ -3,6 +3,7 @@
 from PyQt4.QtCore import QModelIndex,QEvent
 from PyQt4 import QtGui
 from grass import script
+import subprocess
 
 
 class TreeComboBox(QtGui.QComboBox):
@@ -263,7 +264,68 @@ class Colors(QtGui.QWidget):
         if self.colorBtn.text()!=self.defaultText:
             self.changeCommand(gtask, flagList, layout, codeDictChanger, codeStringChanger)
 
+class DbTable(QtGui.QComboBox):
+    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
 
+        super(DbTable,self).__init__()
+        self.codeDict = codeDict
+
+        self.setEditable(True)
+
+        self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
+
+    def getDbInfo(self):
+        try:
+            driver = self.codeDict['driver']
+            try:
+                database = self.codeDict['database']
+            except:
+                connect = script.db_connection()
+                database = connect['database']
+        except:
+            connect = script.db_connection()
+            try:
+                database = self.codeDict['database']
+                driver = connect['driver']
+            except:
+                database = connect['database']
+                driver = connect['driver']
+
+        return driver, database
+
+    def getTables(self):
+
+        driver, database = self.getDbInfo()
+
+        tables = script.start_command('db.tables',
+                         flags = 'p',
+                         driver = driver,
+                         database = database,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
+
+        return tables.communicate()[0]
+
+    def showPopup(self):
+
+        text = self.currentText()
+        tables = self.getTables()
+
+        self.clear()
+        if tables:
+            for table in tables.splitlines():
+                self.addItem(table)
+        else:self.addItem('')
+
+        super(DbTable,self).showPopup()
+        if text in [self.itemText(i) for i in range(self.count())]:
+            self.setEditText(text)
+        else:
+            self.setEditText('')
 
 
 

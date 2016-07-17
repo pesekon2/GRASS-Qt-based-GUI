@@ -95,7 +95,6 @@ class Parameters():
         return layoutComplete
 
     def codeStringChanger(self):
-        #print getattr(Parameters,'__init__')
         flags=''
         for i in self.flagList:
             if len(i)==1: flags = flags + ' -' + i
@@ -146,23 +145,6 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
     @staticmethod
     def canHandle(type,multiple,key_desc,prompt,values):
         return prompt=='cats'
-
-    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
-        codeDictChanger(str(widget.text()))
-
-class DbTable(QtGui.QLineEdit): # maybe in future implement special widget when called from gui
-    def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
-        """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
-        """
-
-        super(DbTable,self).__init__()
-        self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
-
-    @staticmethod
-    def canHandle(type,multiple,key_desc,prompt,values):
-        return prompt=='dbtable'
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
         codeDictChanger(str(widget.text()))
@@ -276,7 +258,13 @@ class Colors(gselect.Colors):
         else:
             codeDictChanger(str(items[0].text()))
 
+class DbTable(gselect.DbTable):
+    @staticmethod
+    def canHandle(type,multiple,key_desc,prompt,values):
+        return prompt=='dbtable'
 
+    def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
+        codeDictChanger(str(widget.currentText()))
 
 
 # now float types
@@ -405,7 +393,9 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
-# default values, column/layer also from map
+# default values, column/layer also from map (v.db.join), d.vect, wordwrap, size
+# key_desc, required after guisection, prompt=datasource (v.external),
+# datasource_layer (v.import)
 
 
 
