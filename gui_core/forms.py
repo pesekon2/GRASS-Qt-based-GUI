@@ -10,7 +10,6 @@ from PyQt4.QtXml import *
 from PyQt4.QtCore import *
 from grass.script import task as gtask
 from grass.script import run_command
-#from grass.pygrass.modules.interface import module
 
 
 class NewGUI(QtGui.QMainWindow):
@@ -77,14 +76,8 @@ class NewGUI(QtGui.QMainWindow):
         for task in gtask.command_info(module)['params']:
 
             widget=newWidget(task,module,self.codeDict,self.flagList,codeString).newWidget()
-            if task['required']==True:
-                try:
-                    pages.update({'Required':pageRequired})
-                    boxs.update({'Required':boxRequired})
-                except:pass
-                boxs['Required'].addWidget(widget)
 
-            elif task['guisection']:
+            if task['guisection']:
                 try:
                     pages[task['guisection']]
                 except:
@@ -95,6 +88,13 @@ class NewGUI(QtGui.QMainWindow):
                     pages.update({task['guisection']:pageSection[task['guisection']]})
                     boxs.update({task['guisection']:boxsSection[task['guisection']]})
                 boxs[task['guisection']].addWidget(widget)
+
+            elif task['required']==True:
+                try:
+                    pages.update({'Required':pageRequired})
+                    boxs.update({'Required':boxRequired})
+                except:pass
+                boxs['Required'].addWidget(widget)
 
             else:
                 try:

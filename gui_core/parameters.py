@@ -31,12 +31,13 @@ class Parameters():
     def __init__(self, gtask, module, codeDict, flagList, codeString):
         #super(Parameters).__init__(parent)
 
-        boxComplete=self.getLayout()
         self.module=module
         self.codeDict=codeDict
         self.flagList=flagList
         self.codeString=codeString
         self.gtask=gtask
+
+        boxComplete=self.getLayout()
 
         try:
             widget = Factory().newWidget(gtask, codeDict, flagList, self.codeDictChanger, self.codeStringChanger)
@@ -428,7 +429,7 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 # column/layer also from map (v.db.join), d.vect, wordwrap, size
-# key_desc, required after guisection, prompt=datasource (v.external),
+# key_desc, prompt=datasource (v.external),
 # datasource_layer (v.import), words for predefined colors
 
 
