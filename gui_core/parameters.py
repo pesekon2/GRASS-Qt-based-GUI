@@ -321,6 +321,7 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         super(SimpleFloat,self).__init__()
 
         self.setRange(-10000000,10000000)
+        self.setDecimals(5)
         if gtask['default']:
             self.setValue(float(gtask['default']))
 

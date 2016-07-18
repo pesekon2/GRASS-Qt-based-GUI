@@ -79,7 +79,7 @@ class NewGUI(QtGui.QMainWindow):
 
             if task['guisection']:
                 try:
-                    pages[task['guisection']]
+                    pageSection[task['guisection']]
                 except:
                     page=QtGui.QWidget()
                     box=QtGui.QVBoxLayout()
@@ -103,13 +103,15 @@ class NewGUI(QtGui.QMainWindow):
                 except:pass
                 boxs['Optional'].addWidget(widget)
 
+
+
         #tabs for flags
         for task in gtask.command_info(module)['flags']:
 
             widget=newWidget(task,module,self.codeDict,self.flagList,codeString).newWidget()
             if task['guisection']:
                 try:
-                    pages[task['guisection']]
+                    pageSection[task['guisection']]
                 except:
                     page=QtGui.QWidget()
                     box=QtGui.QVBoxLayout()
@@ -127,16 +129,16 @@ class NewGUI(QtGui.QMainWindow):
                 if not task['name'] == 'help': # we don't have to see help everywhere
                     boxs['Optional'].addWidget(widget)
 
-        #boxOptional.setContentsMargins(0,0,0,0)
         for i in pages:
-            #print boxs[i].spacing() #*****************************
-            #boxs[i].resize(boxs[i].minimumSizeHint())
             boxs[i].addStretch()
             layout=boxs[i]
             layout.setSpacing(0)
             pages[i].setLayout(layout)
-            #pages[i].resize(pages[i].minimumSizeHint())
+
+        tabs.addTab(pageRequired,'Required')
+        for i in pageSection:
             tabs.addTab(pages[i],i)
+        tabs.addTab(pageOptional,'Optional')
 
         return tabs,codeString
 
