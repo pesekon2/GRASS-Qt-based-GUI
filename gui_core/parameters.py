@@ -121,7 +121,7 @@ class SqlQuery(QtGui.QLineEdit):
     def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
         """
         :param gtask: task for this widget
-        :param : runable and copyable  string
+        :param : runable and copyable string
         """
 
         super(SqlQuery,self).__init__()
@@ -287,6 +287,7 @@ class DbTable(gselect.DbTable):
         codeDictChanger(str(widget.currentText()))
 
 
+
 # now float types
 class MultipleFloat(QtGui.QLineEdit):
     def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
@@ -319,6 +320,7 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
 
         super(SimpleFloat,self).__init__()
 
+        self.setRange(-10000000,10000000)
         if gtask['default']:
             self.setValue(float(gtask['default']))
 
@@ -365,6 +367,8 @@ class SimpleInteger(QtGui.QSpinBox):
         """
 
         super(SimpleInteger,self).__init__()
+
+        self.setRange(-10000000,10000000)
 
         if gtask['default']:
             self.setValue(int(gtask['default']))
@@ -429,7 +433,7 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 # column/layer also from map (v.db.join), d.vect, wordwrap, size
-# key_desc, prompt=datasource (v.external),
+# key_desc, prompt=datasource (v.external), required first
 # datasource_layer (v.import), words for predefined colors
 
 
