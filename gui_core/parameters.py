@@ -31,7 +31,7 @@ class Parameters():
     def __init__(self, gtask, module, codeDict, flagList, codeString):
         #super(Parameters).__init__(parent)
 
-        boxComplete=self.getLayout(gtask)
+        boxComplete=self.getLayout()
         self.module=module
         self.codeDict=codeDict
         self.flagList=flagList
@@ -61,7 +61,7 @@ class Parameters():
 
         return self.completeWidget
 
-    def getLayout(self,gtask):
+    def getLayout(self):
         """
         create layout/box for the widget
         :param gtask: task for this widget
@@ -71,15 +71,15 @@ class Parameters():
         try:
             boxHeader=QtGui.QHBoxLayout()
 
-            if gtask['multiple']==True:
+            if self.gtask['multiple']==True:
                 boxHeader.addWidget(QtGui.QLabel('[multiple]'))
-            if gtask['label']:
-                description=QtGui.QLabel(gtask['label'])
+            if self.gtask['label']:
+                description=QtGui.QLabel(self.gtask['label'])
             else:
-                description=QtGui.QLabel(gtask['description'])
+                description=QtGui.QLabel(self.gtask['description'])
             boxHeader.addWidget(description)
             boxHeader.addStretch()
-            boxHeader.addWidget(QtGui.QLabel('(%s=%s)' % (gtask['name'],gtask['type'])))
+            boxHeader.addWidget(QtGui.QLabel('(%s=%s)' % (self.gtask['name'],self.gtask['type'])))
 
             header=QtGui.QWidget()
             header.setLayout(boxHeader)
@@ -103,7 +103,7 @@ class Parameters():
                            +' '.join('{}={}'.format(key, val) for key, val in self.codeDict.items()))
 
     def codeDictChanger(self, text):
-        if text:
+        if text and text!=self.gtask['default']:
             try:
                 self.codeDict[self.gtask['name']]=text
             except: # it means that there is no item for this widget in dict
@@ -111,6 +111,7 @@ class Parameters():
         else:
             try:del self.codeDict[self.gtask['name']] # because we don't want to have not necessary items in dict
             except:pass
+
         self.codeStringChanger()
 
 
@@ -123,6 +124,10 @@ class SqlQuery(QtGui.QLineEdit):
         """
 
         super(SqlQuery,self).__init__()
+
+        if gtask['default']:
+            self.setText(gtask['default'])
+
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     @staticmethod
@@ -140,6 +145,10 @@ class Cats(QtGui.QLineEdit): # maybe in future implement special widget when cal
         """
 
         super(Cats,self).__init__()
+
+        if gtask['default']:
+            self.setText(gtask['default'])
+
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     @staticmethod
@@ -157,8 +166,13 @@ class SimpleValues(QtGui.QComboBox):
         """
 
         super(SimpleValues,self).__init__()
+
         self.setEditable(True)
         self.addItems(gtask['values'])
+
+        if gtask['default']:
+            self.setEditText(gtask['default'])
+
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     @staticmethod
@@ -176,8 +190,13 @@ class Separator(QtGui.QComboBox):
         """
 
         super(Separator,self).__init__()
+
         self.setEditable(True)
         self.addItems(self.getItems(gtask))
+
+        if gtask['default']:
+            self.setEditText(gtask['default'])
+
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     def getItems(self, gtask):
@@ -277,6 +296,10 @@ class MultipleFloat(QtGui.QLineEdit):
         """
 
         super(MultipleFloat,self).__init__()
+
+        if gtask['default']:
+            self.setText(gtask['default'])
+
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     @staticmethod
@@ -294,6 +317,10 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         """
 
         super(SimpleFloat,self).__init__()
+
+        if gtask['default']:
+            self.setValue(float(gtask['default']))
+
         self.valueChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     @staticmethod
@@ -301,10 +328,7 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
         return type=='float' and multiple==False
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
-        if widget.text()not in ['0,00', '0.00']:
-            codeDictChanger(str(widget.text()))
-        else:
-            codeDictChanger('')
+        codeDictChanger(str(widget.value()))
 
 
 
@@ -319,6 +343,10 @@ class MultipleInteger(QtGui.QLineEdit):
         """
 
         super(MultipleInteger,self).__init__()
+
+        if gtask['default']:
+            self.setText(gtask['default'])
+
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     @staticmethod
@@ -336,6 +364,10 @@ class SimpleInteger(QtGui.QSpinBox):
         """
 
         super(SimpleInteger,self).__init__()
+
+        if gtask['default']:
+            self.setValue(int(gtask['default']))
+
         self.valueChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     @staticmethod
@@ -343,10 +375,7 @@ class SimpleInteger(QtGui.QSpinBox):
         return type=='integer' and multiple==False
 
     def changeCommand(self, gtask, flagList, widget, codeDictChanger, codeStringChanger):
-        if widget.text()!='0':
-            codeDictChanger(str(widget.text()))
-        else:
-            codeDictChanger('')
+        codeDictChanger(str(widget.text()))
 
 
 
@@ -355,6 +384,7 @@ class Flags(QtGui.QCheckBox):
     def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
 
         super(Flags,self).__init__(self.getLabel(gtask))
+
         self.stateChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
     def getLabel(self, gtask):
@@ -379,10 +409,14 @@ class DefaultWidget(QtGui.QLineEdit):
     def __init__(self, gtask, codeDict, flagList, codeDictChanger, codeStringChanger):
 
         super(DefaultWidget,self).__init__()
+
         self.setText('TODO - Nobody expects the Spanish Inquisition') # just highlighting what should be done better
         palette=QtGui.QPalette()
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.Base,QtGui.QColor('red'))
         self.setPalette(palette)
+
+        #if gtask['default']: # uncomment when not using highlighting
+        #    self.setText(gtask['default'])
 
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
@@ -393,9 +427,9 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
-# default values, column/layer also from map (v.db.join), d.vect, wordwrap, size
+# column/layer also from map (v.db.join), d.vect, wordwrap, size
 # key_desc, required after guisection, prompt=datasource (v.external),
-# datasource_layer (v.import)
+# datasource_layer (v.import), words for predefined colors
 
 
 

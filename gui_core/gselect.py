@@ -103,12 +103,16 @@ class MultipleValues(QtGui.QGroupBox):
 
         super(MultipleValues,self).__init__()
 
+        defaultBoxes = gtask['default'].split(',')
+
         i=0
         if not gtask['values_desc']:
             layout=QtGui.QHBoxLayout()
             for item in gtask['values']:
                 box=QtGui.QCheckBox(item)
                 box.setObjectName(gtask['values'][i])
+                if box.objectName() in defaultBoxes:
+                    box.setChecked(True)
                 layout.addWidget(box)
                 box.stateChanged.connect(lambda: self.changeCommand(gtask, flagList,
                                                              layout, codeDictChanger, codeStringChanger)) # see in parameters.py
@@ -119,6 +123,8 @@ class MultipleValues(QtGui.QGroupBox):
             for item in gtask['values_desc']:
                 box=QtGui.QCheckBox(item)
                 box.setObjectName(gtask['values'][i])
+                if box.objectName() in defaultBoxes:
+                    box.setChecked(True)
                 layout.addWidget(box)
                 box.stateChanged.connect(lambda: self.changeCommand(gtask, flagList,
                                                              layout, codeDictChanger, codeStringChanger)) # see in parameters.py
@@ -135,10 +141,14 @@ class Layers(QtGui.QComboBox):
         """
 
         super(Layers,self).__init__()
+
         self.setEditable(True)
 
         self.gtask = gtask
         self.codeDict=codeDict
+
+        if gtask['default']:
+            self.setEditText(gtask['default'])
 
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
@@ -153,7 +163,9 @@ class Layers(QtGui.QComboBox):
             layers = script.vector_db(map=self.codeDict['input'])
             for layer in layers:
                 self.addItem(str(layer))
-        except:self.addItem('')
+        except:
+            if self.count()==0:
+                self.addItem('')
 
     def showPopup(self):
         text=self.currentText()
@@ -172,10 +184,14 @@ class Columns(QtGui.QComboBox):
         """
 
         super(Columns,self).__init__()
+
         self.setEditable(True)
 
         self.gtask = gtask
         self.codeDict=codeDict
+
+        if gtask['default']:
+            self.setEditText(gtask['default'])
 
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
@@ -275,6 +291,9 @@ class DbTable(QtGui.QComboBox):
         self.codeDict = codeDict
 
         self.setEditable(True)
+
+        if gtask['default']:
+            self.setEditText(gtask['default'])
 
         self.textChanged.connect(lambda: self.changeCommand(gtask, flagList, self, codeDictChanger, codeStringChanger))
 
