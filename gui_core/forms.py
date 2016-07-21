@@ -44,6 +44,9 @@ class NewGUI(QtGui.QMainWindow):
         #self.resize(self.minimumSize())
 
         self.setCentralWidget(completeGui)
+
+        print self.width(),self.height()
+        #self.setFixedHeight(300)
         #print completeGui.size()
 
     def get_tabs(self,module):
@@ -82,6 +85,9 @@ class NewGUI(QtGui.QMainWindow):
                     pageSection[task['guisection']]
                 except:
                     page=QtGui.QWidget()
+                    #page.setFrameShape(QtGui.QFrame.NoFrame)
+                    #page.setAutoFillBackground(True)
+                    #page.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
                     box=QtGui.QVBoxLayout()
                     pageSection.update({task['guisection']:page})
                     boxsSection.update({task['guisection']:box})
@@ -114,6 +120,9 @@ class NewGUI(QtGui.QMainWindow):
                     pageSection[task['guisection']]
                 except:
                     page=QtGui.QWidget()
+                    #page.setFrameShape(QtGui.QFrame.NoFrame)
+                    #page.setAutoFillBackground(True)
+                    #page.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
                     box=QtGui.QVBoxLayout()
                     pageSection.update({task['guisection']:page})
                     boxsSection.update({task['guisection']:box})
@@ -133,12 +142,107 @@ class NewGUI(QtGui.QMainWindow):
             boxs[i].addStretch()
             layout=boxs[i]
             layout.setSpacing(0)
-            pages[i].setLayout(layout)
+            #layout.setContentsMargins(0,0,0,0)
+            widget=QtGui.QWidget()
+            widget.setLayout(layout)
+            #pages[i].setLayout(layout)
+            bla=QtGui.QLineEdit()
+            #print bla.rgb()
+            #QtGui.QColor.setCm
+            print pages[i].palette().color(widget.backgroundRole()).red(),pages[i].palette().color(widget.backgroundRole()).green()
+            print pages[i].palette().color(pages[i].backgroundRole()).blue()
+            print pages[i].palette().color(pages[i].backgroundRole()).red()
+            print pages[i].palette().color(widget.backgroundRole()).getCmyk()
+            print pages[i].palette().color(widget.backgroundRole()).rgb()
+            print ''
+            #b = widget.styleSheet()
+            #widget.setStyleSheet(pageRequired.styleSheet())
+            #widget.setPalette(QtGui.QLineEdit().palette())
+            #print QtGui.QLineEdit().palette()
+            #widget.setAutoFillBackground(True)
+            #print widget.autoFillBackground()
+            a = QtGui.QScrollArea()
+            palette=a.palette()
+            print tabs.palette().color(tabs.backgroundRole()).getRgb()
+            print tabs.palette().color(tabs.backgroundRole()).rgb()
+            palette.setColor(a.backgroundRole(), self.palette().color(pages[i].backgroundRole()))
+            a.setPalette(palette)
+            aha=widget.palette()
+            #print pages[i].palette().color(widget.backgroundRole()).rgb()
+            #print a.palette().color(widget.backgroundRole()).rgb()
+            #a.bac
+            a.setWidget(widget)
+            a.setWidgetResizable(True)
+            a.setFrameShape(QtGui.QFrame.NoFrame)
+            a.setAutoFillBackground(True)
+            a.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            a.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            #a.setPalette(QtGui.QLineEdit().palette())
+            #a.setAutoFillBackground(True)
+            #widget.setAttribute(Qt.WA_TranslucentBackground)
+            #widget.setStyleSheet(b)
+            #a.setStyleSheet("background-color:transparent;")
+            #a.setAttribute(Qt.WA_TranslucentBackground)
+            #print widget.color.red()
+            #a.setStyleSheet("color:white")
+            #print a.numColors()
+            #myLayout=QtGui.QHBoxLayout()
+            #myLayout.addWidget(widget)
+            #myLayout.addWidget(QtGui.QScrollBar())
+            #bla=QtGui.QWidget()
+            #bla.setLayout(myLayout)
+            #my2Ly=QtGui.QHBoxLayout()
+            #my2Ly.addWidget(bla)
+            #my2Ly.addWidget(QtGui.QScrollBar())
+            #a.setStyleSheet("background-color:transparent")
+            #a.widget().setStyleSheet("background-color:green")
+            #a.setPalette(QtGui.QPalette.Normal)
+            #print tabs.numColors()
+            #a.
+            #print a.autoFillBackground()
+            #widget.setAutoFillBackground(False)
+            #a.setBackgroundRole(tabs.backgroundRole())
+            #a.setEnabled(True)
+            #a.setStyleSheet("background-color:%s" % str(tabs.numColors()))
+            #a.setBackgroundRole(QtGui.QPalette.NoRole)
+            newLayout = QtGui.QVBoxLayout()
+            newLayout.addWidget(a)
+            newLayout.setContentsMargins(1,1,1,1)
+
+            #x = QtGui.QWidget()
+            #x.setLayout(my2Ly)
+            #newnewLayout = QtGui.QVBoxLayout()
+            #newnewLayout.addWidget(x)
+            #x.setAutoFillBackground(True)
+            #newnewLayout.setContentsMargins(0,0,0,0)
+            #a.setLayout(layout)
+            #a.addScrollBarWidget(widget)
+
+            pages[i].setLayout(newLayout)
+            #pages[i].setAutoFillBackground(True)
+            #print pages[i].autoFillBackground()
+            #print layout.height()
+            #print widget.height()
+            #if widget.height()>300:
+            #    scrollLayout = QtGui.QHBoxLayout()
+            #    scrollLayout.addWidget(widget)
+            #    scrollLayout.addWidget(QtGui.QScrollBar())
+            #    pages[i].setLayout(scrollLayout)
+            #else:
+            #    pages[i].setLayout(layout)
+
+        #self.setFixedHeight(500)
+        #self.setFixedWidth(650)
+
 
         tabs.addTab(pageRequired,'Required')
         for i in pageSection:
             tabs.addTab(pages[i],i)
         tabs.addTab(pageOptional,'Optional')
+        #tabs.setPalette(QtGui.QApplication.palette())
+        #tabs.tab
+        #print tabs.tabBar().color(tabs.backgroundRole()).getRgb()
+        #tabs.widget(1).palette().color(tabs.backgroundRole()).getRgb()
 
         return tabs,codeString
 
