@@ -104,7 +104,7 @@ class Parameters():
                            +' '.join('{}={}'.format(key, val) for key, val in self.codeDict.items()))
 
     def codeDictChanger(self, text):
-        if text and text!=self.gtask['default']:
+        if text and (text!=self.gtask['default'] or self.gtask['name']=='layer'):
             try:
                 self.codeDict[self.gtask['name']]=text
             except: # it means that there is no item for this widget in dict
@@ -434,7 +434,7 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 # column/layer also from map (v.db.join), d.vect, wordwrap, size
-# key_desc, prompt=datasource (v.external), required first
+# key_desc, prompt=datasource (v.external)
 # datasource_layer (v.import), words for predefined colors
 
 

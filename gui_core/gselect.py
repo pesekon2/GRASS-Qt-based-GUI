@@ -164,8 +164,13 @@ class Layers(QtGui.QComboBox):
             for layer in layers:
                 self.addItem(str(layer))
         except:
-            if self.count()==0:
-                self.addItem('')
+            try:
+                layers = script.vector_db(map=self.codeDict['map'])
+                for layer in layers:
+                    self.addItem(str(layer))
+            except:
+                if self.count()==0:
+                    self.addItem('')
 
     def showPopup(self):
         text=self.currentText()
@@ -187,7 +192,7 @@ class Columns(QtGui.QComboBox):
 
         self.setEditable(True)
 
-        self.gtask = gtask
+        #self.gtask = gtask
         self.codeDict=codeDict
 
         if gtask['default']:
@@ -221,8 +226,19 @@ class Columns(QtGui.QComboBox):
             if layer==-1:
                 for layer in layers.keys():
                     self.getColumns(layers,layer)
-            else:self.getColumns(layers,layer)
-        except:self.addItem('')
+            else:
+                self.getColumns(layers,layer)
+        except:
+            try:
+                layers=script.vector_db(map=self.codeDict['map'])
+                layer=self.getLayer()
+
+                if layer==-1:
+                    for layer in layers.keys():
+                        self.getColumns(layers,layer)
+                else:self.getColumns(layers,layer)
+            except:
+                self.addItem('')
 
     def showPopup(self):
 
