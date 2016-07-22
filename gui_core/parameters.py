@@ -89,8 +89,12 @@ class Parameters():
                 description = QtGui.QLabel(self.gtask['description'])
             box_header.addWidget(description)
             box_header.addStretch()
-            box_header.addWidget(QtGui.QLabel('(%s=%s)' % (
-                self.gtask['name'], self.gtask['type'])))
+            if self.gtask['key_desc']:
+                box_header.addWidget(QtGui.QLabel('(%s=%s)' % (
+                    self.gtask['name'], self.gtask['key_desc'][0])))
+            else:
+                box_header.addWidget(QtGui.QLabel('(%s=%s)' % (
+                    self.gtask['name'], self.gtask['type'])))
 
             header = QtGui.QWidget()
             header.setLayout(box_header)
