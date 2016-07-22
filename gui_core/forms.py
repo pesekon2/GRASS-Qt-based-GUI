@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import xml
-import os
-import sys,getopt
+import sys
+import getopt
 import re
 from parameters import Parameters as newWidget
-from PyQt4 import QtGui, uic
-from PyQt4.QtXml import *
+from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from grass.script import task as gtask
 from grass.script import run_command
@@ -23,33 +21,33 @@ class NewGUI(QtGui.QMainWindow):
         self.show()
         sys.exit(app.exec_())
 
-    def create_gui(self,module):
+    def create_gui(self, module):
         """
         :param module: called module
         :return: completed gui
         """
 
-        tabs,codeString=self.get_tabs(module)
+        tabs, code_string = self.get_tabs(module)
 
-        box=QtGui.QVBoxLayout()
+        box = QtGui.QVBoxLayout()
         box.addWidget(self.get_description(module))
         box.addWidget(tabs)
         box.addWidget(self.basic_buttons(module))
         box.addWidget(self.horizontal_line())
-        box.addWidget(codeString)
+        box.addWidget(code_string)
         box.setSpacing(10)
-        completeGui=QtGui.QWidget()
-        completeGui.setLayout(box)
-        #print completeGui.size()
-        #self.resize(self.minimumSize())
+        complete_gui = QtGui.QWidget()
+        complete_gui.setLayout(box)
+        # print complete_gui.size()
+        # self.resize(self.minimumSize())
 
-        self.setCentralWidget(completeGui)
+        self.setCentralWidget(complete_gui)
 
-        print self.width(),self.height()
-        #self.setFixedHeight(300)
-        #print completeGui.size()
+        print self.width(), self.height()
+        # self.setFixedHeight(300)
+        # print complete_gui.size()
 
-    def get_tabs(self,module):
+    def get_tabs(self, module):
         """
         :param module: called module
         :return: tabs
@@ -57,117 +55,129 @@ class NewGUI(QtGui.QMainWindow):
 
         tabs = QtGui.QTabWidget()
 
-        pageRequired=QtGui.QWidget()
-        boxRequired=QtGui.QVBoxLayout()
-        boxs={}
+        page_required = QtGui.QWidget()
+        box_required = QtGui.QVBoxLayout()
+        boxs = {}
 
-        pageOptional=QtGui.QWidget()
-        boxOptional=QtGui.QVBoxLayout()
-        pages={}
+        page_optional = QtGui.QWidget()
+        box_optional = QtGui.QVBoxLayout()
+        pages = {}
 
-        pageSection={}
-        boxsSection={}
+        page_section = {}
+        boxs_section = {}
 
-        self.codeDict={}
-        self.flagList=[]
-        codeString=QtGui.QTextEdit(module)
-        codeString.setLineWrapMode(QtGui.QTextEdit.NoWrap)
-        codeString.setReadOnly(True)
-        codeString.setFixedHeight(QtGui.QLineEdit().sizeHint().height()*2)
+        self.codeDict = {}
+        self.flagList = []
+        code_string = QtGui.QTextEdit(module)
+        code_string.setLineWrapMode(QtGui.QTextEdit.NoWrap)
+        code_string.setReadOnly(True)
+        code_string.setFixedHeight(QtGui.QLineEdit().sizeHint().height()*2)
 
         # tabs for params
         for task in gtask.command_info(module)['params']:
 
-            widget=newWidget(task,module,self.codeDict,self.flagList,codeString).newWidget()
+            widget = newWidget(task, module, self.codeDict, self.flagList,
+                               code_string).new_widget()
 
             if task['guisection']:
                 try:
-                    pageSection[task['guisection']]
+                    page_section[task['guisection']]
                 except:
-                    page=QtGui.QWidget()
+                    page = QtGui.QWidget()
                     #page.setFrameShape(QtGui.QFrame.NoFrame)
                     #page.setAutoFillBackground(True)
                     #page.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-                    box=QtGui.QVBoxLayout()
-                    pageSection.update({task['guisection']:page})
-                    boxsSection.update({task['guisection']:box})
-                    pages.update({task['guisection']:pageSection[task['guisection']]})
-                    boxs.update({task['guisection']:boxsSection[task['guisection']]})
+                    box = QtGui.QVBoxLayout()
+                    page_section.update({task['guisection']: page})
+                    boxs_section.update({task['guisection']: box})
+                    pages.update({task['guisection']:
+                                 page_section[task['guisection']]})
+                    boxs.update({task['guisection']:
+                                boxs_section[task['guisection']]})
                 boxs[task['guisection']].addWidget(widget)
 
-            elif task['required']==True:
+            elif task['required'] is True:
                 try:
-                    pages.update({'Required':pageRequired})
-                    boxs.update({'Required':boxRequired})
-                except:pass
+                    pages.update({'Required': page_required})
+                    boxs.update({'Required': box_required})
+                except:
+                    pass
                 boxs['Required'].addWidget(widget)
 
             else:
                 try:
-                    pages.update({'Optional':pageOptional})
-                    boxs.update({'Optional':boxOptional})
-                except:pass
+                    pages.update({'Optional': page_optional})
+                    boxs.update({'Optional': box_optional})
+                except:
+                    pass
                 boxs['Optional'].addWidget(widget)
-
-
 
         #tabs for flags
         for task in gtask.command_info(module)['flags']:
 
-            widget=newWidget(task,module,self.codeDict,self.flagList,codeString).newWidget()
+            widget = newWidget(task, module, self.codeDict, self.flagList,
+                               code_string).new_widget()
             if task['guisection']:
                 try:
-                    pageSection[task['guisection']]
+                    page_section[task['guisection']]
                 except:
-                    page=QtGui.QWidget()
-                    #page.setFrameShape(QtGui.QFrame.NoFrame)
-                    #page.setAutoFillBackground(True)
-                    #page.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-                    box=QtGui.QVBoxLayout()
-                    pageSection.update({task['guisection']:page})
-                    boxsSection.update({task['guisection']:box})
-                    pages.update({task['guisection']:pageSection[task['guisection']]})
-                    boxs.update({task['guisection']:boxsSection[task['guisection']]})
+                    page = QtGui.QWidget()
+                    # page.setFrameShape(QtGui.QFrame.NoFrame)
+                    # page.setAutoFillBackground(True)
+                    # page.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+                    box = QtGui.QVBoxLayout()
+                    page_section.update({task['guisection']: page})
+                    boxs_section.update({task['guisection']: box})
+                    pages.update({task['guisection']:
+                                 page_section[task['guisection']]})
+                    boxs.update({task['guisection']:
+                                boxs_section[task['guisection']]})
                 boxs[task['guisection']].addWidget(widget)
 
             else:
                 try:
-                    pages.update({'Optional':pageOptional})
-                    boxs.update({'Optional':boxOptional})
-                except:pass
-                if not task['name'] == 'help': # we don't have to see help everywhere
+                    pages.update({'Optional': page_optional})
+                    boxs.update({'Optional': box_optional})
+                except:
+                    pass
+                if not task['name'] == 'help':
                     boxs['Optional'].addWidget(widget)
+                    # we don't have to see help everywhere
 
         for i in pages:
             boxs[i].addStretch()
-            layout=boxs[i]
+            layout = boxs[i]
             layout.setSpacing(0)
             #layout.setContentsMargins(0,0,0,0)
-            widget=QtGui.QWidget()
+            widget = QtGui.QWidget()
             widget.setLayout(layout)
             #pages[i].setLayout(layout)
-            bla=QtGui.QLineEdit()
+            bla = QtGui.QLineEdit()
             #print bla.rgb()
             #QtGui.QColor.setCm
-            print pages[i].palette().color(widget.backgroundRole()).red(),pages[i].palette().color(widget.backgroundRole()).green()
+            print pages[i].palette().color(widget.backgroundRole()).red()
+            print pages[i].palette().color(widget.backgroundRole()).green()
             print pages[i].palette().color(pages[i].backgroundRole()).blue()
             print pages[i].palette().color(pages[i].backgroundRole()).red()
             print pages[i].palette().color(widget.backgroundRole()).getCmyk()
             print pages[i].palette().color(widget.backgroundRole()).rgb()
             print ''
             #b = widget.styleSheet()
-            #widget.setStyleSheet(pageRequired.styleSheet())
+            #widget.setStyleSheet(page_required.styleSheet())
             #widget.setPalette(QtGui.QLineEdit().palette())
             #print QtGui.QLineEdit().palette()
             #widget.setAutoFillBackground(True)
             #print widget.autoFillBackground()
             a = QtGui.QScrollArea()
-            palette=a.palette()
+            palette = a.palette()
             print tabs.palette().color(tabs.backgroundRole()).getRgb()
             print tabs.palette().color(tabs.backgroundRole()).rgb()
-            palette.setColor(a.backgroundRole(), self.palette().color(pages[i].backgroundRole()))
+            palette.setColor(
+                a.backgroundRole(),
+                QtGui.QLineEdit().palette().color(QtGui.QLineEdit().
+                                                  backgroundRole()))
             a.setPalette(palette)
-            aha=widget.palette()
+            aha = widget.palette()
             #print pages[i].palette().color(widget.backgroundRole()).rgb()
             #print a.palette().color(widget.backgroundRole()).rgb()
             #a.bac
@@ -205,20 +215,20 @@ class NewGUI(QtGui.QMainWindow):
             #a.setEnabled(True)
             #a.setStyleSheet("background-color:%s" % str(tabs.numColors()))
             #a.setBackgroundRole(QtGui.QPalette.NoRole)
-            newLayout = QtGui.QVBoxLayout()
-            newLayout.addWidget(a)
-            newLayout.setContentsMargins(1,1,1,1)
+            new_layout = QtGui.QVBoxLayout()
+            new_layout.addWidget(a)
+            new_layout.setContentsMargins(1, 1, 1, 1)
 
             #x = QtGui.QWidget()
             #x.setLayout(my2Ly)
-            #newnewLayout = QtGui.QVBoxLayout()
-            #newnewLayout.addWidget(x)
+            #newnew_layout = QtGui.QVBoxLayout()
+            #newnew_layout.addWidget(x)
             #x.setAutoFillBackground(True)
-            #newnewLayout.setContentsMargins(0,0,0,0)
+            #newnew_layout.setContentsMargins(0,0,0,0)
             #a.setLayout(layout)
             #a.addScrollBarWidget(widget)
 
-            pages[i].setLayout(newLayout)
+            pages[i].setLayout(new_layout)
             #pages[i].setAutoFillBackground(True)
             #print pages[i].autoFillBackground()
             #print layout.height()
@@ -234,30 +244,30 @@ class NewGUI(QtGui.QMainWindow):
         #self.setFixedHeight(500)
         #self.setFixedWidth(650)
 
-
-        tabs.addTab(pageRequired,'Required')
-        for i in pageSection:
-            tabs.addTab(pages[i],i)
-        tabs.addTab(pageOptional,'Optional')
+        tabs.addTab(page_required, 'Required')
+        for i in page_section:
+            tabs.addTab(pages[i], i)
+        tabs.addTab(page_optional, 'Optional')
         #tabs.setPalette(QtGui.QApplication.palette())
         #tabs.tab
         #print tabs.tabBar().color(tabs.backgroundRole()).getRgb()
         #tabs.widget(1).palette().color(tabs.backgroundRole()).getRgb()
+        print QtGui.QLineEdit().palette().color(QtGui.QLineEdit().
+                                                backgroundRole()).getRgb()
 
-        return tabs,codeString
+        return tabs, code_string
 
-    def get_title(self,module):
+    def get_title(self, module):
         """
         :param module: called module
         :return: new title of the window with parameters
         """
 
-        self.title=[p for p in gtask.command_info(module)['keywords']]
-        self.title=re.sub("'","",module + " " + str(self.title))
+        self.title = [p for p in gtask.command_info(module)['keywords']]
+        self.title = re.sub("'", "", module + " " + str(self.title))
         return self.title
 
-
-    def get_description(self,module):
+    def get_description(self, module):
         """
         :param module: called module
         :return: label with module description
@@ -268,29 +278,29 @@ class NewGUI(QtGui.QMainWindow):
         description.setWordWrap(True)
         return description
 
-    def basic_buttons(self,module):
+    def basic_buttons(self, module):
         """
         :parameter: no
         :return: 4 basic buttons at the bottom of GUI
         """
 
-        closeButton=QtGui.QPushButton('Close')
-        runButton=QtGui.QPushButton('Run')
-        runButton.setStyleSheet('QPushButton {color: green;}')
-        copyButton=QtGui.QPushButton('Copy')
-        helpButton=QtGui.QPushButton('Help')
+        close_button = QtGui.QPushButton('Close')
+        run_button = QtGui.QPushButton('Run')
+        run_button.setStyleSheet('QPushButton {color: green;}')
+        copy_button = QtGui.QPushButton('Copy')
+        help_button = QtGui.QPushButton('Help')
 
-        layout=QtGui.QHBoxLayout()
-        layout.addWidget(closeButton)
-        layout.addWidget(runButton)
-        layout.addWidget(copyButton)
-        layout.addWidget(helpButton)
-        buttons=QtGui.QWidget()
+        layout = QtGui.QHBoxLayout()
+        layout.addWidget(close_button)
+        layout.addWidget(run_button)
+        layout.addWidget(copy_button)
+        layout.addWidget(help_button)
+        buttons = QtGui.QWidget()
         buttons.setLayout(layout)
 
-        closeButton.clicked.connect(lambda: self.close())
-        helpButton.clicked.connect(lambda: run_command(module,'help'))
-        runButton.clicked.connect(lambda: self.run_command(module))
+        close_button.clicked.connect(lambda: self.close())
+        help_button.clicked.connect(lambda: run_command(module, 'help'))
+        run_button.clicked.connect(lambda: self.run_command(module))
 
         return buttons
 
@@ -305,26 +315,28 @@ class NewGUI(QtGui.QMainWindow):
         line.setFrameShadow(QtGui.QFrame.Sunken)
         return line
 
-    def run_command(self,module):
+    def run_command(self, module):
         """
         runs the command
         """
 
-        flags=''
-        longFlags={}
+        flags = ''
+        long_flags = {}
         for i in self.flagList:
-            if len(i)==1: flags = flags + i
-            else: longFlags.update({i:True})
+            if len(i) == 1:
+                flags = flags + i
+            else:
+                long_flags.update({i: True})
 
-        if longFlags:
-            paramsLongFlags={}
-            paramsLongFlags.update(longFlags)
-            paramsLongFlags.update(self.codeDict)
-            run_command(module, flags=flags, **paramsLongFlags)
+        if long_flags:
+            params_long_flags = {}
+            params_long_flags.update(long_flags)
+            params_long_flags.update(self.codeDict)
+            run_command(module, flags=flags, **params_long_flags)
         else:
             run_command(module, flags=flags, **self.codeDict)
 
-opt,arg=getopt.getopt(sys.argv,'second parameter')
+opt, arg = getopt.getopt(sys.argv, 'second parameter')
 
 mainform = NewGUI(arg[1])
 
