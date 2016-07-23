@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import os
 import getopt
 import re
 from parameters import Parameters as newWidget
@@ -10,12 +11,20 @@ from grass.script import task as gtask
 from grass.script import run_command
 
 
+GUIDIR   = os.path.join(os.getenv("GISBASE"), "gui")
+ICONDIR  = os.path.join(GUIDIR, "icons")
+IMGDIR   = os.path.join(GUIDIR, "images")
+
+
 class NewGUI(QtGui.QMainWindow):
     def __init__(self, module, parent=None):
         app = QtGui.QApplication([])
         super(NewGUI, self).__init__(parent)
 
         self.setWindowTitle(self.get_title(module))
+        icon = QtGui.QIcon(os.path.join(ICONDIR,'grass-48x48.png'))
+        #icon.
+        self.setWindowIcon(icon)
         self.create_gui(module)
 
         self.show()
@@ -273,9 +282,21 @@ class NewGUI(QtGui.QMainWindow):
         :return: label with module description
         """
 
-        text = gtask.command_info(module)['description']
-        description = QtGui.QLabel(text)
-        description.setWordWrap(True)
+        logo = QtGui.QLabel()
+        logo.setPixmap(QtGui.QPixmap(os.path.join(IMGDIR,'grass_form.png')))
+        logo.setFixedWidth(logo.sizeHint().width())
+        text = QtGui.QLabel(gtask.command_info(module)['description'])
+        text.setWordWrap(True)
+
+        layout = QtGui.QHBoxLayout()
+        layout.addWidget(logo)
+        layout.addWidget(text)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        description = QtGui.QWidget()
+        description.setLayout(layout)
+        description.setFixedHeight(description.sizeHint().height())
+
         return description
 
     def basic_buttons(self, module):

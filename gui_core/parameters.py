@@ -87,6 +87,7 @@ class Parameters():
                 description = QtGui.QLabel(self.gtask['label'])
             else:
                 description = QtGui.QLabel(self.gtask['description'])
+            # description.setWordWrap(True)
             box_header.addWidget(description)
             box_header.addStretch()
             if self.gtask['key_desc']:
@@ -511,9 +512,10 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
-# column/layer also from map (v.db.join), d.vect, wordwrap, size
-# key_desc, prompt=datasource (v.external)
+
+# prompt=datasource (v.external), v.proj, d.vect (symbols)
 # datasource_layer (v.import), words for predefined colors
+# column/layer also from map (v.db.join), wordwrap, size
 
 
 
