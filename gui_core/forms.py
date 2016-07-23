@@ -254,6 +254,8 @@ class NewGUI(QtGui.QMainWindow):
         #self.setFixedWidth(650)
 
         tabs.addTab(page_required, 'Required')
+        if box_required:
+            tabs.addTab(page_required, 'Required')
         for i in page_section:
             tabs.addTab(pages[i], i)
         tabs.addTab(page_optional, 'Optional')
