@@ -84,11 +84,18 @@ class Parameters():
             if self.gtask['multiple'] is True:
                 box_header.addWidget(QtGui.QLabel('[multiple]'))
             if self.gtask['label']:
-                description = QtGui.QLabel(self.gtask['label'])
+                description = QtGui.QLabel(self.gtask['label'] + ':')
             else:
-                description = QtGui.QLabel(self.gtask['description'])
+                description = QtGui.QLabel(self.gtask['description'] + ':')
+
             # description.setWordWrap(True)
             box_header.addWidget(description)
+
+            if self.gtask['required'] is True:
+                star = QtGui.QLabel('*')
+                star.setStyleSheet('color: red')
+                box_header.addWidget(star)
+
             box_header.addStretch()
             if self.gtask['key_desc']:
                 box_header.addWidget(QtGui.QLabel('(%s=%s)' % (
