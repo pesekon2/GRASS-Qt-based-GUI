@@ -51,11 +51,19 @@ class Parameters():
             box_complete.addWidget(widget)
 
         except:
-            widget = Flags(gtask, code_dict, flag_list,
-                           self.code_dict_changer, self.code_string_changer)
-            box_complete.addWidget(widget)
-            box_complete.addStretch()
-            box_complete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
+            if gtask['name'] not in ['quiet', 'verbose']:
+                widget = Flags(
+                    gtask, code_dict, flag_list, self.code_dict_changer,
+                    self.code_string_changer)
+                box_complete.addWidget(widget)
+                box_complete.addStretch()
+                box_complete.addWidget(QtGui.QLabel('(%s)' % gtask['name']))
+            elif gtask['name'] == 'quiet':
+                widget = Quiet(
+                    gtask, code_dict, flag_list, self.code_dict_changer,
+                    self.code_string_changer)
+                box_complete.addWidget(widget)
+
 
         if gtask['label'] and gtask['description']:
             # title is in label so we can use description as help/tooltip
@@ -486,9 +494,25 @@ class Flags(QtGui.QCheckBox):
         else:
             flag_list.remove(gtask['name'])
             # because we don't want to have not necessary items in dict
+
         code_string_changer()
 
 
+
+class Quiet(gselect.Quiet):
+    def change_command(self, gtask, flag_list, widget, code_dict_changer,
+                       code_string_changer):
+        if widget.text() == 'Normal module output':
+            try:
+                flag_list.remove('quiet')
+            except:
+                flag_list.remove('verbose')
+        elif widget.text() == 'Quiet module output':
+            flag_list.append('quiet')
+        else:
+            flag_list.append('verbose')
+
+        code_string_changer()
 
 
 # default widget
@@ -520,9 +544,10 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
-# prompt=datasource (v.external), v.proj, d.vect (symbols)
+# prompt=datasource (v.external), v.proj, d.vect (symbols, colors)
 # datasource_layer (v.import), words for predefined colors
 # column/layer also from map (v.db.join), wordwrap, size
+# mapset select for existing path
 
 
 

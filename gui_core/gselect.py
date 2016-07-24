@@ -1,6 +1,6 @@
 
 
-from PyQt4.QtCore import QModelIndex, QEvent
+from PyQt4.QtCore import QModelIndex, QEvent, Qt
 from PyQt4 import QtGui
 from grass import script
 import subprocess
@@ -404,6 +404,50 @@ class DbTable(QtGui.QComboBox):
             self.setEditText(text)
         else:
             self.setEditText('')
+
+
+
+
+
+class Quiet(QtGui.QWidget):
+    def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
+                 code_string_changer):
+        """
+        :param gtask: task for this widget
+        :param : runable and copyable  string
+        """
+
+        super(Quiet, self).__init__()
+        self.setLayout(self.get_layout(gtask, flag_list, code_dict_changer, code_string_changer))
+
+    def get_layout(self, gtask, flag_list, code_dict_changer, code_string_changer):
+
+        label = QtGui.QLabel('Normal module output')
+        slider = QtGui.QSlider(Qt.Horizontal)
+        slider.setSingleStep(1)
+        slider.setMinimum(0)
+        slider.setMaximum(2)
+        slider.setValue(1)
+        slider.setFixedWidth(slider.sizeHint().width())
+
+        slider.valueChanged.connect(lambda: self.slider_moved(slider, label))
+        slider.valueChanged.connect(lambda: self.change_command(
+            gtask, flag_list, label, code_dict_changer, code_string_changer))
+
+        layout = QtGui.QHBoxLayout()
+        layout.addWidget(label)
+        layout.addStretch()
+        layout.addWidget(slider)
+
+        return layout
+
+    def slider_moved(self, slider, label):
+        if slider.value() == 1:
+            label.setText('Normal module output')
+        elif slider.value() == 0:
+            label.setText('Quiet module output')
+        else:
+            label.setText('Verbose module output')
 
 
 
