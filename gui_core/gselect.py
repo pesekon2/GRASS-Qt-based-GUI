@@ -282,8 +282,8 @@ class Colors(QtGui.QWidget):
                         'border-color: beige; min-width: 8em; padding: 6px'
 
         if gtask['default'] == 'none':
-            self.colorBtn.setStyleSheet("QPushButton {background-color: grey;"
-                                        "%s}" % self.btnStyle)
+            self.colorBtn.setStyleSheet(
+                "QPushButton {background-color: #c8c8c8;%s}" % self.btnStyle)
             self.colorBtn.setText('Select color')
             layout.addWidget(self.colorBtn)
             transparent = QtGui.QCheckBox('Transparent')
@@ -292,15 +292,24 @@ class Colors(QtGui.QWidget):
                 code_string_changer))
             layout.addWidget(transparent)
         else:
-            if QtGui.QColor(gtask['default']).red() + \
-                    QtGui.QColor(gtask['default']).blue() + \
-                    QtGui.QColor(gtask['default']).green() < 387:
+            splitted_color = gtask['default'].split(':')
+            if len(splitted_color)>1:
+                color_name = '#%02x%02x%02x' % (
+                    int(splitted_color[0]), int(splitted_color[1]),
+                    int(splitted_color[2]))
+            else:
+                color_name = gtask['default']
+
+            if QtGui.QColor(color_name).red() + \
+                    QtGui.QColor(color_name).blue() + \
+                    QtGui.QColor(color_name).green() < 387:
                 text_color = 'white'
             else:
                 text_color = 'black'
+
             self.colorBtn.setStyleSheet("QPushButton {background-color: %s;"
                                         "color: %s; %s}"
-                                        % (gtask['default'], text_color,
+                                        % (color_name, text_color,
                                            self.btnStyle))
             self.colorBtn.setText(gtask['default'])
             layout.addWidget(self.colorBtn)
@@ -418,9 +427,11 @@ class Quiet(QtGui.QWidget):
         """
 
         super(Quiet, self).__init__()
-        self.setLayout(self.get_layout(gtask, flag_list, code_dict_changer, code_string_changer))
+        self.setLayout(self.get_layout(gtask, flag_list, code_dict_changer,
+                                       code_string_changer))
 
-    def get_layout(self, gtask, flag_list, code_dict_changer, code_string_changer):
+    def get_layout(self, gtask, flag_list, code_dict_changer,
+                   code_string_changer):
 
         label = QtGui.QLabel('Normal module output')
         slider = QtGui.QSlider(Qt.Horizontal)
