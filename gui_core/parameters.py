@@ -281,7 +281,7 @@ class BrowseFile(gselect.BrowseFile):
     @staticmethod
     def can_handle(type, multiple, key_desc, prompt, values):
         return type == 'string' and key_desc != ['sql_query'] \
-               and (prompt == 'file')
+               and prompt in ['file', 'dbase']
 
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):

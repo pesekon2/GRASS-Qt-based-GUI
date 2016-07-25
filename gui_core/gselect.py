@@ -74,7 +74,9 @@ class TreeComboBox(QtGui.QComboBox):
 class BrowseFile(QtGui.QWidget):
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer, parent=None):
+
         super(BrowseFile, self).__init__(parent)
+        self.gtask = gtask
 
         layout = QtGui.QHBoxLayout()
         self.line = QtGui.QLineEdit()
@@ -94,7 +96,10 @@ class BrowseFile(QtGui.QWidget):
 
     def select_file(self):
 
-        file_path = QtGui.QFileDialog.getOpenFileName(self, 'Select file')
+        if self.gtask['prompt'] == 'file':
+            file_path = QtGui.QFileDialog.getOpenFileName(self, 'Select file')
+        else:
+            file_path = QtGui.QFileDialog.getExistingDirectory(self, 'Select directory')
         if file_path:
             self.line.setText(file_path)
         else:
