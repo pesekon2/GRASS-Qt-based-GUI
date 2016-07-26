@@ -7,8 +7,21 @@ import subprocess
 
 
 class TreeComboBox(QtGui.QComboBox):
+    """
+    widget for tree view models
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer, parent=None):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
+
         super(TreeComboBox, self).__init__(parent)
 
         self.__skip_next_hide = False
@@ -54,6 +67,11 @@ class TreeComboBox(QtGui.QComboBox):
         return False
 
     def get_model(self, gtask):
+        """
+        creates the core of a tree based model to input into widget
+        :param gtask: part of gtask for this widget
+        :return: tree model
+        """
         mapsets = script.mapsets(search_path=True)
         model = QtGui.QStandardItemModel()
         # model.__init__(parent=None)
@@ -72,8 +90,20 @@ class TreeComboBox(QtGui.QComboBox):
 
 
 class BrowseFile(QtGui.QWidget):
+    """
+    widget that allows user to choose path to file or directory
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer, parent=None):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
 
         super(BrowseFile, self).__init__(parent)
         self.gtask = gtask
@@ -95,6 +125,9 @@ class BrowseFile(QtGui.QWidget):
             code_string_changer))  # see in parameters.py
 
     def select_file(self):
+        """
+        raise dialog to choose file or directory
+        """
 
         if self.gtask['prompt'] == 'file':
             file_path = QtGui.QFileDialog.getOpenFileName(self, 'Select file')
@@ -107,11 +140,19 @@ class BrowseFile(QtGui.QWidget):
 
 
 class MultipleValues(QtGui.QGroupBox):
+    """
+    widget that allows user to choose predefined values (even more than one)
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(MultipleValues, self).__init__()
@@ -150,11 +191,19 @@ class MultipleValues(QtGui.QGroupBox):
 
 
 class Layers(QtGui.QComboBox):
+    """
+    widget that allows user to choose from layers in chosen map (input, map)
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(Layers, self).__init__()
@@ -171,6 +220,9 @@ class Layers(QtGui.QComboBox):
             gtask, flag_list, self, code_dict_changer, code_string_changer))
 
     def get_layers(self):
+        """
+        load layers (based on map in input or map widget)
+        """
 
         self.clear()
 
@@ -201,11 +253,19 @@ class Layers(QtGui.QComboBox):
 
 
 class Columns(QtGui.QComboBox):
+    """
+    widget that allows user to choose from columns in chosen map and layer
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(Columns, self).__init__()
@@ -222,6 +282,10 @@ class Columns(QtGui.QComboBox):
             gtask, flag_list, self, code_dict_changer, code_string_changer))
 
     def get_layer(self):
+        """
+        transforming layer into int (if it is)
+        :return: name of layer (int, string)
+        """
 
         try:
             layer = int(self.code_dict['layer'])
@@ -230,6 +294,11 @@ class Columns(QtGui.QComboBox):
             return self.code_dict['layer']
 
     def get_columns(self, layers, layer):
+        """
+        load columns
+        :param layers: dictionary of all layers in map
+        :param layer: layer chosen in widget Layer
+        """
 
         for item in script.db_describe(
                 table=layers[layer]["table"],
@@ -238,6 +307,9 @@ class Columns(QtGui.QComboBox):
             self.addItem(item[0])
 
     def set_values(self):
+        """
+        setting columns into the widget
+        """
 
         self.clear()
 
@@ -267,6 +339,7 @@ class Columns(QtGui.QComboBox):
 
         text = self.currentText()
         self.set_values()
+
         super(Columns, self).showPopup()
         if text in [self.itemText(i) for i in range(self.count())]:
             self.setEditText(text)
@@ -275,9 +348,21 @@ class Columns(QtGui.QComboBox):
 
 
 class Colors(QtGui.QWidget):
-
+    """
+    widget that allows user to choose color from color dialog
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
+
         super(Colors, self).__init__()
 
         layout = QtGui.QHBoxLayout()
@@ -320,6 +405,7 @@ class Colors(QtGui.QWidget):
             layout.addWidget(self.colorBtn)
 
         layout.addStretch()
+
         self.setLayout(layout)
         self.defaultText = self.colorBtn.text()
 
@@ -351,11 +437,19 @@ class Colors(QtGui.QWidget):
 
 
 class DbTable(QtGui.QComboBox):
+    """
+    widget that allows user to choose db table
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(DbTable, self).__init__()
@@ -370,6 +464,11 @@ class DbTable(QtGui.QComboBox):
             gtask, flag_list, self, code_dict_changer, code_string_changer))
 
     def get_db_info(self):
+        """
+        check if there is defined driver or database
+        :return: driver and database (default or defined)
+        """
+
         try:
             driver = self.code_dict['driver']
             try:
@@ -389,6 +488,10 @@ class DbTable(QtGui.QComboBox):
         return driver, database
 
     def get_tables(self):
+        """
+        get tables from user's database
+        :return: tables in one string
+        """
 
         driver, database = self.get_db_info()
 
@@ -424,11 +527,19 @@ class DbTable(QtGui.QComboBox):
 
 
 class Quiet(QtGui.QWidget):
+    """
+    special widget with which user can choose quiet, normal or verbose module output
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(Quiet, self).__init__()
@@ -437,6 +548,10 @@ class Quiet(QtGui.QWidget):
 
     def get_layout(self, gtask, flag_list, code_dict_changer,
                    code_string_changer):
+        """
+        create slider and wrap it into a layout
+        :return: completed layout
+        """
 
         label = QtGui.QLabel('Normal module output')
         slider = QtGui.QSlider(Qt.Horizontal)
@@ -458,6 +573,11 @@ class Quiet(QtGui.QWidget):
         return layout
 
     def slider_moved(self, slider, label):
+        """
+        change label when slider moves
+        :param slider: the main widget
+        :param label: label telling user which output does he have chosen
+        """
         if slider.value() == 1:
             label.setText('Normal module output')
         elif slider.value() == 0:

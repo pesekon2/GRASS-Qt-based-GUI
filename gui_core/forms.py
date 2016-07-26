@@ -18,6 +18,10 @@ IMGDIR   = os.path.join(GUIDIR, "images")
 
 class NewGUI(QtGui.QMainWindow):
     def __init__(self, module, parent=None):
+        """
+        constructor
+        :param module: called module
+        """
         app = QtGui.QApplication([])
         super(NewGUI, self).__init__(parent)
 
@@ -33,7 +37,7 @@ class NewGUI(QtGui.QMainWindow):
     def create_gui(self, module):
         """
         :param module: called module
-        :return: completed gui
+        sets description, tabs, buttons and code_string into the main window
         """
 
         tabs, code_string = self.get_tabs(module)
@@ -57,8 +61,9 @@ class NewGUI(QtGui.QMainWindow):
 
     def get_tabs(self, module):
         """
+        parse individual widgets, create tabs and put widgets into those tabs
         :param module: called module
-        :return: tabs
+        :return: tabs, code_string (widget with code string that user can see)
         """
 
         tabs = QtGui.QTabWidget()
@@ -183,6 +188,7 @@ class NewGUI(QtGui.QMainWindow):
 
     def get_title(self, module):
         """
+        create title of main window
         :param module: called module
         :return: new title of the window with parameters
         """
@@ -193,6 +199,7 @@ class NewGUI(QtGui.QMainWindow):
 
     def get_description(self, module):
         """
+        creates description with logo
         :param module: called module
         :return: label with module description
         """
@@ -216,8 +223,9 @@ class NewGUI(QtGui.QMainWindow):
 
     def basic_buttons(self, module):
         """
-        :parameter: no
-        :return: 4 basic buttons at the bottom of GUI
+        create buttons to close window, raise help and run or copy cmd
+        :param module: called module
+        :return: layout with buttons
         """
 
         close_button = QtGui.QPushButton('Close')
@@ -242,7 +250,7 @@ class NewGUI(QtGui.QMainWindow):
 
     def horizontal_line(self):
         """
-        creates a horizontal line
+        creates a horizontal line to separate the code_string
         :return: horizontal line
         """
 
@@ -254,6 +262,7 @@ class NewGUI(QtGui.QMainWindow):
     def run_command(self, module):
         """
         runs the command
+        :param module: called module
         """
 
         flags = ''

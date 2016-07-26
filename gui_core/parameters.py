@@ -14,9 +14,12 @@ class Factory():
                    code_string_changer):
         """
         deciding which widget class should be used
-        :param gtask: task for this widget
-        :param : runable and copyable  string
-        :return:
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
         classes = [j for (i, j) in globals().iteritems()
                    if hasattr(j, 'can_handle')]
@@ -31,10 +34,20 @@ class Factory():
                                  code_dict_changer,  code_string_changer)
 
 
-# firstly, I define the widgets layout, then the widgets
 class Parameters():
+    """
+    class to create layout and call factory creating the widget
+    """
     def __init__(self, gtask, module, code_dict, flag_list, code_string):
-        #super(Parameters).__init__(parent)
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param module: called module
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_string: widget with code string that user can see
+        :return: completed widget
+        """
 
         self.module = module
         self.code_dict = code_dict
@@ -82,7 +95,6 @@ class Parameters():
     def get_layout(self):
         """
         create layout/box for the widget
-        :param gtask: task for this widget
         :return: layout
         """
 
@@ -127,6 +139,9 @@ class Parameters():
         return layout_complete
 
     def code_string_changer(self):
+        """
+        This method changes the code string that user can see
+        """
         flags = ''
         for i in self.flag_list:
             if len(i) == 1:
@@ -137,6 +152,10 @@ class Parameters():
             '{}={}'.format(key, val) for key, val in self.code_dict.items()))
 
     def code_dict_changer(self, text):
+        """
+        This method is updating the dictionary of filled parameters
+        :param text: text from widget which is calling this method
+        """
         if text and (text != self.gtask['default'] or
                      self.gtask['name'] == 'layer'):
             try:
@@ -155,11 +174,19 @@ class Parameters():
 
 # now string types
 class SqlQuery(QtGui.QLineEdit):
+    """
+    widget for SQL queries
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(SqlQuery, self).__init__()
@@ -172,20 +199,45 @@ class SqlQuery(QtGui.QLineEdit):
 
     @staticmethod
     def can_handle(type, multiple, key_desc, prompt, values):
+        """
+        Tell which types of widgets is this class used for
+        :param type: type of widget (string, float... )
+        :param multiple: True or False (multiple or simple)
+        :param key_desc: key description of widget
+        :param prompt: telling information about which widget is ideal
+        :param values: if there is some list of default values
+        :return: Conditions for this class usage
+        """
         return key_desc == ['sql_query']
 
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):
+        """
+        calling methods updating code_dict and code_string
+        :param gtask: part of gtask for this widget
+        :param flag_list: list of checked flags
+        :param widget: widget from which should be read text
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        """
         code_dict_changer(str(widget.text()))
 
 
 # maybe in future implement special widget when called from gui
 class Cats(QtGui.QLineEdit):
+    """
+    widget for category values
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(Cats, self).__init__()
@@ -206,11 +258,19 @@ class Cats(QtGui.QLineEdit):
 
 
 class SimpleValues(QtGui.QComboBox):
+    """
+    widget for combobox with values (user can select just one)
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(SimpleValues, self).__init__()
@@ -234,11 +294,19 @@ class SimpleValues(QtGui.QComboBox):
 
 
 class Separator(QtGui.QComboBox):
+    """
+    widget for choosing which separator was used
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(Separator, self).__init__()
@@ -357,15 +425,36 @@ class DbTable(gselect.DbTable):
         code_dict_changer(str(widget.currentText()))
 
 
+class Quiet(gselect.Quiet):
+    def change_command(self, gtask, flag_list, widget, code_dict_changer,
+                       code_string_changer):
+        if widget.text() == 'Normal module output':
+            try:
+                flag_list.remove('quiet')
+            except:
+                flag_list.remove('verbose')
+        elif widget.text() == 'Quiet module output':
+            flag_list.append('quiet')
+        else:
+            flag_list.append('verbose')
+
+        code_string_changer()
 
 # now float types
 class MultipleFloat(QtGui.QLineEdit):
+    """
+    widget for typing float numbers (user can type in more than one number)
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        for float: multiple, coords
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(MultipleFloat, self).__init__()
@@ -386,11 +475,19 @@ class MultipleFloat(QtGui.QLineEdit):
 
 
 class SimpleFloat(QtGui.QDoubleSpinBox):
+    """
+    widget for typing float number (just one, user can choose from spinbox)
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(SimpleFloat, self).__init__()
@@ -417,11 +514,19 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
 
 # now integer types
 class MultipleInteger(QtGui.QLineEdit):
+    """
+    widget for typing int numbers (user can type in more than one number)
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(MultipleInteger, self).__init__()
@@ -442,11 +547,19 @@ class MultipleInteger(QtGui.QLineEdit):
 
 
 class SimpleInteger(QtGui.QSpinBox):
+    """
+    widget for typing int number (just one, user can choose from spinbox)
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
         """
-        :param gtask: task for this widget
-        :param : runable and copyable  string
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
         """
 
         super(SimpleInteger, self).__init__()
@@ -471,8 +584,20 @@ class SimpleInteger(QtGui.QSpinBox):
 
 
 class Flags(QtGui.QCheckBox):
+    """
+    checkbox for flags
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
 
         super(Flags, self).__init__(self.get_label(gtask))
 
@@ -480,6 +605,11 @@ class Flags(QtGui.QCheckBox):
             gtask, flag_list, self, code_dict_changer, code_string_changer))
 
     def get_label(self, gtask):
+        """
+        deciding choose between label and dexcription
+        :param gtask:
+        :return: text for checkbox
+        """
         if gtask['label']:
             return gtask['label']
         else:
@@ -498,27 +628,22 @@ class Flags(QtGui.QCheckBox):
         code_string_changer()
 
 
-
-class Quiet(gselect.Quiet):
-    def change_command(self, gtask, flag_list, widget, code_dict_changer,
-                       code_string_changer):
-        if widget.text() == 'Normal module output':
-            try:
-                flag_list.remove('quiet')
-            except:
-                flag_list.remove('verbose')
-        elif widget.text() == 'Quiet module output':
-            flag_list.append('quiet')
-        else:
-            flag_list.append('verbose')
-
-        code_string_changer()
-
-
 # default widget
 class DefaultWidget(QtGui.QLineEdit):
+    """
+    widget for widgets those don't have any special stated
+    """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
 
         super(DefaultWidget, self).__init__()
 
@@ -544,8 +669,8 @@ class DefaultWidget(QtGui.QLineEdit):
 
 
 
-# prompt=datasource (v.external), v.proj, d.vect (symbols, colors)
-# datasource_layer (v.import), words for predefined colors
+# prompt=datasource (v.external), d.vect (symbols), float valuechanged
+# datasource_layer (v.import), words for predefined colors, error default
 # column/layer also from map (v.db.join), wordwrap, size
 # mapset select for existing path
 
