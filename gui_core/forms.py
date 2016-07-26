@@ -1,4 +1,32 @@
-#!/usr/bin/env python
+"""
+@package gui_core.forms
+
+@brief Construct the core of pyqt GUI based on GRASS command interface
+description.
+
+Classes:
+ - forms::NewGUI
+
+This program is just a coarse approach to automatically build a GUI
+from a xml-based GRASS user interface description.
+
+You need to have Python 2.7, PyQt4 and python-xml.
+
+The XML stream is read from executing the command given in the
+command line, thus you may call it for instance this way:
+
+python forms.py v.buffer
+
+Or you set an alias or wrap the call up in a nice shell script, GUI
+environment ... please contribute your idea.
+
+Copyright(C) 2016 by the GRASS Development Team
+
+This program is free software under the GPL(>=v2) Read the file
+COPYING coming with GRASS for details.
+
+@author Ondrej Pesek <pesej.ondrek@gmail.com>
+"""
 
 import sys
 import os

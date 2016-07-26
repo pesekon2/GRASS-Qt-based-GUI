@@ -1,4 +1,29 @@
+"""
+@package gui_core.parameters
 
+@brief Basic layout for widgets, factory to choose which widget use,
+ simple widgets
+
+Classes:
+ - :class:'Factory'
+ - :class:'Parameters'
+ - :class:'SqlQuery'
+ - :class:'Cats'
+ - :class:'SimpleValues'
+ - :class:'Separator'
+ - classes inherited from gselect.py
+ - :class:'MultipleInteger'
+ - :class:'SimpleInteger'
+ - :class:'Flags'
+ - :class:'DefaultWidget'
+
+(C) 2016 by the GRASS Development Team
+
+This program is free software under the GNU General Public License
+(>=v2). Read the file COPYING that comes with GRASS for details.
+
+@author Ondrej Pesek <pesej.ondrek@gmail.com>
+"""
 
 from PyQt4 import QtGui
 import gselect

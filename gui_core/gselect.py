@@ -1,4 +1,25 @@
+"""
+@package gui_core.gselect
 
+@brief Complex widget elements of PyQt based GUI of GRASS
+
+Classes:
+ - :class:'TreeComboBox'
+ - :class:'BrowseFile'
+ - :class:'MultipleValues'
+ - :class:'Layers'
+ - :class:'Colums'
+ - :class:'Colors'
+ - :class:'DbTable'
+ - :class:'Quiet'
+
+(C) 2016 by the GRASS Development Team
+
+This program is free software under the GNU General Public License
+(>=v2). Read the file COPYING that comes with GRASS for details.
+
+@author Ondrej Pesek <pesej.ondrek@gmail.com>
+"""
 
 from PyQt4.QtCore import QModelIndex, QEvent, Qt
 from PyQt4 import QtGui
