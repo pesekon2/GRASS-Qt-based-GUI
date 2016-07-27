@@ -433,7 +433,8 @@ class Colors(gselect.Colors):
 
         if len(items) > 1:
             if items[1].isChecked() is False:
-                code_dict_changer(str(items[0].text()))
+                if str(items[0].text()) != 'Select color':
+                    code_dict_changer(str(items[0].text()))
             else:
                 code_dict_changer('')
         else:

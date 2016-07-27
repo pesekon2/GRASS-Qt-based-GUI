@@ -398,7 +398,7 @@ class Colors(QtGui.QWidget):
             self.colorBtn.setText('Select color')
             layout.addWidget(self.colorBtn)
             transparent = QtGui.QCheckBox('Transparent')
-            transparent.stateChanged.connect(lambda: self.parse_text(
+            transparent.stateChanged.connect(lambda: self.change_command(
                 gtask, flag_list, layout, code_dict_changer,
                 code_string_changer))
             layout.addWidget(transparent)
@@ -428,13 +428,16 @@ class Colors(QtGui.QWidget):
         layout.addStretch()
 
         self.setLayout(layout)
-        self.defaultText = self.colorBtn.text()
 
-        self.colorBtn.clicked.connect(lambda: self.color_picker())
-        self.colorBtn.clicked.connect(lambda: self.parse_text(
+        self.colorBtn.clicked.connect(lambda: self.color_picker(
             gtask, flag_list, layout, code_dict_changer, code_string_changer))
 
-    def color_picker(self):
+    def color_picker(self, gtask, flag_list, layout, code_dict_changer,
+                   code_string_changer):
+        """
+        raising the color dialog and painting color into button
+        """
+
         color = QtGui.QColorDialog.getColor(
             initial=QtGui.QColor(self.colorBtn.palette().
                                  color(QtGui.QPalette.Background)))
@@ -449,12 +452,8 @@ class Colors(QtGui.QWidget):
                                            self.btnStyle))
             self.colorBtn.setText('%s:%s:%s' % (color.red(), color.green(),
                                                 color.blue()))
-
-    def parse_text(self, gtask, flag_list, layout, code_dict_changer,
-                   code_string_changer):
-        if self.colorBtn.text() != self.defaultText:
             self.change_command(gtask, flag_list, layout, code_dict_changer,
-                                code_string_changer)
+                   code_string_changer)
 
 
 class DbTable(QtGui.QComboBox):
