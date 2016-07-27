@@ -50,6 +50,7 @@ class NewGUI(QtGui.QMainWindow):
         constructor
         :param module: called module
         """
+
         app = QtGui.QApplication([])
         super(NewGUI, self).__init__(parent)
 
@@ -64,8 +65,8 @@ class NewGUI(QtGui.QMainWindow):
 
     def create_gui(self, module):
         """
-        :param module: called module
         sets description, tabs, buttons and code_string into the main window
+        :param module: called module
         """
 
         tabs, code_string = self.get_tabs(module)
@@ -73,7 +74,7 @@ class NewGUI(QtGui.QMainWindow):
         box = QtGui.QVBoxLayout()
         box.addWidget(self.get_description(module))
         box.addWidget(tabs)
-        box.addWidget(self.basic_buttons(module))
+        box.addWidget(self.basic_buttons(module, code_string))
         box.addWidget(self.horizontal_line())
         box.addWidget(code_string)
         box.setSpacing(10)
@@ -249,10 +250,11 @@ class NewGUI(QtGui.QMainWindow):
 
         return description
 
-    def basic_buttons(self, module):
+    def basic_buttons(self, module, code_string):
         """
         create buttons to close window, raise help and run or copy cmd
         :param module: called module
+        :param code_string: widget with code string that user can see
         :return: layout with buttons
         """
 
@@ -274,6 +276,10 @@ class NewGUI(QtGui.QMainWindow):
         help_button.clicked.connect(lambda: run_command(module, 'help'))
         run_button.clicked.connect(lambda: self.run_command(module))
 
+        clipboard = QtGui.QApplication.clipboard()
+        copy_button.clicked.connect(lambda: self.copy_text(clipboard,
+                                                           code_string))
+
         return buttons
 
     def horizontal_line(self):
@@ -286,6 +292,16 @@ class NewGUI(QtGui.QMainWindow):
         line.setFrameShape(QtGui.QFrame.HLine)
         line.setFrameShadow(QtGui.QFrame.Sunken)
         return line
+
+    def copy_text(self, clipboard, code_string):
+        """
+        This method copies the cmd string to clipboard
+        :param clipboard: system clipboard
+        :param code_string: widget with code string that user can see
+        """
+
+        clipboard.clear()
+        clipboard.setText(code_string.toPlainText())
 
     def run_command(self, module):
         """
