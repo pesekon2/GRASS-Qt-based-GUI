@@ -11,6 +11,7 @@ Classes:
  - :class:'Colums'
  - :class:'Colors'
  - :class:'DbTable'
+ - :class:'Mapsets'
  - :class:'Quiet'
 
 (C) 2016 by the GRASS Development Team
@@ -25,6 +26,8 @@ from PyQt4.QtCore import QModelIndex, QEvent, Qt
 from PyQt4 import QtGui
 from grass import script
 import subprocess
+import glob
+import os
 
 
 class TreeComboBox(QtGui.QComboBox):
@@ -541,6 +544,91 @@ class DbTable(QtGui.QComboBox):
             self.setEditText(text)
         else:
             self.setEditText('')
+
+class Mapsets(QtGui.QComboBox):
+    """
+    widget that allows user to choose mapset from combobox
+    """
+    def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
+                 code_string_changer):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
+
+        super(Mapsets, self).__init__()
+        self.code_dict = code_dict
+
+        self.setEditable(True)
+
+        mapsets = self.get_mapsets().split(' ')
+        self.addItems(mapsets)
+
+        if gtask['default']:
+            self.setEditText(gtask['default'])
+
+        self.textChanged.connect(lambda: self.change_command(
+            gtask, flag_list, self, code_dict_changer, code_string_changer))
+
+    def get_mapsets(self):
+        """
+        load mapsets when location, dbase, both or nothing is defined
+        :return: mapsets in one string
+        """
+
+        try:
+            try:  # exists both location and dbase
+                mapsets = script.start_command(
+                    'g.mapset', flags='l', location=self.code_dict['location'],
+                    dbase=self.code_dict['dbase'], stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
+
+                return mapsets.communicate()[0].splitlines()[0]
+            except:
+                try:  # just location
+                    mapsets = script.start_command(
+                        'g.mapset', flags='l',
+                        location=self.code_dict['location'],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                    return mapsets.communicate()[0].splitlines()[0]
+                except:  # just dbase
+                    mapsets = script.start_command(
+                        'g.mapset', flags='l', dbase=self.code_dict['dbase'],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                    return mapsets.communicate()[0].splitlines()[0]
+        except:  # no dependencies defined
+            mapsets = script.start_command('g.mapsets',
+                                           flags='l',
+                                           stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE)
+
+            return mapsets.communicate()[0].splitlines()[0]
+
+    def showPopup(self):
+
+        text = self.currentText()
+
+        self.clear()
+        items = self.get_mapsets().split(' ')
+
+        if items[len(items)-1] == '':
+            del items[len(items)-1]
+
+        self.addItems(items)
+
+        super(Mapsets, self).showPopup()
+        if text in [self.itemText(i) for i in range(self.count())]:
+            self.setEditText(text)
+        else:
+            self.setEditText('')
+
 
 
 
