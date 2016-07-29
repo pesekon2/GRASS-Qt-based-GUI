@@ -461,6 +461,15 @@ class Mapsets(gselect.Mapsets):
         code_dict_changer(str(widget.currentText()))
 
 
+class Locations(gselect.Locations):
+    @staticmethod
+    def can_handle(type, multiple, key_desc, prompt, values):
+        return prompt == 'location'
+
+    def change_command(self, gtask, flag_list, widget, code_dict_changer,
+                       code_string_changer):
+        code_dict_changer(str(widget.currentText()))
+
 class Quiet(gselect.Quiet):
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):

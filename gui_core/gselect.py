@@ -12,6 +12,7 @@ Classes:
  - :class:'Colors'
  - :class:'DbTable'
  - :class:'Mapsets'
+ - :class:'Locations'
  - :class:'Quiet'
 
 (C) 2016 by the GRASS Development Team
@@ -22,7 +23,7 @@ This program is free software under the GNU General Public License
 @author Ondrej Pesek <pesej.ondrek@gmail.com>
 """
 
-from PyQt4.QtCore import QModelIndex, QEvent, Qt
+from PyQt4.QtCore import QModelIndex, QEvent, Qt, QSize
 from PyQt4 import QtGui
 from grass import script
 import subprocess
@@ -624,6 +625,75 @@ class Mapsets(QtGui.QComboBox):
         self.addItems(items)
 
         super(Mapsets, self).showPopup()
+        if text in [self.itemText(i) for i in range(self.count())]:
+            self.setEditText(text)
+        else:
+            self.setEditText('')
+
+
+class Locations(QtGui.QComboBox):
+    """
+    widget that allows user to choose location from combobox
+    """
+    def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
+                 code_string_changer):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
+
+        super(Locations, self).__init__()
+        self.code_dict = code_dict
+
+        self.setEditable(True)
+
+        self.addItems(self.get_locations())
+
+        if gtask['default']:
+            self.setEditText(gtask['default'])
+
+        self.textChanged.connect(lambda: self.change_command(
+            gtask, flag_list, self, code_dict_changer, code_string_changer))
+
+    def get_locations(self):
+        """
+        find locations in path (default or defined in dbase)
+        :return: list of locations
+        """
+
+        locations = []
+
+        try:
+            db_path = self.code_dict['dbase']
+        except:
+            db_path = script.gisenv()['GISDBASE']
+
+        for location in glob.glob(os.path.join(
+                    db_path, "*")):
+                if os.path.join(location, "PERMANENT") in \
+                        glob.glob(os.path.join(location, "*")):
+                    locations.append(os.path.basename(location))
+
+        return locations
+
+    def showPopup(self):
+
+        text = self.currentText()
+
+        self.clear()
+        items = self.get_locations()
+
+        if items:
+            self.addItems(items)
+        else:
+            self.addItem('')
+
+        super(Locations, self).showPopup()
         if text in [self.itemText(i) for i in range(self.count())]:
             self.setEditText(text)
         else:
