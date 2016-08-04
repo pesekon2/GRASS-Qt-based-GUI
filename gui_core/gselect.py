@@ -13,6 +13,7 @@ Classes:
  - :class:'DbTable'
  - :class:'Mapsets'
  - :class:'Locations'
+ - :class:'SimpleValues'
  - :class:'Quiet'
 
 (C) 2016 by the GRASS Development Team
@@ -699,6 +700,267 @@ class Locations(QtGui.QComboBox):
         else:
             self.setEditText('')
 
+
+class SimpleValues(QtGui.QWidget):
+    """
+    widget for gui item with values (user can select just one)
+    basic is just combobox, all the methods are for icon choosing widget
+    """
+    def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
+                 code_string_changer):
+        """
+        constructor
+        :param gtask: part of gtask for this widget
+        :param code_dict: dictionary of filled parameters
+        :param flag_list: list of checked flags
+        :param code_dict_changer: method for changing code_dict
+        :param code_string_changer: method for changing string with code
+        :return: created widget
+        """
+
+        super(SimpleValues, self).__init__()
+        self.gtask = gtask
+
+        layout = QtGui.QHBoxLayout()
+
+        if gtask['name'] != 'icon':
+            self.widget = QtGui.QComboBox()
+            self.widget.setEditable(True)
+            self.widget.addItems(gtask['values'])
+
+            if gtask['default']:
+                self.widget.setEditText(gtask['default'])
+
+            self.widget.textChanged.connect(lambda: self.change_command(
+                gtask, flag_list, self.widget,
+                code_dict_changer, code_string_changer))
+
+            layout.addWidget(self.widget)
+        else:  # special widget for
+            self.icons_path = os.path.join(os.getenv("GISBASE"),
+                                           "gui", "images", "symbols")
+
+            self.widget = QtGui.QPushButton()
+
+            if gtask['default']:
+                self.widget.setText(gtask['default'])
+                self.widget.setIcon(QtGui.QIcon(
+                    os.path.join(self.icons_path, gtask['default']+'.png')))
+            else:
+                self.widget.setText('Select symbol')
+
+            self.widget.setIconSize(QSize(30,30))
+
+            self.widget.clicked.connect(lambda: self.get_dialog(
+                gtask, code_dict, flag_list, code_dict_changer,
+                code_string_changer))
+
+            layout.addWidget(self.widget)
+            layout.addStretch()
+
+        self.setLayout(layout)
+
+    def get_dialog(self, gtask, code_dict, flag_list, code_dict_changer,
+                   code_string_changer):
+        """
+        raise dialog for choosing icon
+        """
+
+        # app = QtGui.QApplication([])
+        self.dialog = QtGui.QDialog()
+
+        self.set_layout(gtask, code_dict, flag_list, code_dict_changer,
+                        code_string_changer)
+        self.dialog.setFixedSize(QSize(300,300))
+        self.dialog.setWindowTitle('Select symbol')
+        ICONDIR  = os.path.join(os.getenv("GISBASE"), "gui", "icons",
+                                "grass_dialog.ico")
+        self.dialog.setWindowIcon(QtGui.QIcon(ICONDIR))
+
+        self.dialog.show()
+        # dialog.exec_()
+
+    def set_layout(self, gtask, code_dict, flag_list, code_dict_changer,
+                   code_string_changer):
+        """
+        set the dialog right layout with icons, iconsets and buttons
+        """
+
+        self.dialog_layout = QtGui.QVBoxLayout()
+
+        iconsets = self.get_iconsets()
+        symbol_name = self.get_symbol_name()
+
+        buttons = self.get_buttons(gtask, code_dict, flag_list,
+                                   code_dict_changer, code_string_changer)
+
+        self.get_icons()
+
+        self.iconsets.currentIndexChanged.connect(self.set_icons)
+
+        self.dialog_layout.addWidget(iconsets)
+        self.dialog_layout.addWidget(symbol_name)
+
+        if self.iconsets.currentText():
+            self.icons = QtGui.QWidget()
+            icons_layout = QtGui.QGridLayout()
+            row = 1
+            column = 1
+            for item in [self.icons_dict[str(self.iconsets.currentText())][i]
+                         for i in range(len(
+                         self.icons_dict[str(self.iconsets.currentText())]))]:
+                icons_layout.addWidget(item, row, column)
+                if column < 5:
+                    column = column+1
+                else:
+                    column = 1
+                    row = row+1
+            self.icons.setLayout(icons_layout)
+        self.dialog_layout.addWidget(self.icons)
+
+        self.dialog_layout.addWidget(buttons)
+
+        self.dialog.setLayout(self.dialog_layout)
+
+    def get_buttons(self, gtask, code_dict, flag_list, code_dict_changer,
+                    code_string_changer):
+        """
+        create buttons with their signals
+        :return: buttons
+        """
+
+        buttons = QtGui.QWidget()
+        buttons_layout = QtGui.QHBoxLayout()
+
+        ok = QtGui.QPushButton('OK')
+        cancel = QtGui.QPushButton('Cancel')
+
+        ok.clicked.connect(lambda: self.dialog.close())
+        ok.clicked.connect(lambda: self.change_icon(
+            gtask, code_dict, flag_list, code_dict_changer,
+            code_string_changer))
+        cancel.clicked.connect(lambda: self.dialog.close())
+
+        buttons_layout.addStretch()
+        buttons_layout.addWidget(ok)
+        buttons_layout.addWidget(cancel)
+        buttons.setLayout(buttons_layout)
+
+        return buttons
+
+    def get_iconsets(self):
+        """
+        create iconsets and load values (iconsets) into combobox
+        :return: iconsets (title and combobox in one widget)
+        """
+
+        complete_widget = QtGui.QWidget()
+        iconsets_layout = QtGui.QHBoxLayout()
+
+        self.iconsets = QtGui.QComboBox()
+        for icon in self.gtask['values']:
+            iconset = icon.split('/')[0]
+            if iconset not in [self.iconsets.itemText(i)
+                           for i in range(self.iconsets.count())]:
+                self.iconsets.addItem(iconset)
+        index = self.iconsets.findText(self.widget.text().split('/')[0])
+        self.iconsets.setCurrentIndex(index)
+
+        iconsets_layout.addWidget(QtGui.QLabel('Symbol directory: '))
+        iconsets_layout.addWidget(self.iconsets)
+        iconsets_layout.addStretch()
+        complete_widget.setLayout(iconsets_layout)
+
+        return complete_widget
+
+    def get_symbol_name(self):
+        """
+        creates widget which is showing the symbol name to user
+        :return: static title and variable symbol name in one widget
+        """
+
+        complete_widget = QtGui.QWidget()
+        symbol_name_layout = QtGui.QHBoxLayout()
+
+        self.symbol = QtGui.QLabel()
+
+        symbol_name_layout.addWidget(QtGui.QLabel('Symbol name: '))
+        symbol_name_layout.addWidget(self.symbol)
+        symbol_name_layout.addStretch()
+        complete_widget.setLayout(symbol_name_layout)
+
+        return complete_widget
+
+    def set_icons(self):
+        """
+        set new icons after changing iconset
+        """
+
+        self.dialog_layout.removeWidget(self.icons)
+        self.icons.hide()
+
+        self.icons = QtGui.QWidget()
+        icons_layout = QtGui.QGridLayout()
+        row = 1
+        column = 1
+        for item in [self.icons_dict[str(self.iconsets.currentText())][i]
+                     for i in range(len(
+                     self.icons_dict[str(self.iconsets.currentText())]))]:
+            icons_layout.addWidget(item, row, column)
+            if column < 5:
+                column = column+1
+            else:
+                column = 1
+                row = row+1
+
+        self.icons.setLayout(icons_layout)
+        self.dialog_layout.insertWidget(2, self.icons)
+
+    def get_icons(self):
+        """
+        creates dictionary where key is iconset and values are icons
+        """
+
+        self.icons_dict = {}
+        iconset = None
+        self.string_to_set = QtGui.QLabel()
+
+        for full_value in self.gtask['values']:
+
+            widget = QtGui.QPushButton()
+            widget.clicked.connect(
+                lambda state, instance=full_value.split('/')[1]:
+                self.symbol.setText(instance))
+            widget.clicked.connect(
+                lambda state, instance=full_value:
+                self.string_to_set.setText(instance))
+
+            if iconset == full_value.split('/')[0]:
+                self.icons_dict[iconset].append(widget)
+            else:
+                iconset = full_value.split('/')[0]
+                self.icons_dict.update({iconset: []})
+                self.icons_dict[iconset].append(widget)
+
+
+            widget.setIcon(QtGui.QIcon(os.path.join(self.icons_path,
+                                                    full_value+'.png')))
+            widget.setIconSize(QSize(30,30))
+            widget.setFixedSize(32,32)
+
+    def change_icon(self, gtask, code_dict, flag_list, code_dict_changer,
+                    code_string_changer):
+        """
+        change icon and text of principal button and call the change_command
+        """
+
+        if self.symbol.text():
+            self.widget.setIcon(QtGui.QIcon(os.path.join(
+                str(self.icons_path), str(self.string_to_set.text())+'.png')))
+            self.widget.setText(self.string_to_set.text())
+            del self.string_to_set
+            self.change_command(gtask, flag_list, self.widget,
+                                code_dict_changer, code_string_changer)
 
 
 

@@ -9,7 +9,6 @@ Classes:
  - :class:'Parameters'
  - :class:'SqlQuery'
  - :class:'Cats'
- - :class:'SimpleValues'
  - :class:'Separator'
  - classes inherited from gselect.py
  - :class:'MultipleInteger'
@@ -282,42 +281,6 @@ class Cats(QtGui.QLineEdit):
         code_dict_changer(str(widget.text()))
 
 
-class SimpleValues(QtGui.QComboBox):
-    """
-    widget for combobox with values (user can select just one)
-    """
-    def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
-                 code_string_changer):
-        """
-        constructor
-        :param gtask: part of gtask for this widget
-        :param code_dict: dictionary of filled parameters
-        :param flag_list: list of checked flags
-        :param code_dict_changer: method for changing code_dict
-        :param code_string_changer: method for changing string with code
-        :return: created widget
-        """
-
-        super(SimpleValues, self).__init__()
-
-        self.setEditable(True)
-        self.addItems(gtask['values'])
-
-        if gtask['default']:
-            self.setEditText(gtask['default'])
-
-        self.textChanged.connect(lambda: self.change_command(
-            gtask, flag_list, self, code_dict_changer, code_string_changer))
-
-    @staticmethod
-    def can_handle(type, multiple, key_desc, prompt, values):
-        return (type == 'string') and (multiple is False) and values
-
-    def change_command(self, gtask, flag_list, widget, code_dict_changer,
-                       code_string_changer):
-        code_dict_changer(str(widget.currentText()))
-
-
 class Separator(QtGui.QComboBox):
     """
     widget for choosing which separator was used
@@ -470,6 +433,19 @@ class Locations(gselect.Locations):
                        code_string_changer):
         code_dict_changer(str(widget.currentText()))
 
+
+class SimpleValues(gselect.SimpleValues):
+    @staticmethod
+    def can_handle(type, multiple, key_desc, prompt, values):
+        return (type == 'string') and (multiple is False) and values
+
+    def change_command(self, gtask, flag_list, widget, code_dict_changer,
+                       code_string_changer):
+        if gtask['name'] != 'icon':
+            code_dict_changer(str(widget.currentText()))
+        else:
+            code_dict_changer(str(widget.text()))
+
 class Quiet(gselect.Quiet):
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):
@@ -484,6 +460,7 @@ class Quiet(gselect.Quiet):
             flag_list.append('verbose')
 
         code_string_changer()
+
 
 # now float types
 class MultipleFloat(QtGui.QLineEdit):
