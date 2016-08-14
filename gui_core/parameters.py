@@ -101,7 +101,6 @@ class Parameters():
                     self.code_string_changer)
                 box_complete.addWidget(widget)
 
-
         if gtask['label'] and gtask['description']:
             # title is in label so we can use description as help/tooltip
             widget.setToolTip(gtask['description'])
@@ -446,6 +445,7 @@ class SimpleValues(gselect.SimpleValues):
         else:
             code_dict_changer(str(widget.text()))
 
+
 class Quiet(gselect.Quiet):
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):
@@ -489,7 +489,7 @@ class MultipleFloat(QtGui.QLineEdit):
 
     @staticmethod
     def can_handle(type, multiple, key_desc, prompt, values):
-        return type=='float' and ((multiple is True) or prompt == 'coords')
+        return type == 'float' and ((multiple is True) or prompt == 'coords')
 
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):
@@ -529,9 +529,6 @@ class SimpleFloat(QtGui.QDoubleSpinBox):
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):
         code_dict_changer(str(widget.value()))
-
-
-
 
 
 # now integer types
@@ -603,8 +600,6 @@ class SimpleInteger(QtGui.QSpinBox):
         code_dict_changer(str(widget.text()))
 
 
-
-
 class Flags(QtGui.QCheckBox):
     """
     checkbox for flags
@@ -669,50 +664,20 @@ class DefaultWidget(QtGui.QLineEdit):
 
         super(DefaultWidget, self).__init__()
 
-        # just highlighting what should be done better
-        self.setText('TODO - Nobody expects the Spanish Inquisition')
-        palette = QtGui.QPalette()
-        palette.setColor(QtGui.QPalette.Active,
-                         QtGui.QPalette.Base, QtGui.QColor('red'))
-        self.setPalette(palette)
+        # uncomment to highlight what should be done better
+        # self.setText('TODO - Nobody expects the Spanish Inquisition')
+        # palette = QtGui.QPalette()
+        # palette.setColor(QtGui.QPalette.Active,
+        #                  QtGui.QPalette.Base, QtGui.QColor('red'))
+        # self.setPalette(palette)
 
-        #if gtask['default']: # uncomment when not using highlighting
-        #    self.setText(gtask['default'])
+        if gtask['default']:  # comment when using highlighting
+            self.setText(gtask['default'])
 
         self.textChanged.connect(lambda: self.change_command(
             gtask, flag_list, self, code_dict_changer, code_string_changer))
 
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):
-        print gtask
+
         code_dict_changer(str(widget.text()))
-
-
-
-
-
-# prompt=datasource (v.external), d.vect (symbols), float valuechanged
-# datasource_layer (v.import), words for predefined colors, error default
-# column/layer also from map (v.db.join), wordwrap, size
-# mapset select for existing path
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

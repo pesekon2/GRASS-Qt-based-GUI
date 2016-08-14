@@ -39,9 +39,9 @@ from grass.script import task as gtask
 from grass.script import run_command
 
 
-GUIDIR   = os.path.join(os.getenv("GISBASE"), "gui")
-ICONDIR  = os.path.join(GUIDIR, "icons")
-IMGDIR   = os.path.join(GUIDIR, "images")
+GUIDIR = os.path.join(os.getenv("GISBASE"), "gui")
+ICONDIR = os.path.join(GUIDIR, "icons")
+IMGDIR = os.path.join(GUIDIR, "images")
 
 
 class NewGUI(QtGui.QMainWindow):
@@ -55,8 +55,7 @@ class NewGUI(QtGui.QMainWindow):
         super(NewGUI, self).__init__(parent)
 
         self.setWindowTitle(self.get_title(module))
-        icon = QtGui.QIcon(os.path.join(ICONDIR,'grass-48x48.png'))
-        #icon.
+        icon = QtGui.QIcon(os.path.join(ICONDIR, 'grass-48x48.png'))
         self.setWindowIcon(icon)
         self.create_gui(module)
 
@@ -151,7 +150,7 @@ class NewGUI(QtGui.QMainWindow):
                     pass
                 boxs['Optional'].addWidget(widget)
 
-        #tabs for flags
+        # tabs for flags
         for task in gtask.command_info(module)['flags']:
 
             widget = newWidget(task, module, self.codeDict, self.flagList,
@@ -234,7 +233,7 @@ class NewGUI(QtGui.QMainWindow):
         """
 
         logo = QtGui.QLabel()
-        logo.setPixmap(QtGui.QPixmap(os.path.join(IMGDIR,'grass_form.png')))
+        logo.setPixmap(QtGui.QPixmap(os.path.join(IMGDIR, 'grass_form.png')))
         logo.setFixedWidth(logo.sizeHint().width())
         text = QtGui.QLabel(gtask.command_info(module)['description'])
         text.setWordWrap(True)
@@ -328,5 +327,3 @@ class NewGUI(QtGui.QMainWindow):
 opt, arg = getopt.getopt(sys.argv, 'second parameter')
 
 mainform = NewGUI(arg[1])
-
-# help and output tabs

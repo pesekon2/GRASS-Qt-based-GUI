@@ -158,7 +158,8 @@ class BrowseFile(QtGui.QWidget):
         if self.gtask['prompt'] == 'file':
             file_path = QtGui.QFileDialog.getOpenFileName(self, 'Select file')
         else:
-            file_path = QtGui.QFileDialog.getExistingDirectory(self, 'Select directory')
+            file_path = QtGui.QFileDialog.getExistingDirectory(
+                self, 'Select directory')
         if file_path:
             self.line.setText(file_path)
         else:
@@ -409,7 +410,7 @@ class Colors(QtGui.QWidget):
             layout.addWidget(transparent)
         else:
             splitted_color = gtask['default'].split(':')
-            if len(splitted_color)>1:
+            if len(splitted_color) > 1:
                 color_name = '#%02x%02x%02x' % (
                     int(splitted_color[0]), int(splitted_color[1]),
                     int(splitted_color[2]))
@@ -438,7 +439,7 @@ class Colors(QtGui.QWidget):
             gtask, flag_list, layout, code_dict_changer, code_string_changer))
 
     def color_picker(self, gtask, flag_list, layout, code_dict_changer,
-                   code_string_changer):
+                     code_string_changer):
         """
         raising the color dialog and painting color into button
         """
@@ -458,7 +459,7 @@ class Colors(QtGui.QWidget):
             self.colorBtn.setText('%s:%s:%s' % (color.red(), color.green(),
                                                 color.blue()))
             self.change_command(gtask, flag_list, layout, code_dict_changer,
-                   code_string_changer)
+                                code_string_changer)
 
 
 class DbTable(QtGui.QComboBox):
@@ -546,6 +547,7 @@ class DbTable(QtGui.QComboBox):
             self.setEditText(text)
         else:
             self.setEditText('')
+
 
 class Mapsets(QtGui.QComboBox):
     """
@@ -749,7 +751,7 @@ class SimpleValues(QtGui.QWidget):
             else:
                 self.widget.setText('Select symbol')
 
-            self.widget.setIconSize(QSize(30,30))
+            self.widget.setIconSize(QSize(30, 30))
 
             self.widget.clicked.connect(lambda: self.get_dialog(
                 gtask, code_dict, flag_list, code_dict_changer,
@@ -771,10 +773,10 @@ class SimpleValues(QtGui.QWidget):
 
         self.set_layout(gtask, code_dict, flag_list, code_dict_changer,
                         code_string_changer)
-        self.dialog.setFixedSize(QSize(300,300))
+        self.dialog.setFixedSize(QSize(300, 300))
         self.dialog.setWindowTitle('Select symbol')
-        ICONDIR  = os.path.join(os.getenv("GISBASE"), "gui", "icons",
-                                "grass_dialog.ico")
+        ICONDIR = os.path.join(os.getenv("GISBASE"), "gui", "icons",
+                               "grass_dialog.ico")
         self.dialog.setWindowIcon(QtGui.QIcon(ICONDIR))
 
         self.dialog.show()
@@ -806,9 +808,10 @@ class SimpleValues(QtGui.QWidget):
             icons_layout = QtGui.QGridLayout()
             row = 1
             column = 1
-            for item in [self.icons_dict[str(self.iconsets.currentText())][i]
-                         for i in range(len(
-                         self.icons_dict[str(self.iconsets.currentText())]))]:
+            for item in [
+                self.icons_dict[str(self.iconsets.currentText())][i]
+                for i in range(
+                    len(self.icons_dict[str(self.iconsets.currentText())]))]:
                 icons_layout.addWidget(item, row, column)
                 if column < 5:
                     column = column+1
@@ -861,7 +864,7 @@ class SimpleValues(QtGui.QWidget):
         for icon in self.gtask['values']:
             iconset = icon.split('/')[0]
             if iconset not in [self.iconsets.itemText(i)
-                           for i in range(self.iconsets.count())]:
+                               for i in range(self.iconsets.count())]:
                 self.iconsets.addItem(iconset)
         index = self.iconsets.findText(self.widget.text().split('/')[0])
         self.iconsets.setCurrentIndex(index)
@@ -903,9 +906,10 @@ class SimpleValues(QtGui.QWidget):
         icons_layout = QtGui.QGridLayout()
         row = 1
         column = 1
-        for item in [self.icons_dict[str(self.iconsets.currentText())][i]
-                     for i in range(len(
-                     self.icons_dict[str(self.iconsets.currentText())]))]:
+        for item in [
+            self.icons_dict[str(self.iconsets.currentText())][i]
+            for i in range(
+                len(self.icons_dict[str(self.iconsets.currentText())]))]:
             icons_layout.addWidget(item, row, column)
             if column < 5:
                 column = column+1
@@ -942,11 +946,10 @@ class SimpleValues(QtGui.QWidget):
                 self.icons_dict.update({iconset: []})
                 self.icons_dict[iconset].append(widget)
 
-
             widget.setIcon(QtGui.QIcon(os.path.join(self.icons_path,
                                                     full_value+'.png')))
-            widget.setIconSize(QSize(30,30))
-            widget.setFixedSize(32,32)
+            widget.setIconSize(QSize(30, 30))
+            widget.setFixedSize(32, 32)
 
     def change_icon(self, gtask, code_dict, flag_list, code_dict_changer,
                     code_string_changer):
@@ -963,12 +966,9 @@ class SimpleValues(QtGui.QWidget):
                                 code_dict_changer, code_string_changer)
 
 
-
-
-
 class Quiet(QtGui.QWidget):
     """
-    special widget with which user can choose quiet, normal or verbose module output
+    widget with which user can choose quiet, normal or verbose module output
     """
     def __init__(self, gtask, code_dict, flag_list, code_dict_changer,
                  code_string_changer):
@@ -1024,7 +1024,3 @@ class Quiet(QtGui.QWidget):
             label.setText('Quiet module output')
         else:
             label.setText('Verbose module output')
-
-
-
-
