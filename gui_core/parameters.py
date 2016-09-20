@@ -449,14 +449,17 @@ class SimpleValues(gselect.SimpleValues):
 class Quiet(gselect.Quiet):
     def change_command(self, gtask, flag_list, widget, code_dict_changer,
                        code_string_changer):
-        if widget.text() == 'Normal module output':
+        try:
+            flag_list.remove('quiet')
+        except:
             try:
-                flag_list.remove('quiet')
-            except:
                 flag_list.remove('verbose')
-        elif widget.text() == 'Quiet module output':
+            except:
+                pass
+
+        if widget.text() == 'Quiet module output':
             flag_list.append('quiet')
-        else:
+        elif widget.text() == 'Verbose module output':
             flag_list.append('verbose')
 
         code_string_changer()
