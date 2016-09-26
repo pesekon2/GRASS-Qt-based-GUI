@@ -835,17 +835,18 @@ class SimpleValues(QtGui.QWidget):
         buttons = QtGui.QWidget()
         buttons_layout = QtGui.QHBoxLayout()
 
-        ok = QtGui.QPushButton('OK')
+        self.ok = QtGui.QPushButton('OK')
+        self.ok.setEnabled(False)
         cancel = QtGui.QPushButton('Cancel')
 
-        ok.clicked.connect(lambda: self.dialog.close())
-        ok.clicked.connect(lambda: self.change_icon(
+        self.ok.clicked.connect(lambda: self.dialog.close())
+        self.ok.clicked.connect(lambda: self.change_icon(
             gtask, code_dict, flag_list, code_dict_changer,
             code_string_changer))
         cancel.clicked.connect(lambda: self.dialog.close())
 
         buttons_layout.addStretch()
-        buttons_layout.addWidget(ok)
+        buttons_layout.addWidget(self.ok)
         buttons_layout.addWidget(cancel)
         buttons.setLayout(buttons_layout)
 
@@ -938,6 +939,8 @@ class SimpleValues(QtGui.QWidget):
             widget.clicked.connect(
                 lambda state, instance=full_value:
                 self.string_to_set.setText(instance))
+            widget.clicked.connect(
+                lambda: self.set_ok_enabled())
 
             if iconset == full_value.split('/')[0]:
                 self.icons_dict[iconset].append(widget)
@@ -964,6 +967,14 @@ class SimpleValues(QtGui.QWidget):
             del self.string_to_set
             self.change_command(gtask, flag_list, self.widget,
                                 code_dict_changer, code_string_changer)
+
+    def set_ok_enabled(self):
+        """
+        change the OK button to enabled if you have chosen an icon
+        """
+
+        if self.ok.isEnabled() is False:
+            self.ok.setEnabled(True)
 
 
 class Quiet(QtGui.QWidget):
