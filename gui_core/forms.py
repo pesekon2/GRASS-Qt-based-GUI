@@ -33,6 +33,7 @@ import os
 import getopt
 import re
 from parameters import Parameters as newWidget
+from parameters import Factory
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from grass.script import task as gtask
@@ -114,11 +115,13 @@ class NewGUI(QtGui.QMainWindow):
         code_string.setReadOnly(True)
         code_string.setFixedHeight(QtGui.QLineEdit().sizeHint().height()*2)
 
+        fact = Factory()
+
         # tabs for params
         for task in gtask.command_info(module)['params']:
 
             widget = newWidget(task, module, self.codeDict, self.flagList,
-                               code_string).new_widget()
+                               code_string, fact).new_widget()
 
             if task['guisection']:
                 try:
@@ -154,7 +157,7 @@ class NewGUI(QtGui.QMainWindow):
         for task in gtask.command_info(module)['flags']:
 
             widget = newWidget(task, module, self.codeDict, self.flagList,
-                               code_string).new_widget()
+                               code_string, fact).new_widget()
             if task['guisection']:
                 try:
                     page_section[task['guisection']]

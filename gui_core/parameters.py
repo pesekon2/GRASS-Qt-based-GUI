@@ -33,8 +33,16 @@ class Factory():
     Factory to decide which widget class should be used
     """
 
-    @staticmethod
-    def new_widget(gtask, code_dict, flag_list, code_dict_changer,
+    def __init__(self):
+        """
+        constructor
+        creates the list of widget classes
+        """
+
+        self.classes = [j for (i, j) in globals().iteritems()
+                   if hasattr(j, 'can_handle')]
+
+    def new_widget(self, gtask, code_dict, flag_list, code_dict_changer,
                    code_string_changer):
         """
         deciding which widget class should be used
@@ -45,9 +53,8 @@ class Factory():
         :param code_string_changer: method for changing string with code
         :return: created widget
         """
-        classes = [j for (i, j) in globals().iteritems()
-                   if hasattr(j, 'can_handle')]
-        for oneClass in classes:
+
+        for oneClass in self.classes:
             if oneClass.can_handle(gtask['type'], gtask['multiple'],
                                    gtask['key_desc'], gtask['prompt'],
                                    gtask['values']):
@@ -62,7 +69,7 @@ class Parameters():
     """
     class to create layout and call factory creating the widget
     """
-    def __init__(self, gtask, module, code_dict, flag_list, code_string):
+    def __init__(self, gtask, module, code_dict, flag_list, code_string, fact):
         """
         constructor
         :param gtask: part of gtask for this widget
@@ -80,9 +87,8 @@ class Parameters():
         self.gtask = gtask
 
         box_complete = self.get_layout()
-
         try:
-            widget = Factory().new_widget(gtask, code_dict, flag_list,
+            widget = Factory.new_widget(fact, gtask, code_dict, flag_list,
                                           self.code_dict_changer,
                                           self.code_string_changer)
             box_complete.addWidget(widget)
