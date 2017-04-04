@@ -39,8 +39,8 @@ class Factory():
         creates the list of widget classes
         """
 
-        self.classes = [j for (i, j) in globals().iteritems()
-                   if hasattr(j, 'can_handle')]
+        self.classes = [
+            j for (i, j) in globals().iteritems() if hasattr(j, 'can_handle')]
 
     def new_widget(self, gtask, code_dict, flag_list, code_dict_changer,
                    code_string_changer):
@@ -89,8 +89,8 @@ class Parameters():
         box_complete = self.get_layout()
         try:
             widget = Factory.new_widget(fact, gtask, code_dict, flag_list,
-                                          self.code_dict_changer,
-                                          self.code_string_changer)
+                                        self.code_dict_changer,
+                                        self.code_string_changer)
             box_complete.addWidget(widget)
 
         except:

@@ -15,7 +15,7 @@ Start GRASS
 
 In GRASS command line set your path to the repository/gui_core
 
-Generate GUI by writing: python forms.py function (for example: python forms.py r.buffer)
+Generate GUI by writing: python g.pyqt.py function (for example: python g.pyqt.py r.buffer)
 
 
 

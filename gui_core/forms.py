@@ -30,10 +30,11 @@ COPYING coming with GRASS for details.
 
 import sys
 import os
-import getopt
 import re
+
 from parameters import Parameters as newWidget
 from parameters import Factory
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from grass.script import task as gtask
@@ -326,7 +327,3 @@ class NewGUI(QtGui.QMainWindow):
             run_command(module, flags=flags, **params_long_flags)
         else:
             run_command(module, flags=flags, **self.codeDict)
-
-opt, arg = getopt.getopt(sys.argv, 'second parameter')
-
-mainform = NewGUI(arg[1])
